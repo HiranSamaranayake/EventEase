@@ -9,4 +9,9 @@ class User {
         $this->conn = $db;
     }
 
+    public function register($name, $email, $password, $role)
+    {
+
+    }
+
 }
