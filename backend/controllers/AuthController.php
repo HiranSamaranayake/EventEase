@@ -22,4 +22,9 @@ class AuthController {
             $role
         );
     }
+
+    public function login($email, $password)
+{
+    return $this->user->login($email, $password);
+}
 }
