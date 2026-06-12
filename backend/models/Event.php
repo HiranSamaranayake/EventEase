@@ -37,4 +37,19 @@ class Event
 
         return $stmt->execute();
     }
+    public function getEvents()
+{
+    $query = "SELECT * FROM events ORDER BY created_at DESC";
+
+    $result = $this->conn->query($query);
+
+    $events = [];
+
+    while ($row = $result->fetch_assoc())
+    {
+        $events[] = $row;
+    }
+
+    return $events;
+}
 }

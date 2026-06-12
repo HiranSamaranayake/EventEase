@@ -29,4 +29,8 @@ class EventController
             $capacity
         );
     }
+    public function getEvents()
+{
+    return $this->event->getEvents();
+}
 }
