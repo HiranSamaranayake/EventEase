@@ -11,17 +11,15 @@ class AuthController {
         $this->user = new User($db);
     }
 
-    public function register($name, $email, $password)
-    {
-        $role = "customer";
-
-        return $this->user->register(
-            $name,
-            $email,
-            $password,
-            $role
-        );
-    }
+    public function register($name, $email, $password, $role = 'customer')
+{
+    return $this->user->register(
+        $name,
+        $email,
+        $password,
+        $role
+    );
+}
 
     public function login($email, $password)
 {

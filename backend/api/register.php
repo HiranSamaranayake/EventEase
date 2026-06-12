@@ -8,6 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'] ?? '';
     $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
+    $role = $_POST['role'] ?? 'customer';
 
     if (
         empty($name) ||
@@ -23,7 +24,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $result = $auth->register(
         $name,
         $email,
-        $password
+        $password,
+        $role
     );
 
     if ($result === true) {
