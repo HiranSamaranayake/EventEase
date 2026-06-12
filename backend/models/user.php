@@ -11,6 +11,20 @@ class User {
 
     public function register($name, $email, $password, $role)
     {
+        $checkQuery = "SELECT id FROM users WHERE email = ?";
+
+$checkStmt = $this->conn->prepare($checkQuery);
+
+$checkStmt->bind_param("s", $email);
+
+$checkStmt->execute();
+
+$checkResult = $checkStmt->get_result();
+
+if ($checkResult->num_rows > 0)
+{
+    return "EMAIL_EXISTS";
+}
         $password = password_hash(
             $password,
             PASSWORD_DEFAULT

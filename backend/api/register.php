@@ -20,13 +20,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $auth = new AuthController($conn);
 
-    if ($auth->register(
+    $result = $auth->register(
         $name,
         $email,
         $password
-    )) {
+    );
+
+    if ($result === true) {
 
         echo "Registration Successful";
+
+    } elseif ($result === "EMAIL_EXISTS") {
+
+        echo "Email already exists.";
 
     } else {
 
