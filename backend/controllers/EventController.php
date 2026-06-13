@@ -51,4 +51,8 @@ public function updateEvent(
         $capacity
     );
 }
+public function deleteEvent($id)
+{
+    return $this->event->deleteEvent($id);
+}
 }

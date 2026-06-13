@@ -83,4 +83,14 @@ public function updateEvent(
 
     return $stmt->execute();
 }
+public function deleteEvent($id)
+{
+    $query = "DELETE FROM events WHERE id = ?";
+
+    $stmt = $this->conn->prepare($query);
+
+    $stmt->bind_param("i", $id);
+
+    return $stmt->execute();
+}
 }
