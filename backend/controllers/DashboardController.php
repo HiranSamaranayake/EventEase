@@ -23,4 +23,18 @@ public function getUpcomingEvents($organizer_id)
 {
     return $this->dashboard->getUpcomingEvents($organizer_id);
 }
+public function getDashboardSummary($organizer_id)
+{
+    $events = $this->dashboard->getTotalEvents($organizer_id);
+
+    $bookings = $this->dashboard->getTotalBookings($organizer_id);
+
+    $upcoming = $this->dashboard->getUpcomingEvents($organizer_id);
+
+    return [
+        "total_events" => $events['total_events'],
+        "total_bookings" => $bookings['total_bookings'],
+        "upcoming_events" => $upcoming['upcoming_events']
+    ];
+}
 }
