@@ -15,4 +15,8 @@ class DashboardController
     {
         return $this->dashboard->getTotalEvents($organizer_id);
     }
+    public function getTotalBookings($organizer_id)
+{
+    return $this->dashboard->getTotalBookings($organizer_id);
+}
 }

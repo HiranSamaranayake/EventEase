@@ -25,4 +25,22 @@ class Dashboard
 
         return $result->fetch_assoc();
     }
+    public function getTotalBookings($organizer_id)
+{
+    $query = "SELECT COUNT(bookings.id) AS total_bookings
+              FROM bookings
+              INNER JOIN events
+              ON bookings.event_id = events.id
+              WHERE events.organizer_id = ?";
+
+    $stmt = $this->conn->prepare($query);
+
+    $stmt->bind_param("i", $organizer_id);
+
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+
+    return $result->fetch_assoc();
+}
 }
