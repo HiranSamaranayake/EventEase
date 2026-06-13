@@ -52,4 +52,35 @@ class Event
 
     return $events;
 }
+public function updateEvent(
+    $id,
+    $title,
+    $description,
+    $event_date,
+    $location,
+    $capacity
+)
+{
+    $query = "UPDATE events
+              SET title = ?,
+                  description = ?,
+                  event_date = ?,
+                  location = ?,
+                  capacity = ?
+              WHERE id = ?";
+
+    $stmt = $this->conn->prepare($query);
+
+    $stmt->bind_param(
+        "ssssii",
+        $title,
+        $description,
+        $event_date,
+        $location,
+        $capacity,
+        $id
+    );
+
+    return $stmt->execute();
+}
 }

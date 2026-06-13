@@ -33,4 +33,22 @@ class EventController
 {
     return $this->event->getEvents();
 }
+public function updateEvent(
+    $id,
+    $title,
+    $description,
+    $event_date,
+    $location,
+    $capacity
+)
+{
+    return $this->event->updateEvent(
+        $id,
+        $title,
+        $description,
+        $event_date,
+        $location,
+        $capacity
+    );
+}
 }
