@@ -54,4 +54,14 @@ class Booking
 
     return $bookings;
 }
+public function cancelBooking($booking_id)
+{
+    $query = "DELETE FROM bookings WHERE id = ?";
+
+    $stmt = $this->conn->prepare($query);
+
+    $stmt->bind_param("i", $booking_id);
+
+    return $stmt->execute();
+}
 }

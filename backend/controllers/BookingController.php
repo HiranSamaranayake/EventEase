@@ -22,4 +22,8 @@ class BookingController
 {
     return $this->booking->getBookingsByUser($user_id);
 }
+public function cancelBooking($booking_id)
+{
+    return $this->booking->cancelBooking($booking_id);
+}
 }
