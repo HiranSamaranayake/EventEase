@@ -43,4 +43,21 @@ class Dashboard
 
     return $result->fetch_assoc();
 }
+public function getUpcomingEvents($organizer_id)
+{
+    $query = "SELECT COUNT(*) AS upcoming_events
+              FROM events
+              WHERE organizer_id = ?
+              AND event_date >= CURDATE()";
+
+    $stmt = $this->conn->prepare($query);
+
+    $stmt->bind_param("i", $organizer_id);
+
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+
+    return $result->fetch_assoc();
+}
 }
