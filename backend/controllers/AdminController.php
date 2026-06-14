@@ -19,4 +19,8 @@ class AdminController
 {
     return $this->admin->getAllEvents();
 }
+public function getAllBookings()
+{
+    return $this->admin->getAllBookings();
+}
 }

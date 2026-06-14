@@ -50,4 +50,29 @@ class Admin
 
     return $events;
 }
+public function getAllBookings()
+{
+    $query = "SELECT
+                bookings.id AS booking_id,
+                users.name AS customer_name,
+                events.title AS event_title,
+                bookings.booking_date
+              FROM bookings
+              INNER JOIN users
+                ON bookings.user_id = users.id
+              INNER JOIN events
+                ON bookings.event_id = events.id
+              ORDER BY bookings.id DESC";
+
+    $result = $this->conn->query($query);
+
+    $bookings = [];
+
+    while ($row = $result->fetch_assoc())
+    {
+        $bookings[] = $row;
+    }
+
+    return $bookings;
+}
 }
