@@ -15,4 +15,8 @@ class AdminController
     {
         return $this->admin->getAllUsers();
     }
+    public function getAllEvents()
+{
+    return $this->admin->getAllEvents();
+}
 }
