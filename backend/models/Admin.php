@@ -75,4 +75,30 @@ public function getAllBookings()
 
     return $bookings;
 }
+public function getTotalUsers()
+{
+    $query = "SELECT COUNT(*) AS total_users FROM users";
+
+    $result = $this->conn->query($query);
+
+    return $result->fetch_assoc();
+}
+
+public function getTotalEvents()
+{
+    $query = "SELECT COUNT(*) AS total_events FROM events";
+
+    $result = $this->conn->query($query);
+
+    return $result->fetch_assoc();
+}
+
+public function getTotalBookings()
+{
+    $query = "SELECT COUNT(*) AS total_bookings FROM bookings";
+
+    $result = $this->conn->query($query);
+
+    return $result->fetch_assoc();
+}
 }
