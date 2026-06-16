@@ -8,7 +8,7 @@ header("Access-Control-Allow-Headers: Content-Type");
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
-}
+}q
 
 require_once '../config/database.php';
 require_once '../controllers/AuthController.php';
