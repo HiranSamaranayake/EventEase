@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 08, 2026 at 09:23 AM
+-- Generation Time: Jun 16, 2026 at 08:07 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -31,17 +31,15 @@ CREATE TABLE `bookings` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `event_id` int(11) NOT NULL,
-  `booking_date` timestamp NOT NULL DEFAULT current_timestamp(),
-  `total_amount` decimal(10,2) DEFAULT NULL,
-  `status` enum('pending','paid','cancelled') DEFAULT 'pending'
+  `booking_date` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `bookings`
 --
 
-INSERT INTO `bookings` (`id`, `user_id`, `event_id`, `booking_date`, `total_amount`, `status`) VALUES
-(1, 2, 1, '2026-06-05 05:51:20', 2000.00, 'paid');
+INSERT INTO `bookings` (`id`, `user_id`, `event_id`, `booking_date`) VALUES
+(1, 3, 1, '2026-06-13 19:07:00');
 
 -- --------------------------------------------------------
 
@@ -54,19 +52,18 @@ CREATE TABLE `events` (
   `organizer_id` int(11) NOT NULL,
   `title` varchar(255) NOT NULL,
   `description` text DEFAULT NULL,
+  `event_date` date NOT NULL,
   `location` varchar(255) DEFAULT NULL,
-  `event_date` date DEFAULT NULL,
-  `event_time` time DEFAULT NULL,
-  `image` varchar(255) DEFAULT NULL,
-  `status` enum('active','inactive') DEFAULT 'active'
+  `capacity` int(11) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `events`
 --
 
-INSERT INTO `events` (`id`, `organizer_id`, `title`, `description`, `location`, `event_date`, `event_time`, `image`, `status`) VALUES
-(1, 1, 'Music Night 2026', 'Live music concert', 'Badulla', '2026-12-15', '18:00:00', NULL, 'active');
+INSERT INTO `events` (`id`, `organizer_id`, `title`, `description`, `event_date`, `location`, `capacity`, `created_at`) VALUES
+(1, 2, 'Tech Conference 2026 - Updated', 'Updated event details', '2026-12-25', 'Kandy', 600, '2026-06-12 09:41:41');
 
 -- --------------------------------------------------------
 
@@ -179,7 +176,10 @@ INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `created_at`) VA
 (1, 'Admin User', 'admin@eventease.com', '123456', 'admin', '2026-06-05 05:49:10'),
 (2, 'John Customer', 'john@gmail.com', '123456', 'customer', '2026-06-05 05:49:10'),
 (3, 'Event Organizer', 'organizer@gmail.com', '123456', 'organizer', '2026-06-05 05:49:10'),
-(4, 'Test User ', 'test@gmail.com', '123456', 'customer', '2026-06-07 06:28:46');
+(6, 'Test User ', 'test@gmail.com', '$2y$10$K2FESwChX/NjFt/gPMK4hOKPTNY8SWHZONam/AOXR8OmQyrE8p33i', 'customer', '2026-06-12 06:28:18'),
+(7, 'Test User', 'newuser@gmail.com', '$2y$10$5ez7WKeHtOqiWsHRan3E8uREwbQuEDtkFMgM4yhO9ugPM/Df/H54O', 'customer', '2026-06-12 07:25:53'),
+(9, 'Customer Name', 'customer@gmail.com', '$2y$10$pYoTVz50Dan5sGtpmNxVfuy0VNiLlTE1ehvd/WXjL8mFCUO/PA2pO', 'customer', '2026-06-12 08:05:35'),
+(10, 'Normal User', 'user@gmail.com', '$2y$10$HrWGAbTDfkXEknCo6HkoJ.OOemDWIRN/iAsejH9BOCM/9fVcoQOI6', 'customer', '2026-06-12 08:08:31');
 
 --
 -- Indexes for dumped tables
@@ -280,7 +280,7 @@ ALTER TABLE `tickets`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Constraints for dumped tables
@@ -290,14 +290,14 @@ ALTER TABLE `users`
 -- Constraints for table `bookings`
 --
 ALTER TABLE `bookings`
-  ADD CONSTRAINT `bookings_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-  ADD CONSTRAINT `bookings_ibfk_2` FOREIGN KEY (`event_id`) REFERENCES `events` (`id`);
+  ADD CONSTRAINT `bookings_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `bookings_ibfk_2` FOREIGN KEY (`event_id`) REFERENCES `events` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `events`
 --
 ALTER TABLE `events`
-  ADD CONSTRAINT `events_ibfk_1` FOREIGN KEY (`organizer_id`) REFERENCES `organizers` (`id`);
+  ADD CONSTRAINT `events_ibfk_1` FOREIGN KEY (`organizer_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `organizers`
