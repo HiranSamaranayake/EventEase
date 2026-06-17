@@ -1,7 +1,52 @@
 
 import { motion } from "framer-motion";
+import { useState } from "react";
 
 function Login() {
+    const [formData, setFormData] = useState({
+        email: "",
+        password: ""
+    });
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
+    };
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+    
+        try {
+    
+            const response = await fetch(
+                "http://localhost/EventEase/backend/api/login.php",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(formData)
+                }
+            );
+    
+            const data = await response.json();
+    
+            if (data.success) {
+
+    alert("Login Successful");
+
+} else {
+
+    alert(data.message);
+}
+    
+        } catch (error) {
+    
+            console.error(error);
+    
+            alert("Server Error");
+        }
+    };
     return (
         <div
             className="
@@ -142,51 +187,40 @@ function Login() {
                             amazing experiences.
                         </p>
 
-                        <form className="mt-8 space-y-5">
+                        <form
+    onSubmit={handleSubmit}
+    className="mt-8 space-y-5"
+>
 
-                            <div>
-                                <label className="block mb-2 font-medium text-gray-700">
-                                    Email Address
-                                </label>
+<div>
+    <label className="block mb-2 text-sm font-semibold text-gray-700 tracking-wide">
+        Email Address
+    </label>
 
-                                <input
-                                    type="email"
-                                    placeholder="Enter your email"
-                                    className="
-                                        w-full
-                                        px-4
-                                        py-3
-                                        rounded-xl
-                                        border
-                                        border-gray-300
-                                        focus:outline-none
-                                        focus:ring-2
-                                        focus:ring-purple-500
-                                    "
-                                />
-                            </div>
+    <input
+        type="email"
+        name="email"
+        value={formData.email}
+        onChange={handleChange}
+        placeholder="Enter your email"
+        className="w-full px-4 py-2.5 text-gray-900 placeholder-gray-400 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+    />
+</div>
 
-                            <div>
-                                <label className="block mb-2 font-medium text-gray-700">
-                                    Password
-                                </label>
+<div>
+    <label className="block mb-2 text-sm font-semibold text-gray-700 tracking-wide">
+        Password
+    </label>
 
-                                <input
-                                    type="password"
-                                    placeholder="Enter your password"
-                                    className="
-                                        w-full
-                                        px-4
-                                        py-3
-                                        rounded-xl
-                                        border
-                                        border-gray-300
-                                        focus:outline-none
-                                        focus:ring-2
-                                        focus:ring-purple-500
-                                    "
-                                />
-                            </div>
+    <input
+        type="password"
+        name="password"
+        value={formData.password}
+        onChange={handleChange}
+        placeholder="Enter your password"
+        className="w-full px-4 py-2.5 text-gray-900 placeholder-gray-400 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+    />
+</div>
 
                             <div className="flex justify-between items-center">
                                 <label className="flex items-center gap-2 text-sm text-gray-600">
