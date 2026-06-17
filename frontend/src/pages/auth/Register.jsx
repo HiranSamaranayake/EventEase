@@ -1,6 +1,97 @@
 import { motion } from "framer-motion";
+import { useState } from "react";
 
 function Register() {
+    const [formData, setFormData] = useState({
+        fullName: "",
+        email: "",
+        phone: "",
+        password: "",
+        confirmPassword: "",
+        role: "customer",
+    });
+    
+    const [error, setError] = useState("");
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value,
+        });
+    };
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+    
+        // Empty Fields
+        if (
+            !formData.fullName ||
+            !formData.email ||
+            !formData.phone ||
+            !formData.password ||
+            !formData.confirmPassword
+        ) {
+            alert("Please fill all fields");
+            return;
+        }
+    
+        // Email Validation
+        if (!formData.email.includes("@")) {
+            alert("Please enter a valid email");
+            return;
+        }
+    
+        // Phone Validation
+        if (!/^\d{10}$/.test(formData.phone)) {
+            alert("Enter a valid 10 digit phone number");
+            return;
+        }
+    
+        // Password Length
+        if (formData.password.length < 8) {
+            alert("Password must be at least 8 characters");
+            return;
+        }
+    
+        // Password Match
+        if (formData.password !== formData.confirmPassword) {
+            alert("Passwords do not match");
+            return;
+        }
+    
+        try {
+    
+            const response = await fetch(
+                "http://localhost/EventEase/backend/api/register.php",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(formData),
+                }
+            );
+    
+            const data = await response.json();
+    
+            if (data.success) {
+                alert("Registration Successful");
+    
+                setFormData({
+                    fullName: "",
+                    email: "",
+                    phone: "",
+                    password: "",
+                    confirmPassword: "",
+                    role: "customer",
+                });
+            } else {
+                alert(data.message);
+            }
+    
+        } catch (error) {
+            console.error(error);
+            alert("Server Error");
+        }
+    };
 return ( <div
          className="
              min-h-screen
@@ -136,7 +227,10 @@ return ( <div
                         Join EventEase today
                     </p>
 
-                    <form className="mt-8">
+                    <form
+    className="mt-8 space-y-5"
+    onSubmit={handleSubmit}
+>
 
                         <div className="grid md:grid-cols-2 gap-4">
 
@@ -147,20 +241,23 @@ return ( <div
                                 </label>
 
                                 <input
-                                    type="text"
-                                    placeholder="Enter full name"
-                                    className="
-                                        w-full
-                                        px-4
-                                        py-3
-                                        rounded-xl
-                                        border
-                                        border-gray-300
-                                        focus:outline-none
-                                        focus:ring-2
-                                        focus:ring-purple-500
-                                    "
-                                />
+    type="text"
+    name="fullName"
+    value={formData.fullName}
+    onChange={handleChange}
+    placeholder="Enter your full name"
+    className="
+        w-full
+        px-4
+        py-3
+        rounded-xl
+        border
+        border-gray-300
+        focus:outline-none
+        focus:ring-2
+        focus:ring-purple-500
+    "
+/>
                             </div>
 
                             {/* Email */}
@@ -170,20 +267,23 @@ return ( <div
                                 </label>
 
                                 <input
-                                    type="email"
-                                    placeholder="Enter email"
-                                    className="
-                                        w-full
-                                        px-4
-                                        py-3
-                                        rounded-xl
-                                        border
-                                        border-gray-300
-                                        focus:outline-none
-                                        focus:ring-2
-                                        focus:ring-purple-500
-                                    "
-                                />
+    type="email"
+    name="email"
+    value={formData.email}
+    onChange={handleChange}
+    placeholder="Enter your email"
+    className="
+        w-full
+        px-4
+        py-3
+        rounded-xl
+        border
+        border-gray-300
+        focus:outline-none
+        focus:ring-2
+        focus:ring-purple-500
+    "
+/>
                             </div>
 
                             {/* Phone */}
@@ -193,20 +293,23 @@ return ( <div
                                 </label>
 
                                 <input
-                                    type="text"
-                                    placeholder="Enter phone number"
-                                    className="
-                                        w-full
-                                        px-4
-                                        py-3
-                                        rounded-xl
-                                        border
-                                        border-gray-300
-                                        focus:outline-none
-                                        focus:ring-2
-                                        focus:ring-purple-500
-                                    "
-                                />
+    type="text"
+    name="phone"
+    value={formData.phone}
+    onChange={handleChange}
+    placeholder="Enter your phone number"
+    className="
+        w-full
+        px-4
+        py-3
+        rounded-xl
+        border
+        border-gray-300
+        focus:outline-none
+        focus:ring-2
+        focus:ring-purple-500
+    "
+/>
                             </div>
 
                             {/* Role */}
@@ -216,21 +319,24 @@ return ( <div
                                 </label>
 
                                 <select
-                                    className="
-                                        w-full
-                                        px-4
-                                        py-3
-                                        rounded-xl
-                                        border
-                                        border-gray-300
-                                        focus:outline-none
-                                        focus:ring-2
-                                        focus:ring-purple-500
-                                    "
-                                >
-                                    <option>Customer</option>
-                                    <option>Organizer</option>
-                                </select>
+    name="role"
+    value={formData.role}
+    onChange={handleChange}
+    className="
+        w-full
+        px-4
+        py-3
+        rounded-xl
+        border
+        border-gray-300
+        focus:outline-none
+        focus:ring-2
+        focus:ring-purple-500
+    "
+>
+<option value="customer">Customer</option>
+<option value="organizer">Organizer</option>
+</select>
                             </div>
 
                             {/* Password */}
@@ -240,20 +346,23 @@ return ( <div
                                 </label>
 
                                 <input
-                                    type="password"
-                                    placeholder="Enter password"
-                                    className="
-                                        w-full
-                                        px-4
-                                        py-3
-                                        rounded-xl
-                                        border
-                                        border-gray-300
-                                        focus:outline-none
-                                        focus:ring-2
-                                        focus:ring-purple-500
-                                    "
-                                />
+    type="password"
+    name="password"
+    value={formData.password}
+    onChange={handleChange}
+    placeholder="Enter password"
+    className="
+        w-full
+        px-4
+        py-3
+        rounded-xl
+        border
+        border-gray-300
+        focus:outline-none
+        focus:ring-2
+        focus:ring-purple-500
+    "
+/>
                             </div>
 
                             {/* Confirm Password */}
@@ -263,20 +372,23 @@ return ( <div
                                 </label>
 
                                 <input
-                                    type="password"
-                                    placeholder="Confirm password"
-                                    className="
-                                        w-full
-                                        px-4
-                                        py-3
-                                        rounded-xl
-                                        border
-                                        border-gray-300
-                                        focus:outline-none
-                                        focus:ring-2
-                                        focus:ring-purple-500
-                                    "
-                                />
+    type="password"
+    name="confirmPassword"
+    value={formData.confirmPassword}
+    onChange={handleChange}
+    placeholder="Confirm password"
+    className="
+        w-full
+        px-4
+        py-3
+        rounded-xl
+        border
+        border-gray-300
+        focus:outline-none
+        focus:ring-2
+        focus:ring-purple-500
+    "
+/>
                             </div>
 
                         </div>

@@ -2,7 +2,8 @@
 
 require_once __DIR__ . '/../models/User.php';
 
-class AuthController {
+class AuthController
+{
 
     private $user;
 
@@ -11,18 +12,20 @@ class AuthController {
         $this->user = new User($db);
     }
 
-    public function register($name, $email, $password, $role = 'customer')
-{
-    return $this->user->register(
-        $name,
-        $email,
-        $password,
-        $role
-    );
-}
+    public function register($name, $email, $phone, $password, $role)
+    {
+        return $this->user->register(
+            $name,
+            $email,
+            $phone,
+            $password,
+            $role
+        );
+    }
+
 
     public function login($email, $password)
-{
-    return $this->user->login($email, $password);
-}
+    {
+        return $this->user->login($email, $password);
+    }
 }

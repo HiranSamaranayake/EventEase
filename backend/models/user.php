@@ -1,43 +1,50 @@
 <?php
 
-class User {
-
+class User
+{
     private $conn;
     private $table = "users";
 
-    public function __construct($db) {
+    public function __construct($db)
+    {
         $this->conn = $db;
     }
 
-    public function register($name, $email, $password, $role)
+    public function register($name, $email, $phone, $password, $role)
     {
         $checkQuery = "SELECT id FROM users WHERE email = ?";
 
-$checkStmt = $this->conn->prepare($checkQuery);
 
-$checkStmt->bind_param("s", $email);
+        $checkStmt = $this->conn->prepare($checkQuery);
+        $checkStmt->bind_param("s", $email);
+        $checkStmt->execute();
 
-$checkStmt->execute();
+        $checkResult = $checkStmt->get_result();
 
-$checkResult = $checkStmt->get_result();
+        if ($checkResult->num_rows > 0) {
+            return "EMAIL_EXISTS";
+        }
 
-if ($checkResult->num_rows > 0)
-{
-    return "EMAIL_EXISTS";
-}
         $password = password_hash(
             $password,
             PASSWORD_DEFAULT
         );
-        $query = "INSERT INTO users (name, email, password, role)
-                  VALUES (?, ?, ?, ?)";
+
+        $query = "INSERT INTO users
+          (full_name, email, phone, password, role)
+          VALUES (?, ?, ?, ?, ?)";
 
         $stmt = $this->conn->prepare($query);
 
+        if (!$stmt) {
+            die("Prepare Failed: " . $this->conn->error);
+        }
+
         $stmt->bind_param(
-            "ssss",
+            "sssss",
             $name,
             $email,
+            $phone,
             $password,
             $role
         );
@@ -47,30 +54,35 @@ if ($checkResult->num_rows > 0)
         } else {
             die("Database Error: " . $stmt->error);
         }
-       
     }
+
+
     public function login($email, $password)
     {
         $query = "SELECT * FROM users WHERE email = ?";
-    
+
         $stmt = $this->conn->prepare($query);
-    
+
         $stmt->bind_param("s", $email);
-    
+
         $stmt->execute();
-    
+
         $result = $stmt->get_result();
-    
-        if ($result->num_rows > 0)
-        {
+
+        if ($result->num_rows > 0) {
+
             $user = $result->fetch_assoc();
-    
-            if (password_verify($password, $user['password']))
-            {
+
+            if (
+                password_verify(
+                    $password,
+                    $user['password']
+                )
+            ) {
                 return $user;
             }
         }
-    
+
         return false;
     }
 }
