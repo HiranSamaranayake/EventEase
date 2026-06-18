@@ -3,8 +3,10 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         email: "",
         password: ""
@@ -33,18 +35,34 @@ function Login() {
     
             const data = await response.json();
     
-            if (data.success) {
-
-                localStorage.setItem(
-                    "user",
-                    JSON.stringify(data.user)
-                );
-            
-                toast.success(
-                    "Login Successful 🎉"
-                );
-            
-            } else {
+            if (data.success)
+                {
+                    localStorage.setItem(
+                        "user",
+                        JSON.stringify(data.user)
+                    );
+                
+                    toast.success(
+                        "Login Successful 🎉"
+                    );
+                
+                    setTimeout(() => {
+                
+                        if (data.user.role === "customer")
+                        {
+                            navigate("/customer-dashboard");
+                        }
+                        else if (data.user.role === "organizer")
+                        {
+                            navigate("/organizer-dashboard");
+                        }
+                        else if (data.user.role === "admin")
+                        {
+                            navigate("/admin-dashboard");
+                        }
+                
+                    }, 1500);
+                } else {
 
     toast.error(data.message);
 }
