@@ -38,8 +38,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($user) {
 
+        require_once __DIR__ . '/../config/jwt.php';
+
+
+        $payload = [
+            "id" => $user["id"],
+            "email" => $user["email"],
+            "role" => $user["role"],
+            "iat" => time(),
+            "exp" => time() + (60 * 60 * 24)
+        ];
+
+        $jwt = \Firebase\JWT\JWT::encode(
+            $payload,
+            $secret_key,
+            'HS256'
+        );
+
         echo json_encode([
             "success" => true,
+            "token" => $jwt,
             "user" => $user
         ]);
     } else {
