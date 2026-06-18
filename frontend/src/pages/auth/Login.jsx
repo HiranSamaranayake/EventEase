@@ -1,6 +1,8 @@
 
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Login() {
     const [formData, setFormData] = useState({
@@ -33,18 +35,25 @@ function Login() {
     
             if (data.success) {
 
-    alert("Login Successful");
+                localStorage.setItem(
+                    "user",
+                    JSON.stringify(data.user)
+                );
+            
+                toast.success(
+                    "Login Successful 🎉"
+                );
+            
+            } else {
 
-} else {
-
-    alert(data.message);
+    toast.error(data.message);
 }
     
         } catch (error) {
     
             console.error(error);
     
-            alert("Server Error");
+            toast.error("Server Error");
         }
     };
     return (
@@ -286,6 +295,16 @@ function Login() {
 
                 </div>
             </motion.div>
+            <ToastContainer
+    position="top-right"
+    autoClose={3000}
+    hideProgressBar={false}
+    newestOnTop
+    closeOnClick
+    pauseOnHover
+    draggable
+    theme="colored"
+/>
         </div>
     );
 }

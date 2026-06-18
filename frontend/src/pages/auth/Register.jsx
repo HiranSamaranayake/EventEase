@@ -1,5 +1,7 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Register() {
     const [formData, setFormData] = useState({
@@ -29,7 +31,7 @@ function Register() {
             !formData.password ||
             !formData.confirmPassword
         ) {
-            alert("Please fill all fields");
+            toast.error("Please fill all fields");
             return;
         }
     
@@ -53,7 +55,7 @@ function Register() {
     
         // Password Match
         if (formData.password !== formData.confirmPassword) {
-            alert("Passwords do not match");
+            toast.error("Passwords do not match");
             return;
         }
     
@@ -73,7 +75,7 @@ function Register() {
             const data = await response.json();
     
             if (data.success) {
-                alert("Registration Successful");
+                toast.success("Registration Successful");
     
                 setFormData({
                     fullName: "",
@@ -89,7 +91,7 @@ function Register() {
     
         } catch (error) {
             console.error(error);
-            alert("Server Error");
+            toast.error("Server Error");
         }
     };
 return ( <div
@@ -448,6 +450,16 @@ return ( <div
             </div>
 
         </motion.div>
+        <ToastContainer
+    position="top-right"
+    autoClose={3000}
+    hideProgressBar={false}
+    newestOnTop
+    closeOnClick
+    pauseOnHover
+    draggable
+    theme="colored"
+/>
 
     </div>
 );
