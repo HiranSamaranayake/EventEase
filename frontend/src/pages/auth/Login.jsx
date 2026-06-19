@@ -4,9 +4,11 @@ import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 
 function Login() {
     const navigate = useNavigate();
+    const { login } = useAuth();
     const [formData, setFormData] = useState({
         email: "",
         password: ""
@@ -39,10 +41,10 @@ function Login() {
     
             if (data.success) {
 
-    localStorage.setItem(
-        "token",
-        data.token
-    );
+                login(
+                    data.user,
+                    data.token
+                );
     console.log(
         "TOKEN SAVED:",
         localStorage.getItem("token")
@@ -52,10 +54,7 @@ function Login() {
         localStorage.getItem("user")
     );
 
-    localStorage.setItem(
-        "user",
-        JSON.stringify(data.user)
-    );
+    
 
     toast.success(
         "Login Successful 🎉"
