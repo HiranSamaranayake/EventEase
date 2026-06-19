@@ -34,40 +34,47 @@ function Login() {
             );
     
             const data = await response.json();
+
+            console.log("LOGIN RESPONSE:", data);
     
-            if (data.success)
-                {
-                    localStorage.setItem(
-                        "token",
-                        data.token
-                    );
-                    
-                    localStorage.setItem(
-                        "user",
-                        JSON.stringify(data.user)
-                    );
-                
-                    toast.success(
-                        "Login Successful 🎉"
-                    );
-                
-                    setTimeout(() => {
-                
-                        if (data.user.role === "customer")
-                        {
-                            navigate("/customer-dashboard");
-                        }
-                        else if (data.user.role === "organizer")
-                        {
-                            navigate("/organizer-dashboard");
-                        }
-                        else if (data.user.role === "admin")
-                        {
-                            navigate("/admin-dashboard");
-                        }
-                
-                    }, 1500);
-                } else {
+            if (data.success) {
+
+    localStorage.setItem(
+        "token",
+        data.token
+    );
+    console.log(
+        "TOKEN SAVED:",
+        localStorage.getItem("token")
+    );
+    console.log(
+        "USER SAVED:",
+        localStorage.getItem("user")
+    );
+
+    localStorage.setItem(
+        "user",
+        JSON.stringify(data.user)
+    );
+
+    toast.success(
+        "Login Successful 🎉"
+    );
+
+    setTimeout(() => {
+
+        if (data.user.role === "customer") {
+            navigate("/customer-dashboard");
+        }
+        else if (data.user.role === "organizer") {
+            navigate("/organizer-dashboard");
+        }
+        else if (data.user.role === "admin") {
+            navigate("/admin-dashboard");
+        }
+
+    }, 1500);
+} else {
 
     toast.error(data.message);
 }

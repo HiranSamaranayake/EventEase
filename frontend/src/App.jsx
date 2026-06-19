@@ -1,4 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ProtectedRoute from "./routes/ProtectedRoute";
+
 
 import Home from "./pages/customer/Home";
 import Login from "./pages/auth/Login";
@@ -14,20 +16,32 @@ return ( <BrowserRouter> <Routes>
 <Route path="/login" element={<Login />} />
 <Route path="/register" element={<Register />} />
 
-            <Route
-                path="/customer-dashboard"
-                element={<CustomerDashboard />}
-            />
+<Route
+    path="/customer-dashboard"
+    element={
+        <ProtectedRoute>
+            <CustomerDashboard />
+        </ProtectedRoute>
+    }
+/>
 
-            <Route
-                path="/organizer-dashboard"
-                element={<OrganizerDashboard />}
-            />
+<Route
+    path="/organizer-dashboard"
+    element={
+        <ProtectedRoute>
+            <OrganizerDashboard />
+        </ProtectedRoute>
+    }
+/>
 
-            <Route
-                path="/admin-dashboard"
-                element={<AdminDashboard />}
-            />
+<Route
+    path="/admin-dashboard"
+    element={
+        <ProtectedRoute>
+            <AdminDashboard />
+        </ProtectedRoute>
+    }
+/>
         </Routes>
     </BrowserRouter>
 );
