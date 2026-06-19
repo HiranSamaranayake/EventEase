@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import ProtectedRoute from "./routes/ProtectedRoute";
 
 
@@ -19,7 +20,9 @@ return ( <BrowserRouter> <Routes>
 <Route
     path="/customer-dashboard"
     element={
-        <ProtectedRoute>
+        <ProtectedRoute
+            allowedRole="customer"
+        >
             <CustomerDashboard />
         </ProtectedRoute>
     }
@@ -28,7 +31,9 @@ return ( <BrowserRouter> <Routes>
 <Route
     path="/organizer-dashboard"
     element={
-        <ProtectedRoute>
+        <ProtectedRoute
+            allowedRole="organizer"
+        >
             <OrganizerDashboard />
         </ProtectedRoute>
     }
@@ -37,7 +42,9 @@ return ( <BrowserRouter> <Routes>
 <Route
     path="/admin-dashboard"
     element={
-        <ProtectedRoute>
+        <ProtectedRoute
+            allowedRole="admin"
+        >
             <AdminDashboard />
         </ProtectedRoute>
     }
