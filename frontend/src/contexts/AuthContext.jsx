@@ -49,15 +49,12 @@ export const AuthProvider = ({
 
     const logout = () => {
 
-        localStorage.removeItem(
-            "user"
-        );
-
-        localStorage.removeItem(
-            "token"
-        );
-
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+    
         setUser(null);
+    
+        window.location.href = "/login";
     };
 
     return (
