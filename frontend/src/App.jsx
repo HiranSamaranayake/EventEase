@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
+import TicketDetails from "./pages/customer/TicketDetails";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import BookingConfirmation from "./pages/customer/BookingConfirmation";
 
 
 import Home from "./pages/customer/Home";
@@ -49,6 +50,15 @@ return ( <BrowserRouter> <Routes>
         </ProtectedRoute>
     }
 />
+<Route
+    path="/ticket/:id"
+    element={<TicketDetails />}
+/>
+<Route
+    path="/booking-success"
+    element={<BookingConfirmation />}
+/>
+
         </Routes>
     </BrowserRouter>
 );

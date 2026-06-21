@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import DashboardLayout from "../../components/DashboardLayout";
+import { Link } from "react-router-dom";
+
 
 const CustomerDashboard = () => {
 
@@ -10,21 +12,25 @@ const CustomerDashboard = () => {
     });
     const [bookings, setBookings] = useState([]);
     const [tickets, setTickets] = useState([]);
+    const user = JSON.parse(localStorage.getItem("user"));
 
     useEffect(() => {
         fetch(
-            "http://localhost/EventEase/backend/api/my_tickets.php"
+            `http://localhost/EventEase/backend/api/my_tickets.php?user_id=${user.id}`
         )
-            .then((res) => res.json())
-            .then((data) => {
+        .then(res => res.json())
+        .then(data => {
         
-                if (data.success) {
+            console.log("Tickets API:", data);
         
-                    setTickets(data.tickets);
+            if(data.success){
+                setTickets(data.tickets);
+            }
         
-                }
-        
-            });
+        })
+        .catch(err => console.log(err));
+           
+     
         fetch(
             "http://localhost/EventEase/backend/api/my_bookings.php"
         )
@@ -54,6 +60,7 @@ const CustomerDashboard = () => {
             });
 
     }, []);
+    
 
     return (
 
@@ -66,6 +73,21 @@ const CustomerDashboard = () => {
             <p className="text-gray-500 mb-8">
                 Manage your bookings and tickets.
             </p>
+            <Link
+    to="/booking-success"
+    className="
+        inline-block
+        bg-green-600
+        text-white
+        px-4
+        py-2
+        rounded-xl
+        mb-6
+        hover:bg-green-700
+    "
+>
+    Test Booking Success
+</Link>
 
             <div className="
                 grid
@@ -269,7 +291,18 @@ hover:bg-gray-50
 >
 
 <td className="py-3">
+
+<a
+    href={`/ticket/${ticket.id}`}
+    className="
+        text-purple-600
+        font-semibold
+        hover:underline
+    "
+>
 {ticket.ticket_code}
+</a>
+
 </td>
 
 <td className="py-3">
@@ -320,9 +353,11 @@ No Tickets Found
 
 </table>
 
+
 </div>
 
 </div>
+
 
         </DashboardLayout>
 
