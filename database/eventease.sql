@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 16, 2026 at 08:07 PM
+-- Generation Time: Jun 24, 2026 at 07:16 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -39,7 +39,8 @@ CREATE TABLE `bookings` (
 --
 
 INSERT INTO `bookings` (`id`, `user_id`, `event_id`, `booking_date`) VALUES
-(1, 3, 1, '2026-06-13 19:07:00');
+(1, 1, 1, '2026-06-13 19:07:00'),
+(2, 3, 1, '2026-06-21 07:59:18');
 
 -- --------------------------------------------------------
 
@@ -161,10 +162,11 @@ INSERT INTO `tickets` (`id`, `booking_id`, `ticket_code`, `qr_code`, `created_at
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
-  `name` varchar(100) NOT NULL,
+  `full_name` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
+  `phone` varchar(15) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `role` enum('admin','organizer','customer') DEFAULT 'customer',
+  `role` enum('customer','organizer','admin') DEFAULT 'customer',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -172,14 +174,13 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `created_at`) VALUES
-(1, 'Admin User', 'admin@eventease.com', '123456', 'admin', '2026-06-05 05:49:10'),
-(2, 'John Customer', 'john@gmail.com', '123456', 'customer', '2026-06-05 05:49:10'),
-(3, 'Event Organizer', 'organizer@gmail.com', '123456', 'organizer', '2026-06-05 05:49:10'),
-(6, 'Test User ', 'test@gmail.com', '$2y$10$K2FESwChX/NjFt/gPMK4hOKPTNY8SWHZONam/AOXR8OmQyrE8p33i', 'customer', '2026-06-12 06:28:18'),
-(7, 'Test User', 'newuser@gmail.com', '$2y$10$5ez7WKeHtOqiWsHRan3E8uREwbQuEDtkFMgM4yhO9ugPM/Df/H54O', 'customer', '2026-06-12 07:25:53'),
-(9, 'Customer Name', 'customer@gmail.com', '$2y$10$pYoTVz50Dan5sGtpmNxVfuy0VNiLlTE1ehvd/WXjL8mFCUO/PA2pO', 'customer', '2026-06-12 08:05:35'),
-(10, 'Normal User', 'user@gmail.com', '$2y$10$HrWGAbTDfkXEknCo6HkoJ.OOemDWIRN/iAsejH9BOCM/9fVcoQOI6', 'customer', '2026-06-12 08:08:31');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`) VALUES
+(1, 'Hiran Anjana Samaranayake', 'hirananjana12@gmail.com', '', '$2y$10$0sCCvIO/7.apZ1mOGaqgzuwnyZvteNEpp6vma.FmqKfK0347bPa1y', 'customer', '2026-06-17 17:32:35'),
+(2, 'Dasun Shanaka', 'dasun@gmail.com', '0740461033', '$2y$10$WZvwgw4Nubb96X88DfUCsOBPYc04l.CdQCzfEZ6qBpL3NFD4Ujx2m', 'customer', '2026-06-17 18:00:12'),
+(3, 'kamal Shanaka', 'test@gmail.com', '0740461034', '$2y$10$Y.8flr95U40QukoYYBiQpee4.Mbj04y2z9o9E2ZJUmS4ZG2YezKnu', 'customer', '2026-06-17 18:11:57'),
+(4, 'Upul Shanaka', 'Upul@gmail.com', '0740461039', '$2y$10$aDP/vooJTjhZ2lt9G0NtiOHOxm0KRVIYqeq6rekfgIOl6geJVeSma', 'organizer', '2026-06-17 18:40:56'),
+(5, 'Yumeth Pahasara', 'yumethpahasara12@gmail.com', '0740709421', '$2y$10$PebIoRxMdvY3HtdmpAULVOLgkq9CaCJGpZks4953q6ZU1TC1zjX5W', 'organizer', '2026-06-20 06:07:02'),
+(6, 'Hashen', 'hashenhewage9098@gmail.com', '0752593623', '$2y$10$FVDW14uFXsNdQny5sAEf2uMSDpE46GVoqzY98ytJOQhLnPDwTiXXy', 'organizer', '2026-06-23 05:57:44');
 
 --
 -- Indexes for dumped tables
@@ -244,7 +245,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `bookings`
 --
 ALTER TABLE `bookings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `events`
@@ -280,7 +281,7 @@ ALTER TABLE `tickets`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Constraints for dumped tables

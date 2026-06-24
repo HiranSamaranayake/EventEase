@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import TicketDetails from "./pages/customer/TicketDetails";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import BookingConfirmation from "./pages/customer/BookingConfirmation";
+import EventDetails from "./pages/customer/EventDetails";
+import BookEvent from "./pages/customer/BookEvent";
 
 
 import Home from "./pages/customer/Home";
@@ -57,6 +59,14 @@ return ( <BrowserRouter> <Routes>
 <Route
     path="/booking-success"
     element={<BookingConfirmation />}
+/>
+<Route
+    path="/event/:id"
+    element={<EventDetails />}
+/>
+<Route
+    path="/book-event/:id"
+    element={<BookEvent />}
 />
 
         </Routes>
