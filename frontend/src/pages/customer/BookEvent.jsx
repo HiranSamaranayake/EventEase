@@ -1,9 +1,70 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+
 
 const BookEvent = () => {
 
     const { id } = useParams();
+    const navigate = useNavigate();
+    const handleBooking = () => {
+        if (!user) {
+            alert("User not logged in");
+            navigate("/login");
+            return;
+        }
+        
+        if (!event) {
+            alert("Event not found");
+            return;
+        }
+        console.log("User inside handleBooking:", user);
+console.log("Event inside handleBooking:", event);
+
+        fetch(
+            "http://localhost/EventEase/backend/api/create_booking.php",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    user_id: user.id,
+                    event_id: event.id
+                })
+            }
+        )
+        .then(res => res.json())
+        .then(data => {
+    
+            if(data.success){
+    
+                navigate(
+                    "/booking-success",
+                    {
+                        state: {
+                            bookingId: data.booking_id
+                        }
+                    }
+                );
+    
+            }else{
+    
+                alert(data.error || "Booking Failed");
+    
+            }
+    
+        })
+        .catch(err => {
+    
+            console.log(err);
+    
+            alert("Server Error");
+    
+        });
+    
+    };
+    const user = JSON.parse(localStorage.getItem("user"));
+    console.log("USER:", user);
 
     const [event, setEvent] = useState(null);
 
@@ -91,18 +152,20 @@ const BookEvent = () => {
                 </div>
 
                 <button
-                    className="
-                        mt-8
-                        bg-purple-600
-                        text-white
-                        px-8
-                        py-4
-                        rounded-xl
-                        hover:bg-purple-700
-                    "
-                >
-                    Confirm Booking
-                </button>
+    onClick={handleBooking}
+    className="
+        mt-8
+        bg-purple-600
+        text-white
+        px-8
+        py-4
+        rounded-xl
+        hover:bg-purple-700
+        transition
+    "
+>
+    Confirm Booking
+</button>
 
             </div>
 

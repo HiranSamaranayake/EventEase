@@ -6,6 +6,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 
+
+
 function Login() {
     const navigate = useNavigate();
     const { login } = useAuth();
