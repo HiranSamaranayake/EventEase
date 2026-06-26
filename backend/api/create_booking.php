@@ -41,9 +41,45 @@ $result = mysqli_query($conn, $query);
 
 if ($result) {
 
+    $bookingId = mysqli_insert_id($conn);
+
+    $ticketCode =
+        "TKT" .
+        str_pad(
+            $bookingId,
+            5,
+            "0",
+            STR_PAD_LEFT
+        );
+    $qrCode = "qr_placeholder.png";
+    $ticketQuery = "
+
+INSERT INTO tickets
+(
+    booking_id,
+    ticket_code,
+    qr_code
+)
+
+VALUES
+(
+    '$bookingId',
+    '$ticketCode',
+    '$qrCode'
+)
+
+";
+
+    $ticketResult = mysqli_query(
+        $conn,
+        $ticketQuery
+    );
+    $ticketId = mysqli_insert_id($conn);
     echo json_encode([
         "success" => true,
-        "booking_id" => mysqli_insert_id($conn)
+        "booking_id" => $bookingId,
+        "ticket_id" => $ticketId,
+        "ticket_code" => $ticketCode
     ]);
 } else {
 
