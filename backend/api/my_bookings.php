@@ -5,19 +5,37 @@ header("Content-Type: application/json");
 
 require_once "../config/database.php";
 
-$userId = 1; // temporary
+$userId = $_GET["user_id"] ?? 0;
+
+if (!$userId) {
+
+    echo json_encode([
+        "success" => false,
+        "message" => "User ID required"
+    ]);
+
+    exit;
+}
 
 $query = "
 SELECT
     bookings.id,
     bookings.booking_date,
+
     events.title,
     events.event_date,
-    events.location
+    events.location,
+
+    tickets.id AS ticket_id,
+    tickets.ticket_code,
+    tickets.status
 FROM bookings
 
 INNER JOIN events
 ON bookings.event_id = events.id
+
+INNER JOIN tickets
+ON bookings.id = tickets.booking_id
 
 WHERE bookings.user_id = $userId
 

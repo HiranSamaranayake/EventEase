@@ -4,7 +4,7 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import BookingConfirmation from "./pages/customer/BookingConfirmation";
 import EventDetails from "./pages/customer/EventDetails";
 import BookEvent from "./pages/customer/BookEvent";
-
+import MyBookings from "./pages/customer/MyBookings";
 
 import Home from "./pages/customer/Home";
 import Login from "./pages/auth/Login";
@@ -20,6 +20,7 @@ return ( <BrowserRouter> <Routes>
 <Route path="/login" element={<Login />} />
 <Route path="/register" element={<Register />} />
 
+
 <Route
     path="/customer-dashboard"
     element={
@@ -28,8 +29,19 @@ return ( <BrowserRouter> <Routes>
         >
             <CustomerDashboard />
         </ProtectedRoute>
+        
     }
 />
+
+<Route
+    path="/my-bookings"
+    element={
+        <ProtectedRoute allowedRole="customer">
+            <MyBookings />
+        </ProtectedRoute>
+    }
+/>
+
 
 <Route
     path="/organizer-dashboard"
