@@ -6,6 +6,10 @@ header("Access-Control-Allow-Methods: POST");
 header("Content-Type: application/json");
 
 require_once "../config/database.php";
+require_once "../vendor/autoload.php";
+
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Writer\PngWriter;
 
 $data = json_decode(file_get_contents("php://input"), true);
 
@@ -51,7 +55,19 @@ if ($result) {
             "0",
             STR_PAD_LEFT
         );
-    $qrCode = "qr_placeholder.png";
+    $qrCode = "uploads/qr/" . $ticketCode . ".png";
+
+$qr = new QrCode($ticketCode);
+$qr->setSize(300);
+$qr->setMargin(10);
+
+$writer = new PngWriter();
+
+$result = $writer->write($qr);
+
+$result->saveToFile(
+    __DIR__ . "/../" . $qrCode
+);
     $ticketQuery = "
 
 INSERT INTO tickets
@@ -70,21 +86,28 @@ VALUES
 
 ";
 
-    $ticketResult = mysqli_query(
-        $conn,
-        $ticketQuery
-    );
+$ticketResult = mysqli_query(
+    $conn,
+    $ticketQuery
+);
+
+if ($ticketResult) {
+
     $ticketId = mysqli_insert_id($conn);
+
     echo json_encode([
         "success" => true,
         "booking_id" => $bookingId,
         "ticket_id" => $ticketId,
         "ticket_code" => $ticketCode
     ]);
+
 } else {
 
     echo json_encode([
         "success" => false,
         "error" => mysqli_error($conn)
     ]);
+
+}
 }
