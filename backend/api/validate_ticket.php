@@ -54,7 +54,46 @@ if (mysqli_num_rows($result) == 0) {
 
 $ticket = mysqli_fetch_assoc($result);
 
+/*
+|--------------------------------------------------------------------------
+| Check if ticket is already used
+|--------------------------------------------------------------------------
+*/
+
+if ($ticket["status"] == "used") {
+
+    echo json_encode([
+        "success" => false,
+        "message" => "Ticket Already Used"
+    ]);
+
+    exit;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Update ticket status to USED
+|--------------------------------------------------------------------------
+*/
+
+$updateQuery = "
+UPDATE tickets
+SET status = 'used'
+WHERE id = '{$ticket["id"]}'
+";
+
+mysqli_query($conn, $updateQuery);
+
+/*
+|--------------------------------------------------------------------------
+| Return Valid Ticket
+|--------------------------------------------------------------------------
+*/
+
+$ticket["status"] = "used";
+
 echo json_encode([
     "success" => true,
+    "message" => "Valid Ticket",
     "ticket" => $ticket
 ]);
