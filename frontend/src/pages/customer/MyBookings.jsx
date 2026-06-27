@@ -77,9 +77,11 @@ const MyBookings = () => {
                 )}
               </td>
               <td className="p-4">
-                <Link
-                  to={`/ticket/${booking.ticket_id}`}
-                  className="
+               <div className="flex gap-2">
+
+    <Link
+        to={`/ticket/${booking.ticket_id}`}
+        className="
             bg-purple-600
             hover:bg-purple-700
             text-white
@@ -88,9 +90,28 @@ const MyBookings = () => {
             rounded-lg
             transition
         "
-                >
-                  View Ticket
-                </Link>
+    >
+        View
+    </Link>
+
+    <a
+        href={`http://localhost/EventEase/backend/api/download_ticket.php?id=${booking.ticket_id}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="
+            bg-green-600
+            hover:bg-green-700
+            text-white
+            px-4
+            py-2
+            rounded-lg
+            transition
+        "
+    >
+        PDF
+    </a>
+
+</div>
               </td>
             </tr>
           ))}
