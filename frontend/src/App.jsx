@@ -13,7 +13,7 @@ import Register from "./pages/auth/Register";
 import CustomerDashboard from "./pages/customer/CustomerDashboard";
 import OrganizerDashboard from "./pages/organizer/OrganizerDashboard";
 import AdminDashboard from "./pages/admin/AdminDashboard";
-
+import Profile from "./pages/customer/Profile";
 function App() {
 return ( <BrowserRouter> <Routes>
 <Route path="/" element={<Home />} />
@@ -30,6 +30,15 @@ return ( <BrowserRouter> <Routes>
             <CustomerDashboard />
         </ProtectedRoute>
         
+    }
+/>
+
+<Route
+    path="/profile"
+    element={
+        <ProtectedRoute allowedRole="customer">
+            <Profile />
+        </ProtectedRoute>
     }
 />
 
