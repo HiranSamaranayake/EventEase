@@ -1,44 +1,77 @@
 <?php
 
-require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../controllers/EventController.php';
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Methods: POST");
+header("Content-Type: application/json");
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST')
-{
-    $id = $_POST['id'] ?? '';
-    $title = $_POST['title'] ?? '';
-    $description = $_POST['description'] ?? '';
-    $event_date = $_POST['event_date'] ?? '';
-    $location = $_POST['location'] ?? '';
-    $capacity = $_POST['capacity'] ?? '';
+require_once "../config/database.php";
 
-    if (empty($id))
-    {
-        echo "Event ID is required.";
-        exit;
-    }
+$data = json_decode(
+    file_get_contents("php://input"),
+    true
+);
 
-    $event = new EventController($conn);
+$eventId = $data["event_id"] ?? 0;
+$title = $data["title"] ?? "";
+$description = $data["description"] ?? "";
+$eventDate = $data["event_date"] ?? "";
+$location = $data["location"] ?? "";
 
-    $result = $event->updateEvent(
-        $id,
-        $title,
-        $description,
-        $event_date,
-        $location,
-        $capacity
-    );
+if (
+    !$eventId ||
+    empty($title) ||
+    empty($description) ||
+    empty($eventDate) ||
+    empty($location)
+) {
 
-    if ($result)
-    {
-        echo "Event Updated Successfully";
-    }
-    else
-    {
-        echo "Event Update Failed";
-    }
+    echo json_encode([
+        "success" => false,
+        "message" => "Missing required fields"
+    ]);
+
+    exit;
+
 }
-else
-{
-    echo "POST method required.";
+
+$query = "
+
+UPDATE events
+
+SET
+
+title = '$title',
+
+description = '$description',
+
+event_date = '$eventDate',
+
+location = '$location'
+
+WHERE id = '$eventId'
+
+";
+
+$result = mysqli_query(
+    $conn,
+    $query
+);
+
+if ($result) {
+
+    echo json_encode([
+        "success" => true,
+        "message" => "Event updated successfully"
+    ]);
+
+} else {
+
+    echo json_encode([
+        "success" => false,
+        "message" => mysqli_error($conn)
+    ]);
+
 }
+
+?>

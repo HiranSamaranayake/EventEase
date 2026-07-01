@@ -1,32 +1,57 @@
 <?php
 
-require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../controllers/EventController.php';
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Methods: POST");
+header("Content-Type: application/json");
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST')
-{
-    $id = $_POST['id'] ?? '';
+require_once "../config/database.php";
 
-    if (empty($id))
-    {
-        echo "Event ID is required.";
-        exit;
-    }
+$data = json_decode(
+    file_get_contents("php://input"),
+    true
+);
 
-    $event = new EventController($conn);
+$eventId = $data["event_id"] ?? 0;
 
-    $result = $event->deleteEvent($id);
+if (!$eventId) {
 
-    if ($result)
-    {
-        echo "Event Deleted Successfully";
-    }
-    else
-    {
-        echo "Event Deletion Failed";
-    }
+    echo json_encode([
+        "success" => false,
+        "message" => "Event ID is required"
+    ]);
+
+    exit;
+
 }
-else
-{
-    echo "POST method required.";
+
+$query = "
+
+DELETE FROM events
+
+WHERE id = '$eventId'
+
+";
+
+$result = mysqli_query(
+    $conn,
+    $query
+);
+
+if ($result) {
+
+    echo json_encode([
+        "success" => true,
+        "message" => "Event deleted successfully"
+    ]);
+
+} else {
+
+    echo json_encode([
+        "success" => false,
+        "message" => mysqli_error($conn)
+    ]);
+
 }
+
+?>

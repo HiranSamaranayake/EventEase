@@ -12,8 +12,17 @@ import Register from "./pages/auth/Register";
 
 import CustomerDashboard from "./pages/customer/CustomerDashboard";
 import OrganizerDashboard from "./pages/organizer/OrganizerDashboard";
+import CreateEvent from "./pages/organizer/CreateEvent";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import Profile from "./pages/customer/Profile";
+import MyEvents from "./pages/organizer/MyEvents";
+import EditEvent from "./pages/organizer/EditEvent";
+
+
+
+
+
+
 function App() {
 return ( <BrowserRouter> <Routes>
 <Route path="/" element={<Home />} />
@@ -59,6 +68,38 @@ return ( <BrowserRouter> <Routes>
             allowedRole="organizer"
         >
             <OrganizerDashboard />
+        </ProtectedRoute>
+    }
+/>
+
+<Route
+    path="/my-events"
+    element={
+        <ProtectedRoute
+            allowedRole="organizer"
+        >
+            <MyEvents />
+        </ProtectedRoute>
+    }
+/>
+<Route
+    path="/edit-event/:id"
+    element={
+        <ProtectedRoute
+            allowedRole="organizer"
+        >
+            <EditEvent />
+        </ProtectedRoute>
+    }
+/>
+
+<Route
+    path="/create-event"
+    element={
+        <ProtectedRoute
+            allowedRole="organizer"
+        >
+            <CreateEvent />
         </ProtectedRoute>
     }
 />
