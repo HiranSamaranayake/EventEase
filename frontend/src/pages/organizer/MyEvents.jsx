@@ -89,7 +89,10 @@ const MyEvents = () => {
                   Delete
                 </button>
 
-                <button className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700">
+                <button
+                  onClick={() => navigate(`/event-bookings/${event.id}`)}
+                  className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
+                >
                   View Bookings
                 </button>
               </div>
