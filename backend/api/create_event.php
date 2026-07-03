@@ -1,22 +1,31 @@
 <?php
 
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: Content-Type");
 header("Access-Control-Allow-Methods: POST");
 header("Content-Type: application/json");
 
 require_once "../config/database.php";
 
-$data = json_decode(
-    file_get_contents("php://input"),
-    true
-);
+$title = $_POST["title"] ?? "";
+$description = $_POST["description"] ?? "";
+$eventDate = $_POST["event_date"] ?? "";
+$location = $_POST["location"] ?? "";
+$price = $_POST["price"] ?? 0;
+$capacity = $_POST["capacity"] ?? 0;
+$category = $_POST["category"] ?? "General";
+$organizerId = $_POST["organizer_id"] ?? 0;
 
-$title = $data["title"] ?? "";
-$description = $data["description"] ?? "";
-$eventDate = $data["event_date"] ?? "";
-$location = $data["location"] ?? "";
-$organizerId = $data["organizer_id"] ?? 0;
+$imageName = "";
+
+if (isset($_FILES["image"])) {
+
+    $imageName = time() . "_" . basename($_FILES["image"]["name"]);
+
+    $target = "../uploads/" . $imageName;
+
+    move_uploaded_file($_FILES["image"]["tmp_name"], $target);
+
+}
 
 if (
     empty($title) ||
@@ -41,8 +50,12 @@ INSERT INTO events
 (
     title,
     description,
+    image,
+    category,
     event_date,
     location,
+    capacity,
+    price,
     organizer_id
 )
 
@@ -50,17 +63,18 @@ VALUES
 (
     '$title',
     '$description',
+    '$imageName',
+    '$category',
     '$eventDate',
     '$location',
+    '$capacity',
+    '$price',
     '$organizerId'
 )
 
 ";
 
-$result = mysqli_query(
-    $conn,
-    $query
-);
+$result = mysqli_query($conn, $query);
 
 if ($result) {
 
@@ -77,5 +91,4 @@ if ($result) {
     ]);
 
 }
-
 ?>

@@ -8,16 +8,16 @@ require_once "../config/database.php";
 $query = "
 
 SELECT
-
 id,
 title,
 description,
 event_date,
 location,
-capacity
-
+price,
+capacity,
+image,
+category
 FROM events
-
 ORDER BY event_date ASC
 
 ";

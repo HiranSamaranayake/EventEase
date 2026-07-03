@@ -40,13 +40,9 @@ function App() {
           }
         />
         <Route
-          path="/events"
-          element={
-            <ProtectedRoute allowedRole="customer">
-              <Events />
-            </ProtectedRoute>
-          }
-        />
+    path="/events"
+    element={<Events />}
+/>
 
         <Route
           path="/profile"
