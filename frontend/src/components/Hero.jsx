@@ -9,29 +9,46 @@ function Hero() {
     <section className="relative h-screen overflow-hidden">
       {/* Background Video */}
 
-      <motion.video
-        autoPlay
-        loop
-        muted
-        playsInline
-        initial={{ scale: 1 }}
-        animate={{ scale: 1.08 }}
-        transition={{
-          duration: 18,
-          repeat: Infinity,
-          repeatType: "reverse",
-          ease: "easeInOut",
+     {/* Background Video */}
+
+<div className="absolute inset-0 overflow-hidden">
+
+    <motion.div
+        className="w-full h-full"
+        animate={{
+            scale: 1.08,
         }}
-        className="
-        absolute
-        inset-0
-        w-full
-        h-full
-        object-cover
-    "
-      >
-        <source src={heroVideo} type="video/mp4" />
-      </motion.video>
+        transition={{
+            duration: 18,
+            repeat: Infinity,
+            repeatType: "reverse",
+            ease: "easeInOut",
+        }}
+    >
+
+        <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            style={{
+    display: "block",
+}}
+            className="
+                w-full
+                h-full
+                object-cover
+            "
+        >
+            <source
+                src={heroVideo}
+                type="video/mp4"
+            />
+        </video>
+
+    </motion.div>
+
+</div>
 
       {/* Dark Overlay */}
 

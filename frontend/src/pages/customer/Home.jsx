@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import { motion } from "framer-motion";
 import Hero from "../../components/Hero";
+import { Zap, ShieldCheck, Ticket, MapPinned } from "lucide-react";
+import ctaBg from "../../assets/images/cta-bg.jpg";
 
 //import CountUp from "react-countup";
 
@@ -646,6 +648,797 @@ animate-orb-3
             </button>
           </div>
         </section>
+        {/* ================= WHY CHOOSE EVENTEASE ================= */}
+        <section className="py-24 relative z-10">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="text-center mb-16">
+              <span
+                className="
+                    bg-purple-100
+                    text-purple-700
+                    px-4
+                    py-2
+                    rounded-full
+                    font-semibold
+                    text-sm
+                "
+              >
+                WHY CHOOSE US
+              </span>
+
+              <h2
+                className="
+                    mt-6
+                    text-4xl
+                    lg:text-5xl
+                    font-black
+                    text-black
+                "
+              >
+                Why Choose EventEase?
+              </h2>
+
+              <p
+                className="
+                    mt-5
+                    text-gray-600
+                    max-w-3xl
+                    mx-auto
+                    text-lg
+                    leading-8
+                "
+              >
+                Everything you need to create, manage and attend amazing events
+                in one beautiful platform.
+              </p>
+            </div>
+            <div
+              className="
+        grid
+        md:grid-cols-2
+        lg:grid-cols-4
+        gap-8
+        mt-16
+    "
+            >
+              {/* Card 1 */}
+
+              <div
+                className="
+                group
+            bg-white/80
+backdrop-blur-xl
+border
+border-white/60
+rounded-3xl
+p-8
+shadow-xl
+hover:-translate-y-3
+hover:scale-105
+hover:shadow-[0_20px_60px_rgba(168,85,247,0.25)]
+transition-all
+duration-500
+text-center
+        "
+              >
+             <div
+    className="
+        w-20
+        h-20
+        mx-auto
+        mb-6
+        rounded-2xl
+        bg-gradient-to-br
+        from-purple-500
+        via-fuchsia-500
+        to-pink-500
+        flex
+        items-center
+        justify-center
+        text-white
+        shadow-xl
+        transition-all
+        duration-500
+        group-hover:rotate-6
+        group-hover:scale-110
+    "
+>
+                  <Zap size={38} />
+                </div>
+
+                <h3
+                  className="text-2xl
+font-black
+mb-4
+text-gray-900"
+                >
+                  Fast Booking
+                </h3>
+
+                <p
+                  className="text-gray-600
+leading-7
+text-[15px]"
+                >
+                  Book tickets within seconds with a smooth and simple booking
+                  experience.
+                </p>
+              </div>
+
+              {/* Card 2 */}
+
+              <div
+                className="
+                group
+            bg-white/80
+backdrop-blur-xl
+border
+border-white/60
+rounded-3xl
+p-8
+shadow-xl
+hover:-translate-y-3
+hover:scale-105
+hover:shadow-[0_20px_60px_rgba(168,85,247,0.25)]
+transition-all
+duration-500
+text-center
+        "
+              >
+               <div
+    className="
+        w-20
+        h-20
+        mx-auto
+        mb-6
+        rounded-2xl
+        bg-gradient-to-br
+        from-purple-500
+        via-fuchsia-500
+        to-pink-500
+        flex
+        items-center
+        justify-center
+        text-white
+        shadow-xl
+        transition-all
+        duration-500
+        group-hover:rotate-6
+        group-hover:scale-110
+    "
+>
+                  <ShieldCheck size={38} />
+                </div>
+
+                <h3
+                  className="text-2xl
+font-black
+mb-4
+text-gray-900"
+                >
+                  Secure Platform
+                </h3>
+
+                <p
+                  className="text-gray-600
+leading-7
+text-[15px]"
+                >
+                  Safe registrations, protected user accounts and reliable event
+                  management.
+                </p>
+              </div>
+
+              {/* Card 3 */}
+
+              <div
+                className="
+                group
+            bg-white/80
+backdrop-blur-xl
+border
+border-white/60
+rounded-3xl
+p-8
+shadow-xl
+hover:-translate-y-3
+hover:scale-105
+hover:shadow-[0_20px_60px_rgba(168,85,247,0.25)]
+transition-all
+duration-500
+text-center
+        "
+              >
+               <div
+    className="
+        w-20
+        h-20
+        mx-auto
+        mb-6
+        rounded-2xl
+        bg-gradient-to-br
+        from-purple-500
+        via-fuchsia-500
+        to-pink-500
+        flex
+        items-center
+        justify-center
+        text-white
+        shadow-xl
+        transition-all
+        duration-500
+        group-hover:rotate-6
+        group-hover:scale-110
+    "
+>
+                 <Ticket size={38} />
+                </div>
+
+                <h3
+                  className="text-2xl
+font-black
+mb-4
+text-gray-900"
+                >
+                  Instant Tickets
+                </h3>
+
+                <p
+                  className="text-gray-600
+leading-7
+text-[15px]"
+                >
+                  Receive your booking confirmation immediately after reserving
+                  your seat.
+                </p>
+              </div>
+
+              {/* Card 4 */}
+
+              <div
+                className="
+                group
+            bg-white/80
+backdrop-blur-xl
+border
+border-white/60
+rounded-3xl
+p-8
+shadow-xl
+hover:-translate-y-3
+hover:scale-105
+hover:shadow-[0_20px_60px_rgba(168,85,247,0.25)]
+transition-all
+duration-500
+text-center
+        "
+              >
+              <div
+    className="
+        w-20
+        h-20
+        mx-auto
+        mb-6
+        rounded-2xl
+        bg-gradient-to-br
+        from-purple-500
+        via-fuchsia-500
+        to-pink-500
+        flex
+        items-center
+        justify-center
+        text-white
+        shadow-xl
+        transition-all
+        duration-500
+        group-hover:rotate-6
+        group-hover:scale-110
+    "
+>
+                  <MapPinned size={38} />
+                </div>
+
+                <h3
+                  className="text-2xl
+font-black
+mb-4
+text-gray-900"
+                >
+                  Discover Events
+                </h3>
+
+                <p
+                  className="text-gray-600
+leading-7
+text-[15px]"
+                >
+                  Find exciting events happening near you and explore new
+                  experiences.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ================= TESTIMONIALS ================= */}
+
+<section className="py-24 relative z-10">
+
+    <div className="max-w-7xl mx-auto px-6">
+
+        <div className="text-center mb-16">
+
+            <span
+                className="
+                    bg-purple-100
+                    text-purple-700
+                    px-4
+                    py-2
+                    rounded-full
+                    font-semibold
+                    text-sm
+                "
+            >
+                TESTIMONIALS
+            </span>
+
+            <h2
+                className="
+                    mt-6
+                    text-4xl
+                    lg:text-5xl
+                    font-black
+                "
+            >
+                Loved by Event Organizers
+            </h2>
+
+            <p
+                className="
+                    mt-4
+                    text-gray-600
+                    max-w-2xl
+                    mx-auto
+                "
+            >
+                Here's what people are saying about EventEase.
+            </p>
+
+        </div>
+        <div
+    className="
+        grid
+        md:grid-cols-2
+        lg:grid-cols-3
+        gap-8
+        mt-16
+    "
+>
+
+    {/* Review 1 */}
+
+    <div
+        className="
+            group
+            bg-white/80
+            backdrop-blur-xl
+            border
+            border-white/60
+            rounded-3xl
+            p-8
+            shadow-xl
+            hover:-translate-y-3
+            hover:shadow-purple-300/30
+            transition-all
+            duration-500
+        "
+    >
+
+        <div className="flex mb-5 text-yellow-400 text-xl">
+            ⭐⭐⭐⭐⭐
+        </div>
+
+        <p
+            className="
+                text-gray-600
+                leading-8
+                mb-8
+            "
+        >
+            "EventEase made organizing our annual tech conference incredibly simple. Ticket sales and attendee management were effortless."
+        </p>
+
+        <div className="flex items-center gap-4">
+
+            <div
+                className="
+                    w-14
+                    h-14
+                    rounded-full
+                    bg-gradient-to-br
+                    from-purple-500
+                    to-pink-500
+                    flex
+                    items-center
+                    justify-center
+                    text-white
+                    font-bold
+                    text-xl
+                "
+            >
+                A
+            </div>
+
+            <div>
+
+                <h4 className="font-bold">
+                    Amanda Silva
+                </h4>
+
+                <p className="text-gray-500 text-sm">
+                    Event Organizer
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {/* Review 2 */}
+
+    <div
+        className="
+            group
+            bg-white/80
+            backdrop-blur-xl
+            border
+            border-white/60
+            rounded-3xl
+            p-8
+            shadow-xl
+            hover:-translate-y-3
+            hover:shadow-purple-300/30
+            transition-all
+            duration-500
+        "
+    >
+
+        <div className="flex mb-5 text-yellow-400 text-xl">
+            ⭐⭐⭐⭐⭐
+        </div>
+
+        <p
+            className="
+                text-gray-600
+                leading-8
+                mb-8
+            "
+        >
+            "Booking tickets has never been easier. The platform is fast, modern and extremely user friendly."
+        </p>
+
+        <div className="flex items-center gap-4">
+
+            <div
+                className="
+                    w-14
+                    h-14
+                    rounded-full
+                    bg-gradient-to-br
+                    from-blue-500
+                    to-cyan-500
+                    flex
+                    items-center
+                    justify-center
+                    text-white
+                    font-bold
+                    text-xl
+                "
+            >
+                D
+            </div>
+
+            <div>
+
+                <h4 className="font-bold">
+                    Daniel Fernando
+                </h4>
+
+                <p className="text-gray-500 text-sm">
+                    Customer
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {/* Review 3 */}
+
+    <div
+        className="
+            group
+            bg-white/80
+            backdrop-blur-xl
+            border
+            border-white/60
+            rounded-3xl
+            p-8
+            shadow-xl
+            hover:-translate-y-3
+            hover:shadow-purple-300/30
+            transition-all
+            duration-500
+        "
+    >
+
+        <div className="flex mb-5 text-yellow-400 text-xl">
+            ⭐⭐⭐⭐⭐
+        </div>
+
+        <p
+            className="
+                text-gray-600
+                leading-8
+                mb-8
+            "
+        >
+            "Our music festival sold out within days. Managing registrations and bookings became completely stress-free."
+        </p>
+
+        <div className="flex items-center gap-4">
+
+            <div
+                className="
+                    w-14
+                    h-14
+                    rounded-full
+                    bg-gradient-to-br
+                    from-green-500
+                    to-emerald-500
+                    flex
+                    items-center
+                    justify-center
+                    text-white
+                    font-bold
+                    text-xl
+                "
+            >
+                M
+            </div>
+
+            <div>
+
+                <h4 className="font-bold">
+                    Michael Perera
+                </h4>
+
+                <p className="text-gray-500 text-sm">
+                    Festival Manager
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+    </div>
+
+</section>
+{/* ================= FINAL CTA ================= */}
+
+<section
+    className="
+        relative
+        overflow-hidden
+        py-40
+        mt-16
+    "
+>
+  {/* Background Image */}
+
+<img
+    src={ctaBg}
+    alt="CTA Background"
+    className="
+        absolute
+        inset-0
+        w-full
+        h-full
+        object-cover
+    "
+/>
+
+{/* Dark Overlay */}
+
+<div
+    className="
+        absolute
+        inset-0
+        bg-black/65
+    "
+></div>
+
+{/* Purple Overlay */}
+
+<div
+    className="
+        absolute
+        inset-0
+        bg-gradient-to-br
+        from-purple-900/50
+        via-black/40
+        to-black/70
+    "
+></div>
+
+
+    {/* Background Glow */}
+
+    <div
+        className="
+            absolute
+            -top-40
+            -left-40
+            w-96
+            h-96
+            rounded-full
+            bg-white/10
+            blur-3xl
+        "
+    ></div>
+
+    <div
+        className="
+            absolute
+            -bottom-40
+            -right-40
+            w-[420px]
+            h-[420px]
+            rounded-full
+            bg-white/10
+            blur-3xl
+        "
+    ></div>
+
+    <div
+        className="
+            relative
+            z-10
+            max-w-5xl
+            mx-auto
+            px-6
+            text-center
+        "
+    >
+
+        <span
+            className="
+                inline-block
+                bg-white/20
+                backdrop-blur-md
+                px-5
+                py-2
+                rounded-full
+                text-white
+                font-semibold
+                tracking-wide
+            "
+        >
+            READY TO GET STARTED?
+        </span>
+
+        <h2
+            className="
+                mt-8
+                text-5xl
+                lg:text-6xl
+                font-black
+                text-white
+                leading-tight
+            "
+        >
+            Host Amazing Events
+            <br />
+            With EventEase
+        </h2>
+
+        <p
+            className="
+                mt-8
+                text-white/90
+                text-xl
+                leading-9
+                max-w-3xl
+                mx-auto
+            "
+        >
+            Whether you're organizing a conference, concert,
+            workshop or community gathering, EventEase gives you
+            everything you need to create unforgettable experiences.
+        </p>
+        <div
+    className="
+        mt-14
+        flex
+        flex-wrap
+        justify-center
+        gap-6
+    "
+>
+
+    <button
+        onClick={() => navigate("/register")}
+        className="
+            px-10
+            py-4
+            rounded-2xl
+            bg-white
+            text-purple-700
+            font-bold
+            text-lg
+            shadow-2xl
+            hover:scale-105
+            hover:shadow-white/40
+            transition-all
+            duration-300
+        "
+    >
+        Become an Organizer
+    </button>
+
+    <button
+        onClick={() => navigate("/events")}
+        className="
+            px-10
+            py-4
+            rounded-2xl
+            border
+            border-white/40
+            bg-white/10
+            backdrop-blur-xl
+            text-white
+            font-bold
+            text-lg
+            hover:bg-white/20
+            hover:scale-105
+            transition-all
+            duration-300
+        "
+    >
+        Explore Events
+    </button>
+    <div
+    className="
+        mt-12
+        flex
+        flex-wrap
+        justify-center
+        gap-10
+        text-white/90
+        text-sm
+        font-medium
+    "
+>
+
+    <span>✓ Secure Ticket Booking</span>
+
+    <span>✓ Instant Event Creation</span>
+
+    <span>✓ Trusted by Hundreds of Users</span>
+
+</div>
+
+</div>
+
+    </div>
+
+</section>
                    {" "}
       </main>
              {" "}

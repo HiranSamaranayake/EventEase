@@ -18,7 +18,8 @@ function Navbar() {
       className={`
        fixed
 left-1/2
-w-[95%]
+w-full
+px-4
 max-w-7xl
         z-50
         transition-all
@@ -55,9 +56,9 @@ ease-in-out
       }
       
     `}
-      style={{
-    top: scrollY > 50 ? "20px" : "0px",
-    transform: `translateX(-50%) scale(${scrollY > 50 ? 1 : 0.985})`,
+     style={{
+top: "16px",
+    transform: "translateX(-50%)",
 }}
     >
       <div
