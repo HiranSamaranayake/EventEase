@@ -5,6 +5,8 @@ import { motion } from "framer-motion";
 import Hero from "../../components/Hero";
 import { Zap, ShieldCheck, Ticket, MapPinned } from "lucide-react";
 import ctaBg from "../../assets/images/cta-bg.jpg";
+import Footer from "../../components/Footer";
+
 
 //import CountUp from "react-countup";
 
@@ -1441,6 +1443,8 @@ text-[15px]"
 </section>
                    {" "}
       </main>
+      <Footer />
+      
              {" "}
     </>
   );
