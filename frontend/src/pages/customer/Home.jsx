@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import { motion } from "framer-motion";
+import heroVideo from "../../assets/videos/hero.mp4";
 
 //import CountUp from "react-countup";
 
@@ -15,8 +16,7 @@ function Home() {
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [locationFilter, setLocationFilter] = useState("All");
-  
-
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     fetch("http://localhost/EventEase/backend/api/events.php")
@@ -26,32 +26,55 @@ function Home() {
           setFeaturedEvents(data.events);
         }
       });
+    fetch("http://localhost/EventEase/backend/api/categories.php")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          setCategories(data.categories);
+        }
+      });
   }, []);
 
-
   const filteredEvents = featuredEvents.filter((event) => {
-
-    const matchesSearch =
-        event.title.toLowerCase().includes(search.toLowerCase());
+    const matchesSearch = event.title
+      .toLowerCase()
+      .includes(search.toLowerCase());
 
     const matchesCategory =
-        categoryFilter === "All" ||
-        event.category === categoryFilter;
+      categoryFilter === "All" || event.category === categoryFilter;
 
     const matchesLocation =
-        locationFilter === "All" ||
-        event.location === locationFilter;
+      locationFilter === "All" || event.location === locationFilter;
 
-    return (
-        matchesSearch &&
-        matchesCategory &&
-        matchesLocation
-    );
+    return matchesSearch && matchesCategory && matchesLocation;
+  });
 
-});
+  const upcomingEvents = [...featuredEvents]
+    .sort((a, b) => new Date(a.event_date) - new Date(b.event_date))
+    .slice(0, 4);
 
-
-
+  const categoryIcons = {
+    Technology: "💻",
+    Music: "🎵",
+    Sports: "⚽",
+    Business: "💼",
+    Education: "🎓",
+    Festival: "🎉",
+    Food: "🍔",
+    Gaming: "🎮",
+    General: "🎫",
+  };
+  const categoryColors = {
+    Technology: "from-blue-500 to-cyan-500",
+    Music: "from-pink-500 to-rose-500",
+    Sports: "from-green-500 to-emerald-500",
+    Business: "from-indigo-500 to-violet-500",
+    Education: "from-orange-500 to-amber-500",
+    Festival: "from-fuchsia-500 to-purple-500",
+    Food: "from-red-500 to-orange-500",
+    Gaming: "from-violet-500 to-indigo-600",
+    General: "from-purple-600 to-fuchsia-500",
+  };
 
   return (
     <>
@@ -261,88 +284,39 @@ animate-orb-3
             >
                                           {/* Main Dashboard */}               
                          {" "}
-              <div
-                style={{
-                  transform: `
-            rotateX(${rotation.rotateX}deg)
-            rotateY(${rotation.rotateY}deg)
-        `,
-                }}
-                className="
-    relative
-    w-full
-    max-w-xl
-    mx-auto
-    bg-gradient-to-br
-    from-gray-900
-    via-black
-    to-purple-950
-    rounded-3xl
-    p-8
-    text-white
-    transition-all
-    duration-200
-    transform-gpu
-    shadow-[0_30px_80px_rgba(124,58,237,0.45)]
-    hover:shadow-[0_40px_100px_rgba(168,85,247,0.55)]
-"
-              >
-                <div
-                  className="
-        absolute
-        inset-0
-        -z-10
-        blur-3xl
-        opacity-40
-        bg-purple-600
-        rounded-3xl
-        scale-95
-    "
-                ></div>
-                                               {" "}
-                <h3 className="text-2xl font-bold">
-                                                      Event Dashboard          
-                                       {" "}
-                </h3>
-                                               {" "}
-                <div className="mt-8 space-y-6">
-                                                     {" "}
-                  <div className="flex justify-between">
-                                                           {" "}
-                    <span>Upcoming Events</span>                               
-                           {" "}
-                    <span className="text-purple-400 font-bold">
-                                                                  25            
-                                                 {" "}
-                    </span>
-                                                       {" "}
-                  </div>
-                                                     {" "}
-                  <div className="flex justify-between">
-                                                           {" "}
-                    <span>Tickets Sold</span>                                   
-                       {" "}
-                    <span className="text-purple-400 font-bold">
-                                                                  1,250        
-                                                     {" "}
-                    </span>
-                                                       {" "}
-                  </div>
-                                                     {" "}
-                  <div className="flex justify-between">
-                                                           {" "}
-                    <span>Total Revenue</span>                                 
-                         {" "}
-                    <span className="text-purple-400 font-bold">
-                                                                  Rs.450,000    
-                                                         {" "}
-                    </span>
-                                                       {" "}
-                  </div>
-                                                 {" "}
-                </div>
-                                           {" "}
-              </div>
+              <div className="relative">
+
+    <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="
+            w-full
+            h-[500px]
+            object-cover
+            rounded-3xl
+        "
+    >
+        <source
+            src={heroVideo}
+            type="video/mp4"
+        />
+    </video>
+
+    <div
+        className="
+            absolute
+            inset-0
+            bg-gradient-to-t
+            from-black/60
+            via-black/10
+            to-transparent
+            rounded-3xl
+        "
+    ></div>
+
+</div>
                                           {/* Floating Card 1 */}               
                          
               <div
@@ -471,6 +445,142 @@ animate-orb-3
             <div className="text-center mb-16">
               <span
                 className="
+                    bg-purple-100
+                    text-purple-700
+                    px-4
+                    py-2
+                    rounded-full
+                    font-semibold
+                    text-sm
+                "
+              >
+                BROWSE CATEGORIES
+              </span>
+
+              <h2
+                className="
+                    mt-6
+                    text-4xl
+                    lg:text-5xl
+                    font-black
+                "
+              >
+                Find Events By Category
+              </h2>
+
+              <p
+                className="
+                    mt-4
+                    text-gray-600
+                    max-w-2xl
+                    mx-auto
+                "
+              >
+                Explore events based on your interests.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              <button
+                onClick={() => setCategoryFilter("All")}
+                className={`
+        group
+        rounded-3xl
+        p-8
+        transition-all
+        duration-300
+        ${
+          categoryFilter === "All"
+            ? "bg-purple-600 text-white shadow-2xl scale-105"
+            : "bg-white hover:-translate-y-2 hover:shadow-purple-300/40 shadow-lg"
+        }
+    `}
+              >
+                <div
+                  className="
+            w-16
+            h-16
+            mx-auto
+            rounded-2xl
+            bg-gradient-to-br
+            from-indigo-500
+            to-purple-600
+            flex
+            items-center
+            justify-center
+            text-white
+            text-3xl
+            mb-5
+            shadow-lg
+            group-hover:scale-110
+            transition-all
+            duration-300
+        "
+                >
+                  🌍
+                </div>
+
+                <h3 className="text-xl font-bold">All Categories</h3>
+
+                <p className="mt-2 opacity-80">
+                  {featuredEvents.length} Events
+                </p>
+              </button>
+              {categories.map((category) => (
+                <button
+                  key={category.category}
+                  onClick={() => setCategoryFilter(category.category)}
+                  className={`
+        group
+        rounded-3xl
+        p-8
+        transition-all
+        duration-300
+        ${
+          categoryFilter === category.category
+            ? "bg-purple-600 text-white shadow-2xl scale-105"
+            : "bg-white hover:-translate-y-2 hover:shadow-purple-300/40 shadow-lg"
+        }
+    `}
+                >
+                  <div
+                    className={`
+        w-16
+        h-16
+        mx-auto
+        rounded-2xl
+        bg-gradient-to-br
+        ${categoryColors[category.category] || "from-purple-600 to-fuchsia-500"}
+        flex
+        items-center
+        justify-center
+        text-white
+        text-3xl
+        mb-5
+        shadow-lg
+        group-hover:scale-110
+        transition-all
+        duration-300
+    `}
+                  >
+                    {categoryIcons[category.category] || "🎫"}
+                  </div>
+
+                  <h3 className="font-bold text-xl">{category.category}</h3>
+
+                  <p className="text-gray-500 mt-2">
+                    {category.total_events} Events
+                  </p>
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+        <section className="py-24 relative z-10">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="text-center mb-16">
+              <span
+                className="
                 bg-purple-100
                 text-purple-700
                 px-4 py-2
@@ -506,13 +616,12 @@ animate-orb-3
               </p>
             </div>
             <div className="mb-10 flex flex-col md:flex-row gap-4">
-
-    <input
-        type="text"
-        placeholder="🔍 Search events..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="
+              <input
+                type="text"
+                placeholder="🔍 Search events..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="
             flex-1
             border
             border-gray-300
@@ -524,12 +633,12 @@ animate-orb-3
             focus:ring-2
             focus:ring-purple-500
         "
-    />
+              />
 
-    <select
-    value={categoryFilter}
-    onChange={(e) => setCategoryFilter(e.target.value)}
-    className="
+              <select
+                value={categoryFilter}
+                onChange={(e) => setCategoryFilter(e.target.value)}
+                className="
         border
         border-gray-300
         rounded-2xl
@@ -540,19 +649,20 @@ animate-orb-3
         focus:ring-2
         focus:ring-purple-500
     "
->
-    <option value="All">All Categories</option>
-    <option value="Technology">Technology</option>
-    <option value="Music">Music</option>
-    <option value="Sports">Sports</option>
-    <option value="Business">Business</option>
-    <option value="General">General</option>
-</select>
+              >
+                <option value="All">All Categories</option>
 
-<select
-    value={locationFilter}
-    onChange={(e) => setLocationFilter(e.target.value)}
-    className="
+                {categories.map((category) => (
+                  <option key={category.category} value={category.category}>
+                    {category.category}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                value={locationFilter}
+                onChange={(e) => setLocationFilter(e.target.value)}
+                className="
         border
         border-gray-300
         rounded-2xl
@@ -563,41 +673,51 @@ animate-orb-3
         focus:ring-2
         focus:ring-purple-500
     "
->
-    <option value="All">All Locations</option>
+              >
+                <option value="All">All Locations</option>
 
-    {[...new Set(featuredEvents.map(event => event.location))].map(location => (
-        <option
-            key={location}
-            value={location}
-        >
-            {location}
-        </option>
-    ))}
-</select>
-
-</div>
+                {[
+                  ...new Set(featuredEvents.map((event) => event.location)),
+                ].map((location) => (
+                  <option key={location} value={location}>
+                    {location}
+                  </option>
+                ))}
+              </select>
+            </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-    {filteredEvents.slice(0, 3).map((event) => (
-                <div
+              {filteredEvents.slice(0, 3).map((event) => (
+                <motion.div
                   key={event.id}
+                  initial={{
+                    opacity: 0,
+                    y: 40,
+                  }}
+                  whileInView={{
+                    opacity: 1,
+                    y: 0,
+                  }}
+                  viewport={{ once: true }}
+                  transition={{
+                    duration: 0.5,
+                  }}
+                  whileHover={{
+                    y: -12,
+                  }}
                   className="
-    group
-    bg-white
-    rounded-3xl
-    overflow-hidden
-    shadow-lg
-    border
-    border-gray-100
-    hover:-translate-y-4
-    hover:scale-[1.02]
-    hover:shadow-[0_35px_70px_rgba(124,58,237,0.30)]
-    transition-all
-    duration-300
-"
+        group
+        bg-white/80
+        backdrop-blur-md
+        rounded-3xl
+        overflow-hidden
+        shadow-xl
+        hover:shadow-[0_30px_60px_rgba(124,58,237,0.25)]
+        transition-all
+        duration-300
+    "
                 >
-                  <div className="relative overflow-hidden">
+                  <div className="overflow-hidden relative">
                     <div
                       className="
         absolute
@@ -634,8 +754,26 @@ animate-orb-3
         duration-500
     "
                     />
+                    <div className="absolute top-4 left-4">
+                      <span
+                        className="
+        bg-purple-600
+        text-white
+        px-3
+        py-1
+        rounded-full
+        text-sm
+        font-bold
+        shadow-lg
+    "
+                      >
+                        {Number(event.price) === 0
+                          ? "FREE"
+                          : `Rs. ${Number(event.price).toLocaleString()}`}
+                      </span>
+                    </div>
                     <div
-    className="
+                      className="
         absolute
         inset-0
         bg-gradient-to-t
@@ -644,34 +782,24 @@ animate-orb-3
         to-transparent
         pointer-events-none
     "
-></div>
-
+                    ></div>
                   </div>
 
                   <div className="p-6">
                     <span
-                      className={`
-        inline-block
-        px-3
-        py-1
+                      className="
+        inline-flex
+        items-center
+        bg-purple-100
+        text-purple-700
+        px-4
+        py-2
         rounded-full
         text-sm
         font-semibold
-
-        ${
-          event.category === "Technology"
-            ? "bg-blue-100 text-blue-700"
-            : event.category === "Music"
-              ? "bg-pink-100 text-pink-700"
-              : event.category === "Sports"
-                ? "bg-green-100 text-green-700"
-                : event.category === "Business"
-                  ? "bg-orange-100 text-orange-700"
-                  : "bg-purple-100 text-purple-700"
-        }
-    `}
+    "
                     >
-                      {event.category}
+                      🏷 {event.category}
                     </span>
 
                     <h3
@@ -689,21 +817,16 @@ animate-orb-3
                       {event.description}
                     </p>
 
-                    <div className="mt-4 space-y-2 text-gray-600">
-                      <p>
-                        📅{" "}
-                        {new Date(event.event_date).toLocaleDateString(
-                          "en-GB",
-                          {
-                            day: "2-digit",
-                            month: "short",
-                            year: "numeric",
-                          },
-                        )}
+                    <div className="mt-5 space-y-3 text-gray-600">
+                      {" "}
+                      <p className="flex items-center gap-2">
+                        📅
+                        <span>{event.event_date}</span>
                       </p>
-
-                      <p>📍 {event.location}</p>
-
+                      <p className="flex items-center gap-2">
+                        📍
+                        <span>{event.location}</span>
+                      </p>
                       <p className="font-semibold text-purple-700">
                         {Number(event.price) === 0 ? (
                           <>🆓 FREE</>
@@ -718,7 +841,7 @@ animate-orb-3
 
                     <button
                       onClick={() => navigate(`/event/${event.id}`)}
-                  className="
+                      className="
     mt-6
     w-full
     bg-gradient-to-r
@@ -731,6 +854,7 @@ animate-orb-3
     shadow-lg
     hover:shadow-purple-500/40
     hover:scale-105
+    active:scale-95
     transition-all
     duration-300
 "
@@ -738,7 +862,7 @@ animate-orb-3
                       View Details
                     </button>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>

@@ -5,7 +5,7 @@ header("Content-Type: application/json");
 
 require_once "../config/database.php";
 
-$id = $_GET['id'] ?? 0;
+$id = (int)($_GET['id'] ?? 0);
 
 $query = "
 SELECT *
