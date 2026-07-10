@@ -1,35 +1,60 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import TicketDetails from "./pages/customer/TicketDetails";
-import ProtectedRoute from "./routes/ProtectedRoute";
-import BookingConfirmation from "./pages/customer/BookingConfirmation";
-import EventDetails from "./pages/customer/EventDetails";
-import BookEvent from "./pages/customer/BookEvent";
-import MyBookings from "./pages/customer/MyBookings";
+
+// ================= CUSTOMER =================
 
 import Home from "./pages/customer/Home";
+import Events from "./pages/customer/Events";
+import EventDetails from "./pages/customer/EventDetails";
+import BookEvent from "./pages/customer/BookEvent";
+import BookingConfirmation from "./pages/customer/BookingConfirmation";
+import TicketDetails from "./pages/customer/TicketDetails";
+import MyBookings from "./pages/customer/MyBookings";
+import Profile from "./pages/customer/Profile";
+import CustomerDashboard from "./pages/customer/CustomerDashboard";
+
+// ================= AUTH =================
+
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 
-import CustomerDashboard from "./pages/customer/CustomerDashboard";
+// ================= ORGANIZER =================
+
 import OrganizerDashboard from "./pages/organizer/OrganizerDashboard";
 import CreateEvent from "./pages/organizer/CreateEvent";
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import Profile from "./pages/customer/Profile";
 import MyEvents from "./pages/organizer/MyEvents";
 import EditEvent from "./pages/organizer/EditEvent";
 import EventBookings from "./pages/organizer/EventBookings";
-import Events from "./pages/customer/Events";
+
+// ================= ADMIN =================
+
+import AdminLayout from "./pages/admin/AdminLayout";
+
+import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminUsers from "./pages/admin/AdminUsers";
+import AdminOrganizers from "./pages/admin/AdminOrganizers";
 import AdminEvents from "./pages/admin/AdminEvents";
+import AdminBookings from "./pages/admin/AdminBookings";
+import AdminSettings from "./pages/admin/AdminSettings";
+
+// ================= SECURITY =================
+
+import ProtectedRoute from "./routes/ProtectedRoute";
 
 function App() {
   return (
     <BrowserRouter>
-      {" "}
       <Routes>
+        {/* ================= HOME ================= */}
+
         <Route path="/" element={<Home />} />
+
+        {/* ================= AUTH ================= */}
+
         <Route path="/login" element={<Login />} />
+
         <Route path="/register" element={<Register />} />
+
+        {/* ================= CUSTOMER ================= */}
 
         <Route
           path="/customer-dashboard"
@@ -39,10 +64,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route
-    path="/events"
-    element={<Events />}
-/>
 
         <Route
           path="/profile"
@@ -62,36 +83,23 @@ function App() {
           }
         />
 
+        <Route path="/events" element={<Events />} />
+
+        <Route path="/event/:id" element={<EventDetails />} />
+
+        <Route path="/book-event/:id" element={<BookEvent />} />
+
+        <Route path="/booking-success" element={<BookingConfirmation />} />
+
+        <Route path="/ticket/:id" element={<TicketDetails />} />
+
+        {/* ================= ORGANIZER ================= */}
+
         <Route
           path="/organizer-dashboard"
           element={
             <ProtectedRoute allowedRole="organizer">
               <OrganizerDashboard />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/my-events"
-          element={
-            <ProtectedRoute allowedRole="organizer">
-              <MyEvents />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/edit-event/:id"
-          element={
-            <ProtectedRoute allowedRole="organizer">
-              <EditEvent />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/event-bookings/:id"
-          element={
-            <ProtectedRoute allowedRole="organizer">
-              <EventBookings />
             </ProtectedRoute>
           }
         />
@@ -106,33 +114,124 @@ function App() {
         />
 
         <Route
-          path="/admin-dashboard"
+          path="/my-events"
           element={
-            <ProtectedRoute allowedRole="admin">
-              <AdminDashboard />
+            <ProtectedRoute allowedRole="organizer">
+              <MyEvents />
             </ProtectedRoute>
           }
         />
-        <Route path="/ticket/:id" element={<TicketDetails />} />
-        <Route path="/booking-success" element={<BookingConfirmation />} />
-        <Route path="/event/:id" element={<EventDetails />} />
-        <Route path="/book-event/:id" element={<BookEvent />} />
+
+        <Route
+          path="/edit-event/:id"
+          element={
+            <ProtectedRoute allowedRole="organizer">
+              <EditEvent />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/event-bookings/:id"
+          element={
+            <ProtectedRoute allowedRole="organizer">
+              <EventBookings />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ================= ADMIN PANEL ================= */}
+
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute allowedRole="admin">
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<AdminDashboard />} />
+
+          <Route path="dashboard" element={<AdminDashboard />} />
+
+          <Route path="users" element={<AdminUsers />} />
+
+          <Route path="organizers" element={<AdminOrganizers />} />
+
+          <Route path="events" element={<AdminEvents />} />
+
+          <Route path="bookings" element={<AdminBookings />} />
+
+          <Route path="settings" element={<AdminSettings />} />
+        </Route>
+
+        {/* ================= OLD URL SUPPORT ================= */}
+
+        <Route
+          path="/admin-dashboard"
+          element={
+            <ProtectedRoute allowedRole="admin">
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<AdminDashboard />} />
+        </Route>
+
         <Route
           path="/admin-users"
           element={
             <ProtectedRoute allowedRole="admin">
-              <AdminUsers />
+              <AdminLayout />
             </ProtectedRoute>
           }
-        />
+        >
+          <Route index element={<AdminUsers />} />
+        </Route>
+
+        <Route
+          path="/admin-organizers"
+          element={
+            <ProtectedRoute allowedRole="admin">
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<AdminOrganizers />} />
+        </Route>
+
         <Route
           path="/admin-events"
           element={
             <ProtectedRoute allowedRole="admin">
-              <AdminEvents />
+              <AdminLayout />
             </ProtectedRoute>
           }
-        />
+        >
+          <Route index element={<AdminEvents />} />
+        </Route>
+
+        <Route
+          path="/admin-bookings"
+          element={
+            <ProtectedRoute allowedRole="admin">
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<AdminBookings />} />
+        </Route>
+
+        <Route
+          path="/admin-settings"
+          element={
+            <ProtectedRoute allowedRole="admin">
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<AdminSettings />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

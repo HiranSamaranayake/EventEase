@@ -5,7 +5,7 @@ header("Content-Type: application/json");
 
 require_once "../config/database.php";
 
-$userId = 1; // temporary
+$userId = $_GET["user_id"] ?? 0;
 
 $response = [
     "success" => true,

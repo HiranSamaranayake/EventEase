@@ -55,7 +55,7 @@ public function getAllBookings()
     $query = "SELECT
                 bookings.id AS booking_id,
                 users.name AS customer_name,
-                events.title AS event_title,
+                events.title AS title,
                 bookings.booking_date
               FROM bookings
               INNER JOIN users
