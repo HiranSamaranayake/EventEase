@@ -98,7 +98,7 @@ const Sidebar = () => {
                     {user?.role === "organizer" && (
                         <>
                             <Link
-                                to="/organizer-dashboard"
+                                to="/organizer/dashboard"
                                 className="
                                     flex items-center gap-3
                                     p-3 rounded-xl

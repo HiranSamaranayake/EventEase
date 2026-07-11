@@ -5,51 +5,125 @@ header("Content-Type: application/json");
 
 require_once "../config/database.php";
 
-$organizerId = $_GET["organizer_id"] ?? 0;
+$user_id = $_GET["organizer_id"] ?? 0;
 
-if (!$organizerId) {
+if(!$user_id){
 
     echo json_encode([
-        "success" => false,
-        "message" => "Organizer ID is required"
+        "success"=>false,
+        "message"=>"User ID Required"
     ]);
 
-    exit;
+    exit();
 
 }
+
+/*
+-------------------------------------
+Find Organizer ID
+-------------------------------------
+*/
+
+$organizerQuery = mysqli_query(
+    $conn,
+    "SELECT id FROM organizers WHERE user_id='$user_id'"
+);
+
+if(mysqli_num_rows($organizerQuery)==0){
+
+    echo json_encode([
+        "success"=>false,
+        "message"=>"Organizer not found"
+    ]);
+
+    exit();
+
+}
+
+$organizer = mysqli_fetch_assoc($organizerQuery);
+
+$organizer_id = $organizer["id"];
+
+/*
+-------------------------------------
+Get Events
+-------------------------------------
+*/
 
 $query = "
 
 SELECT
-    id,
-    title,
-    description,
-    event_date,
-    location
 
-FROM events
+e.*,
 
-WHERE organizer_id = '$organizerId'
+COUNT(b.id) AS bookings,
 
-ORDER BY event_date ASC
+COALESCE(
+SUM(b.total_amount),
+0
+) AS revenue
+
+FROM events e
+
+LEFT JOIN bookings b
+
+ON e.id=b.event_id
+
+WHERE e.organizer_id='$organizer_id'
+
+GROUP BY e.id
+
+ORDER BY e.event_date ASC
 
 ";
 
-$result = mysqli_query($conn, $query);
+$result = mysqli_query($conn,$query);
 
-$events = [];
+$events=[];
 
-while ($row = mysqli_fetch_assoc($result)) {
+while($row=mysqli_fetch_assoc($result)){
 
-    $events[] = $row;
+    $capacity=(int)$row["capacity"];
+
+    $sold=(int)$row["bookings"];
+
+    $occupancy=0;
+
+    if($capacity>0){
+
+        $occupancy=round(
+            ($sold/$capacity)*100
+        );
+
+    }
+
+    if(strtotime($row["event_date"])>time()){
+
+        $status="Upcoming";
+
+    }
+
+    else{
+
+        $status="Completed";
+
+    }
+
+    $row["tickets_sold"]=$sold;
+
+    $row["occupancy"]=$occupancy;
+
+    $row["status"]=$status;
+
+    $events[]=$row;
 
 }
 
 echo json_encode([
 
-    "success" => true,
+    "success"=>true,
 
-    "events" => $events
+    "events"=>$events
 
 ]);
 

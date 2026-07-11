@@ -24,6 +24,12 @@ import CreateEvent from "./pages/organizer/CreateEvent";
 import MyEvents from "./pages/organizer/MyEvents";
 import EditEvent from "./pages/organizer/EditEvent";
 import EventBookings from "./pages/organizer/EventBookings";
+import OrganizerLayout from "./components/OrganizerLayout";
+import OrganizerAnalytics from "./pages/organizer/OrganizerAnalytics";
+import OrganizerBookings from "./pages/organizer/OrganizerBookings";
+
+
+
 
 // ================= ADMIN =================
 
@@ -95,50 +101,38 @@ function App() {
 
         {/* ================= ORGANIZER ================= */}
 
-        <Route
-          path="/organizer-dashboard"
-          element={
-            <ProtectedRoute allowedRole="organizer">
-              <OrganizerDashboard />
-            </ProtectedRoute>
-          }
-        />
+<Route
+  path="/organizer"
+  element={
+    <ProtectedRoute allowedRole="organizer">
+      <OrganizerLayout />
+    </ProtectedRoute>
+  }
+>
+  <Route index element={<OrganizerDashboard />} />
 
-        <Route
-          path="/create-event"
-          element={
-            <ProtectedRoute allowedRole="organizer">
-              <CreateEvent />
-            </ProtectedRoute>
-          }
-        />
+  <Route path="dashboard" element={<OrganizerDashboard />} />
 
-        <Route
-          path="/my-events"
-          element={
-            <ProtectedRoute allowedRole="organizer">
-              <MyEvents />
-            </ProtectedRoute>
-          }
-        />
+  <Route path="my-events" element={<MyEvents />} />
 
-        <Route
-          path="/edit-event/:id"
-          element={
-            <ProtectedRoute allowedRole="organizer">
-              <EditEvent />
-            </ProtectedRoute>
-          }
-        />
+  <Route path="create-event" element={<CreateEvent />} />
 
-        <Route
-          path="/event-bookings/:id"
-          element={
-            <ProtectedRoute allowedRole="organizer">
-              <EventBookings />
-            </ProtectedRoute>
-          }
-        />
+  <Route path="edit-event/:id" element={<EditEvent />} />
+
+  <Route
+    path="event-bookings/:id"
+    element={<EventBookings />}
+  />
+  <Route
+  path="bookings"
+  element={<OrganizerBookings />}
+/>
+
+  <Route
+    path="analytics"
+    element={<OrganizerAnalytics />}
+  />
+</Route>
 
         {/* ================= ADMIN PANEL ================= */}
 

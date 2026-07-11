@@ -1,58 +1,197 @@
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { FaBell } from "react-icons/fa";
+
+import DashboardCards from "../../components/DashboardCards";
+import RevenueChart from "../../components/RevenueChart";
+import BookingChart from "../../components/BookingChart";
+import RecentBookings from "../../components/RecentBookings";
+import UpcomingEvents from "../../components/UpcomingEvents";
+import QuickActions from "../../components/QuickActions";
+import NotificationPanel from "../../components/NotificationPanel";
+
 
 const OrganizerDashboard = () => {
-  const navigate = useNavigate();
 
+const [dashboard, setDashboard] = useState(null);
+const [loading, setLoading] = useState(true);
+const user = JSON.parse(localStorage.getItem("user"));
+
+useEffect(() => {
+fetch(
+`http://localhost/EventEase/backend/api/organizer_dashboard.php?user_id=${user.id}`
+)   .then(res => res.json())
+        .then(data => {
+            setDashboard(data);
+            setLoading(false);
+        });
+}, []);
+
+if (loading) {
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <h1 className="text-4xl font-bold text-center text-purple-700 mb-10">
-        Organizer Dashboard
-      </h1>
-
-      <div className="grid md:grid-cols-3 gap-6">
-        <div className="bg-white shadow-lg rounded-2xl p-6 text-center">
-          <h2 className="text-gray-500">My Events</h2>
-
-          <h1 className="text-5xl font-bold text-purple-600 mt-4">0</h1>
-        </div>
-
-        <div className="bg-white shadow-lg rounded-2xl p-6 text-center">
-          <h2 className="text-gray-500">Total Bookings</h2>
-
-          <h1 className="text-5xl font-bold text-green-600 mt-4">0</h1>
-        </div>
-
-        <div className="bg-white shadow-lg rounded-2xl p-6 text-center">
-          <h2 className="text-gray-500">Tickets Issued</h2>
-
-          <h1 className="text-5xl font-bold text-blue-600 mt-4">0</h1>
-        </div>
-      </div>
-
-      <div className="mt-12 bg-white shadow-lg rounded-2xl p-8">
-        <h2 className="text-2xl font-bold mb-6">Quick Actions</h2>
-
-        <div className="flex flex-wrap gap-4">
-          <button
-            onClick={() => navigate("/create-event")}
-            className="bg-purple-600 text-white px-6 py-3 rounded-xl hover:bg-purple-700"
-          >
-            Create Event
-          </button>
-          <button
-            onClick={() => navigate("/my-events")}
-            className="bg-green-600 text-white px-6 py-3 rounded-xl hover:bg-green-700"
-          >
-            My Events
-          </button>
-
-          <button className="bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700">
-            View Bookings
-          </button>
-        </div>
-      </div>
+    <div className="flex justify-center items-center h-screen text-2xl">
+      Loading Dashboard...
     </div>
   );
+}
+
+
+
+
+
+  return (
+
+    <div
+      className="
+      min-h-screen
+      bg-gray-100
+      p-6
+      "
+    >
+
+
+      {/* HEADER */}
+
+      <div
+        className="
+        flex
+        justify-between
+        items-center
+        mb-8
+        "
+      >
+
+        <div>
+
+          <h1
+            className="
+            text-4xl
+            font-bold
+            text-gray-800
+            "
+          >
+            Organizer Dashboard
+          </h1>
+
+
+          <p
+            className="
+            text-gray-500
+            mt-2
+            "
+          >
+            Manage your events, bookings and revenue
+          </p>
+
+
+        </div>
+
+
+
+        <div
+          className="
+          bg-white
+          p-4
+          rounded-xl
+          shadow
+          "
+        >
+
+          <FaBell
+            className="
+            text-purple-600
+            text-2xl
+            "
+          />
+
+        </div>
+
+
+      </div>
+
+
+
+
+      {/* STAT CARDS */}
+
+<DashboardCards stats={dashboard?.stats} />
+
+
+
+
+
+      {/* CHARTS */}
+
+
+      <div
+        className="
+        grid
+        lg:grid-cols-2
+        gap-6
+        mt-8
+        "
+      >
+
+       <RevenueChart data={dashboard?.monthlyRevenue} />
+
+     <BookingChart data={dashboard?.monthlyBookings} />
+
+      </div>
+
+
+
+
+
+      {/* LOWER SECTION */}
+
+
+      <div
+        className="
+        grid
+        lg:grid-cols-2
+        gap-6
+        mt-8
+        "
+      >
+
+     <RecentBookings bookings={dashboard?.recentBookings} />
+
+  <UpcomingEvents events={dashboard?.upcomingEvents} />
+
+      </div>
+
+
+
+
+
+      {/* ACTION + NOTIFICATIONS */}
+
+
+      <div
+        className="
+        grid
+        lg:grid-cols-2
+        gap-6
+        mt-8
+        "
+      >
+
+
+        <QuickActions/>
+
+
+  <NotificationPanel notifications={dashboard?.notifications} />
+
+
+      </div>
+
+
+
+    </div>
+
+  );
+
 };
+
 
 export default OrganizerDashboard;

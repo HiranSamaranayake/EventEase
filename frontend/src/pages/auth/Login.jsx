@@ -40,6 +40,9 @@ function Login() {
             const data = await response.json();
 
             console.log("LOGIN RESPONSE:", data);
+            console.log("Logged in user:", data.user);
+
+           
     
             if (data.success) {
 
@@ -68,7 +71,7 @@ function Login() {
             navigate("/customer-dashboard");
         }
         else if (data.user.role === "organizer") {
-            navigate("/organizer-dashboard");
+    navigate("/organizer/dashboard");
         }
         else if (data.user.role === "admin") {
             navigate("/admin-dashboard");

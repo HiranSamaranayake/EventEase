@@ -18,53 +18,35 @@ const OrganizerSidebar = () => {
 
   const user = JSON.parse(localStorage.getItem("user"));
 
-  const menuItems = [
-    {
-      title: "Dashboard",
-      icon: <FaTachometerAlt />,
-      path: "/organizer-dashboard",
-    },
-    {
-      title: "My Events",
-      icon: <FaCalendarAlt />,
-      path: "/organizer-events",
-    },
-    {
-      title: "Create Event",
-      icon: <FaPlusCircle />,
-      path: "/create-event",
-    },
-    {
-      title: "Bookings",
-      icon: <FaUsers />,
-      path: "/organizer-bookings",
-    },
-    {
-      title: "Tickets",
-      icon: <FaTicketAlt />,
-      path: "/organizer-tickets",
-    },
-    {
-      title: "Revenue",
-      icon: <FaMoneyBillWave />,
-      path: "/organizer-revenue",
-    },
-    {
-      title: "Analytics",
-      icon: <FaChartLine />,
-      path: "/organizer-analytics",
-    },
-    {
-      title: "Profile",
-      icon: <FaUserCircle />,
-      path: "/organizer-profile",
-    },
-    {
-      title: "Settings",
-      icon: <FaCog />,
-      path: "/organizer-settings",
-    },
-  ];
+ const menuItems = [
+  {
+    title: "Dashboard",
+    icon: <FaTachometerAlt />,
+   path: "/organizer/dashboard",
+  },
+  {
+    title: "My Events",
+    icon: <FaCalendarAlt />,
+    path: "/organizer/my-events",
+  },
+  {
+    title: "Create Event",
+    icon: <FaPlusCircle />,
+    path: "/organizer/create-event",
+  },
+  {
+  title: "Analytics",
+  icon: <FaChartLine />,
+  path: "/organizer/analytics",
+},
+{
+  title: "Bookings",
+  icon: <FaUsers />,
+  path: "/organizer/bookings",
+},
+
+
+];
 
   const logout = () => {
     localStorage.removeItem("user");
@@ -88,13 +70,9 @@ const OrganizerSidebar = () => {
     >
       {/* Logo */}
       <div className="p-8 border-b border-white/10">
-        <h1 className="text-3xl font-black tracking-wide">
-          🎟 EventEase
-        </h1>
+        <h1 className="text-3xl font-black tracking-wide">🎟 EventEase</h1>
 
-        <p className="text-purple-200 text-sm mt-2">
-          Organizer Panel
-        </p>
+        <p className="text-purple-200 text-sm mt-2">Organizer Panel</p>
       </div>
 
       {/* User */}
@@ -116,13 +94,9 @@ const OrganizerSidebar = () => {
           </div>
 
           <div>
-            <h3 className="font-semibold">
-              {user?.full_name || "Organizer"}
-            </h3>
+            <h3 className="font-semibold">{user?.full_name || "Organizer"}</h3>
 
-            <p className="text-xs text-purple-200">
-              Event Organizer
-            </p>
+            <p className="text-xs text-purple-200">Event Organizer</p>
           </div>
         </div>
       </div>
@@ -177,7 +151,6 @@ const OrganizerSidebar = () => {
         "
         >
           <FaHome />
-
           Home Page
         </button>
 
@@ -197,7 +170,6 @@ const OrganizerSidebar = () => {
         "
         >
           <FaSignOutAlt />
-
           Logout
         </button>
       </div>

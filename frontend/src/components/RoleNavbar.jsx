@@ -30,7 +30,7 @@ function RoleNavbar() {
 
                 {user.role === "organizer" && (
                     <>
-                        <Link to="/organizer-dashboard">
+                        <Link to="/organizer/dashboard">
                             Dashboard
                         </Link>
 
