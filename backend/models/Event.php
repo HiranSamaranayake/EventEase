@@ -39,7 +39,10 @@ class Event
     }
     public function getEvents()
 {
-    $query = "SELECT * FROM events ORDER BY created_at DESC";
+    $query = "SELECT *
+FROM events
+WHERE status='approved'
+ORDER BY id DESC";
 
     $result = $this->conn->query($query);
 

@@ -5,7 +5,7 @@ header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
 
 
-include "../config/db.php";
+require_once "../config/database.php";
 
 
 

@@ -9,19 +9,19 @@ $query = "
 
 SELECT
 
-events.id,
-events.title,
-events.event_date,
-events.location,
+events.*,
 
 users.full_name AS organizer
 
 FROM events
 
-INNER JOIN users
-ON events.organizer_id = users.id
+INNER JOIN organizers
+ON events.organizer_id = organizers.id
 
-ORDER BY events.event_date DESC
+INNER JOIN users
+ON organizers.user_id = users.id
+
+ORDER BY events.created_at DESC
 
 ";
 

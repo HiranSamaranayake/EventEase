@@ -8,18 +8,15 @@ require_once "../config/database.php";
 $query = "
 
 SELECT
-id,
-title,
-description,
-event_date,
-location,
-price,
-capacity,
-image,
-category
+events.*,
+users.full_name
 FROM events
-ORDER BY event_date ASC
-
+INNER JOIN organizers
+ON events.organizer_id = organizers.id
+INNER JOIN users
+ON organizers.user_id = users.id
+WHERE events.status = 'approved'
+ORDER BY events.event_date DESC
 ";
 
 $result = mysqli_query($conn, $query);

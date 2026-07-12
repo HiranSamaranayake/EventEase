@@ -77,6 +77,7 @@ INSERT INTO events
     capacity,
     price,
     organizer_id
+    status
 )
 
 VALUES
@@ -90,6 +91,7 @@ VALUES
     '$capacity',
     '$price',
     '$organizerId'
+    'pending'
 )
 
 ";
