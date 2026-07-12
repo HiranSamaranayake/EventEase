@@ -42,23 +42,23 @@ const DashboardLayout = ({ children }) => {
       path: "/my-bookings",
     },
 
-    {
-      name: "My Tickets",
-      icon: <FaTicketAlt />,
-      path: "/my-tickets",
-    },
+    // {
+    //   name: "My Tickets",
+    //   icon: <FaTicketAlt />,
+    //   path: "/my-tickets",
+    // },
 
-    {
-      name: "Wishlist",
-      icon: <FaHeart />,
-      path: "/wishlist",
-    },
+    // {
+    //   name: "Wishlist",
+    //   icon: <FaHeart />,
+    //   path: "/wishlist",
+    // },
 
-    {
-      name: "Payments",
-      icon: <FaCreditCard />,
-      path: "/payments",
-    },
+    // {
+    //   name: "Payments",
+    //   icon: <FaCreditCard />,
+    //   path: "/payments",
+    // },
 
     {
       name: "Profile",
@@ -66,11 +66,11 @@ const DashboardLayout = ({ children }) => {
       path: "/profile",
     },
 
-    {
-      name: "Settings",
-      icon: <FaCog />,
-      path: "/settings",
-    },
+    // {
+    //   name: "Settings",
+    //   icon: <FaCog />,
+    //   path: "/settings",
+    // },
   ];
 
   const logout = () => {

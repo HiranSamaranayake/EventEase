@@ -88,9 +88,7 @@ const BookEvent = () => {
             */
 
             payhere.onCompleted = function (orderId) {
-              console.log("Payment Completed", orderId);
-
-              navigate("/payment-success");
+              navigate(`/payment-success?booking=${orderId}`);
             };
 
             payhere.onDismissed = function () {

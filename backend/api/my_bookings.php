@@ -16,11 +16,12 @@ if (!$userId) {
 
     exit;
 }
-
 $query = "
 SELECT
     bookings.id,
     bookings.booking_date,
+    bookings.booking_status,
+    bookings.payment_status,
 
     events.title,
     events.event_date,
@@ -28,7 +29,8 @@ SELECT
 
     tickets.id AS ticket_id,
     tickets.ticket_code,
-    tickets.status
+    tickets.status AS ticket_status
+
 FROM bookings
 
 INNER JOIN events

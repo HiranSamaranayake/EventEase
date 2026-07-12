@@ -56,3 +56,275 @@ Array
 Array
 (
 )
+
+
+====================
+2026-07-12 14:02:09
+REQUEST METHOD: POST
+RAW INPUT:
+merchant_id=1236845&order_id=91&payment_id=320032629562&captured_amount=8000.00&payhere_amount=8000.00&payhere_currency=LKR&status_code=2&md5sig=B29F65EA8D56C874817A9CCEAC1FB484&custom_1&custom_2&status_message=Successfully+received+the+VISA+payment&method=VISA&card_holder_name=4916217501611292&card_no=************1292&card_expiry=12%2F29&recurring=0
+POST:
+Array
+(
+    [merchant_id] => 1236845
+    [order_id] => 91
+    [payment_id] => 320032629562
+    [captured_amount] => 8000.00
+    [payhere_amount] => 8000.00
+    [payhere_currency] => LKR
+    [status_code] => 2
+    [md5sig] => B29F65EA8D56C874817A9CCEAC1FB484
+    [custom_1] => 
+    [custom_2] => 
+    [status_message] => Successfully received the VISA payment
+    [method] => VISA
+    [card_holder_name] => 4916217501611292
+    [card_no] => ************1292
+    [card_expiry] => 12/29
+    [recurring] => 0
+)
+
+GET:
+Array
+(
+)
+2026-07-12 14:02:14
+Array
+(
+    [merchant_id] => 1236845
+    [order_id] => 91
+    [payment_id] => 320032629562
+    [captured_amount] => 8000.00
+    [payhere_amount] => 8000.00
+    [payhere_currency] => LKR
+    [status_code] => 2
+    [md5sig] => B29F65EA8D56C874817A9CCEAC1FB484
+    [custom_1] => 
+    [custom_2] => 
+    [status_message] => Successfully received the VISA payment
+    [method] => VISA
+    [card_holder_name] => 4916217501611292
+    [card_no] => ************1292
+    [card_expiry] => 12/29
+    [recurring] => 0
+)
+
+
+
+
+-----------------------------
+Array
+(
+    [merchant_id] => 1236845
+    [order_id] => 91
+    [payment_id] => 320032629562
+    [captured_amount] => 8000.00
+    [payhere_amount] => 8000.00
+    [payhere_currency] => LKR
+    [status_code] => 2
+    [md5sig] => B29F65EA8D56C874817A9CCEAC1FB484
+    [custom_1] => 
+    [custom_2] => 
+    [status_message] => Successfully received the VISA payment
+    [method] => VISA
+    [card_holder_name] => 4916217501611292
+    [card_no] => ************1292
+    [card_expiry] => 12/29
+    [recurring] => 0
+)
+
+
+====================
+2026-07-12 14:25:00
+REQUEST METHOD: POST
+RAW INPUT:
+merchant_id=1236845&order_id=92&payment_id=320032629567&captured_amount=8000.00&payhere_amount=8000.00&payhere_currency=LKR&status_code=2&md5sig=3DA88C8C25600A01BB9A25679494F9AB&custom_1&custom_2&status_message=Successfully+received+the+VISA+payment&method=VISA&card_holder_name=4916217501611292&card_no=************1292&card_expiry=12%2F29&recurring=0
+POST:
+Array
+(
+    [merchant_id] => 1236845
+    [order_id] => 92
+    [payment_id] => 320032629567
+    [captured_amount] => 8000.00
+    [payhere_amount] => 8000.00
+    [payhere_currency] => LKR
+    [status_code] => 2
+    [md5sig] => 3DA88C8C25600A01BB9A25679494F9AB
+    [custom_1] => 
+    [custom_2] => 
+    [status_message] => Successfully received the VISA payment
+    [method] => VISA
+    [card_holder_name] => 4916217501611292
+    [card_no] => ************1292
+    [card_expiry] => 12/29
+    [recurring] => 0
+)
+
+GET:
+Array
+(
+)
+2026-07-12 14:25:00
+Array
+(
+    [merchant_id] => 1236845
+    [order_id] => 92
+    [payment_id] => 320032629567
+    [captured_amount] => 8000.00
+    [payhere_amount] => 8000.00
+    [payhere_currency] => LKR
+    [status_code] => 2
+    [md5sig] => 3DA88C8C25600A01BB9A25679494F9AB
+    [custom_1] => 
+    [custom_2] => 
+    [status_message] => Successfully received the VISA payment
+    [method] => VISA
+    [card_holder_name] => 4916217501611292
+    [card_no] => ************1292
+    [card_expiry] => 12/29
+    [recurring] => 0
+)
+
+
+
+
+-----------------------------
+Array
+(
+    [merchant_id] => 1236845
+    [order_id] => 92
+    [payment_id] => 320032629567
+    [captured_amount] => 8000.00
+    [payhere_amount] => 8000.00
+    [payhere_currency] => LKR
+    [status_code] => 2
+    [md5sig] => 3DA88C8C25600A01BB9A25679494F9AB
+    [custom_1] => 
+    [custom_2] => 
+    [status_message] => Successfully received the VISA payment
+    [method] => VISA
+    [card_holder_name] => 4916217501611292
+    [card_no] => ************1292
+    [card_expiry] => 12/29
+    [recurring] => 0
+)
+
+PAYMENT UPDATED SUCCESSFULLY
+
+BOOKING UPDATED SUCCESSFULLY
+
+
+====================
+2026-07-12 16:00:31
+REQUEST METHOD: POST
+RAW INPUT:
+merchant_id=1236845&order_id=94&payment_id=320032629588&captured_amount=8000.00&payhere_amount=8000.00&payhere_currency=LKR&status_code=2&md5sig=CC454ACEB8AB033B73AFBF0BEA70E280&custom_1&custom_2&status_message=Successfully+received+the+VISA+payment&method=VISA&card_holder_name=4916217501611292&card_no=************1292&card_expiry=12%2F29&recurring=0
+POST:
+Array
+(
+    [merchant_id] => 1236845
+    [order_id] => 94
+    [payment_id] => 320032629588
+    [captured_amount] => 8000.00
+    [payhere_amount] => 8000.00
+    [payhere_currency] => LKR
+    [status_code] => 2
+    [md5sig] => CC454ACEB8AB033B73AFBF0BEA70E280
+    [custom_1] => 
+    [custom_2] => 
+    [status_message] => Successfully received the VISA payment
+    [method] => VISA
+    [card_holder_name] => 4916217501611292
+    [card_no] => ************1292
+    [card_expiry] => 12/29
+    [recurring] => 0
+)
+
+GET:
+Array
+(
+)
+
+
+-----------------------------
+Array
+(
+    [merchant_id] => 1236845
+    [order_id] => 94
+    [payment_id] => 320032629588
+    [captured_amount] => 8000.00
+    [payhere_amount] => 8000.00
+    [payhere_currency] => LKR
+    [status_code] => 2
+    [md5sig] => CC454ACEB8AB033B73AFBF0BEA70E280
+    [custom_1] => 
+    [custom_2] => 
+    [status_message] => Successfully received the VISA payment
+    [method] => VISA
+    [card_holder_name] => 4916217501611292
+    [card_no] => ************1292
+    [card_expiry] => 12/29
+    [recurring] => 0
+)
+
+PAYMENT UPDATED SUCCESSFULLY
+
+BOOKING UPDATED SUCCESSFULLY
+
+
+====================
+2026-07-12 16:02:11
+REQUEST METHOD: POST
+RAW INPUT:
+merchant_id=1236845&order_id=95&payment_id=320032629590&captured_amount=6000.00&payhere_amount=6000.00&payhere_currency=LKR&status_code=2&md5sig=6202E352405801D65DF365EC8848EB1C&custom_1&custom_2&status_message=Successfully+received+the+VISA+payment&method=VISA&card_holder_name=4916217501611292&card_no=************1292&card_expiry=12%2F29&recurring=0
+POST:
+Array
+(
+    [merchant_id] => 1236845
+    [order_id] => 95
+    [payment_id] => 320032629590
+    [captured_amount] => 6000.00
+    [payhere_amount] => 6000.00
+    [payhere_currency] => LKR
+    [status_code] => 2
+    [md5sig] => 6202E352405801D65DF365EC8848EB1C
+    [custom_1] => 
+    [custom_2] => 
+    [status_message] => Successfully received the VISA payment
+    [method] => VISA
+    [card_holder_name] => 4916217501611292
+    [card_no] => ************1292
+    [card_expiry] => 12/29
+    [recurring] => 0
+)
+
+GET:
+Array
+(
+)
+
+
+-----------------------------
+Array
+(
+    [merchant_id] => 1236845
+    [order_id] => 95
+    [payment_id] => 320032629590
+    [captured_amount] => 6000.00
+    [payhere_amount] => 6000.00
+    [payhere_currency] => LKR
+    [status_code] => 2
+    [md5sig] => 6202E352405801D65DF365EC8848EB1C
+    [custom_1] => 
+    [custom_2] => 
+    [status_message] => Successfully received the VISA payment
+    [method] => VISA
+    [card_holder_name] => 4916217501611292
+    [card_no] => ************1292
+    [card_expiry] => 12/29
+    [recurring] => 0
+)
+
+PAYMENT UPDATED SUCCESSFULLY
+
+BOOKING UPDATED SUCCESSFULLY

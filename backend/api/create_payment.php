@@ -164,7 +164,7 @@ echo json_encode([
 
     "cancel_url" => "http://localhost:5173/payment-cancel",
 
-    "notify_url" => "http://localhost/EventEase/backend/api/payhere_notify.php",
+"notify_url" => "https://trivial-cosponsor-climatic.ngrok-free.dev/EventEase/backend/api/payhere_notify.php",
 
     "order_id" => $order_id,
 

@@ -30,13 +30,6 @@ Debug Log
 -----------------------------------------
 */
 
-file_put_contents(
-    __DIR__ . "/notify_log.txt",
-    date("Y-m-d H:i:s") . "\n" .
-    print_r($_POST, true) . "\n\n",
-    FILE_APPEND
-);
-
 /*
 -----------------------------------------
 Receive PayHere POST Data
@@ -119,18 +112,36 @@ Update Payment Record
 -----------------------------------------
 */
 
-mysqli_query(
+$result = mysqli_query(
     $conn,
     "
     UPDATE payments
     SET
-
         payment_status='success',
         transaction_id='$payment_id'
-
     WHERE booking_id='$order_id'
     "
 );
+
+if (!$result) {
+
+    file_put_contents(
+        "notify_log.txt",
+        "\nPAYMENT UPDATE ERROR:\n" .
+        mysqli_error($conn) .
+        "\n",
+        FILE_APPEND
+    );
+
+} else {
+
+    file_put_contents(
+        "notify_log.txt",
+        "\nPAYMENT UPDATED SUCCESSFULLY\n",
+        FILE_APPEND
+    );
+
+}
 
 /*
 -----------------------------------------
@@ -138,18 +149,42 @@ Update Booking
 -----------------------------------------
 */
 
-mysqli_query(
+/*
+-----------------------------------------
+Update Booking
+-----------------------------------------
+*/
+
+$result = mysqli_query(
     $conn,
     "
     UPDATE bookings
     SET
-
         booking_status='Confirmed',
         payment_status='Paid'
-
     WHERE id='$order_id'
     "
 );
+
+if (!$result) {
+
+    file_put_contents(
+        "notify_log.txt",
+        "\nBOOKING UPDATE ERROR:\n" .
+        mysqli_error($conn) .
+        "\n",
+        FILE_APPEND
+    );
+
+} else {
+
+    file_put_contents(
+        "notify_log.txt",
+        "\nBOOKING UPDATED SUCCESSFULLY\n",
+        FILE_APPEND
+    );
+
+}
 
 /*
 -----------------------------------------
