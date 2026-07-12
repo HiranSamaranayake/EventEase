@@ -7,66 +7,110 @@ header("Content-Type: application/json");
 
 require_once "../config/database.php";
 
-$data = json_decode(file_get_contents("php://input"), true);
+
+$data = json_decode(
+    file_get_contents("php://input"),
+    true
+);
+
 
 $id = $data["id"] ?? 0;
 
-if (!$id) {
-    echo json_encode([
-        "success" => false,
-        "message" => "Event ID is required."
-    ]);
-    exit;
-}
 
-/*
-|--------------------------------------------------------------------------
-| Check if the event has any bookings
-|--------------------------------------------------------------------------
-*/
-
-$checkQuery = "
-SELECT COUNT(*) AS total
-FROM bookings
-WHERE event_id = '$id'
-";
-
-$checkResult = mysqli_query($conn, $checkQuery);
-
-$row = mysqli_fetch_assoc($checkResult);
-
-if ($row["total"] > 0) {
+if(!$id){
 
     echo json_encode([
-        "success" => false,
-        "message" => "This event cannot be deleted because it already has bookings."
+        "success"=>false,
+        "message"=>"Booking ID missing"
     ]);
 
     exit;
+
 }
+
 
 /*
-|--------------------------------------------------------------------------
-| Safe to delete
-|--------------------------------------------------------------------------
+=========================
+DELETE PAYMENTS FIRST
+=========================
 */
 
-$deleteQuery = "
-DELETE FROM events
-WHERE id = '$id'
+$paymentQuery = "
+
+DELETE FROM payments
+
+WHERE booking_id='$id'
+
 ";
 
-if (mysqli_query($conn, $deleteQuery)) {
+
+mysqli_query($conn,$paymentQuery);
+
+
+
+/*
+=========================
+DELETE TICKETS
+=========================
+*/
+
+$ticketQuery = "
+
+DELETE FROM tickets
+
+WHERE booking_id='$id'
+
+";
+
+
+mysqli_query($conn,$ticketQuery);
+
+
+
+/*
+=========================
+DELETE BOOKING
+=========================
+*/
+
+$bookingQuery = "
+
+DELETE FROM bookings
+
+WHERE id='$id'
+
+";
+
+
+$result = mysqli_query(
+    $conn,
+    $bookingQuery
+);
+
+
+
+if($result){
 
     echo json_encode([
-        "success" => true
-    ]);
 
-} else {
+        "success"=>true,
 
-    echo json_encode([
-        "success" => false,
-        "message" => mysqli_error($conn)
+        "message"=>"Booking deleted successfully"
+
     ]);
 
 }
+else{
+
+    echo json_encode([
+
+        "success"=>false,
+
+        "message"=>mysqli_error($conn)
+
+    ]);
+
+}
+
+
+?>
