@@ -52,11 +52,11 @@ const Sidebar = () => {
       icon: <FaMoneyBillWave />,
     },
 
-    {
-      name: "Reports",
-      path: "/admin-reports",
-      icon: <FaChartBar />,
-    },
+    // {
+    //   name: "Reports",
+    //   path: "/admin-reports",
+    //   icon: <FaChartBar />,
+    // },
 
     {
       name: "Settings",
