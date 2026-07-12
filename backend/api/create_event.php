@@ -13,7 +13,27 @@ $location = $_POST["location"] ?? "";
 $price = $_POST["price"] ?? 0;
 $capacity = $_POST["capacity"] ?? 0;
 $category = $_POST["category"] ?? "General";
-$organizerId = $_POST["organizer_id"] ?? 0;
+$userId = $_POST["user_id"] ?? 0;
+
+$orgQuery = mysqli_query(
+    $conn,
+    "SELECT id FROM organizers WHERE user_id='$userId'"
+);
+
+if (mysqli_num_rows($orgQuery) == 0) {
+
+    echo json_encode([
+        "success" => false,
+        "message" => "Organizer not found"
+    ]);
+
+    exit;
+
+}
+
+$organizer = mysqli_fetch_assoc($orgQuery);
+
+$organizerId = $organizer["id"];
 
 $imageName = "";
 

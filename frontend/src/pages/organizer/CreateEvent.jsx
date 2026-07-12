@@ -24,7 +24,7 @@ const CreateEvent = () => {
     formData.append("price", price);
     formData.append("capacity", capacity);
     formData.append("category", category);
-    formData.append("organizer_id", user.id);
+   formData.append("user_id", user.id);
 
     if (image) {
         formData.append("image", image);
