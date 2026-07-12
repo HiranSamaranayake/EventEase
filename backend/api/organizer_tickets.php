@@ -5,17 +5,26 @@ header("Content-Type: application/json");
 
 require_once "../config/database.php";
 
-$user_id = $_GET["user_id"] ?? 0;
+$user_id = $_GET["organizer_id"] ?? 0;
+
+
 
 if (!$user_id) {
 
     echo json_encode([
         "success" => false,
-        "message" => "User ID Required"
+        "message" => "Organizer ID Required"
     ]);
 
     exit();
 }
+
+/*
+-----------------------------------------
+Find Organizer ID
+-----------------------------------------
+*/
+
 $organizerQuery = mysqli_query(
     $conn,
     "SELECT id FROM organizers WHERE user_id='$user_id'"
@@ -34,65 +43,61 @@ if (mysqli_num_rows($organizerQuery) == 0) {
 $organizer = mysqli_fetch_assoc($organizerQuery);
 
 $organizer_id = $organizer["id"];
+
+/*
+-----------------------------------------
+Get Tickets
+-----------------------------------------
+*/
+
 $query = "
 
 SELECT
 
-    b.id,
+t.id,
+t.ticket_code,
+t.qr_code,
+t.status,
 
-    b.booking_date,
+b.ticket_quantity,
+b.booking_date,
 
-    b.ticket_quantity,
+u.full_name,
+u.email,
 
-    b.total_amount,
-    b.booking_status,
+e.title AS event_title,
+e.event_date
 
-    p.payment_status,
+FROM tickets t
 
-    e.title AS event_title,
-
-    u.full_name,
-
-    u.email,
-
-    u.phone
-
-FROM bookings b
-
-INNER JOIN events e
-ON b.event_id = e.id
+INNER JOIN bookings b
+ON t.booking_id = b.id
 
 INNER JOIN users u
 ON b.user_id = u.id
 
-LEFT JOIN payments p
-ON p.booking_id = b.id
+INNER JOIN events e
+ON b.event_id = e.id
 
 WHERE e.organizer_id = '$organizer_id'
 
 ORDER BY b.booking_date DESC
 
 ";
+
 $result = mysqli_query($conn, $query);
 
-if (!$result) {
-    die(mysqli_error($conn));
-}
-
-$bookings = [];
+$tickets = [];
 
 while ($row = mysqli_fetch_assoc($result)) {
 
-    $bookings[] = $row;
+    $tickets[] = $row;
 
 }
 
 echo json_encode([
-
     "success" => true,
-
-    "bookings" => $bookings
-
+    "tickets" => $tickets
 ]);
 
 ?>

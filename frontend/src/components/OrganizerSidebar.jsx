@@ -44,7 +44,11 @@ const OrganizerSidebar = () => {
   icon: <FaUsers />,
   path: "/organizer/bookings",
 },
-
+{
+  title: "Tickets",
+  icon: <FaTicketAlt />,
+  path: "/organizer/tickets",
+},
 
 ];
 

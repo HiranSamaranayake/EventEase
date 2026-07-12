@@ -11,6 +11,8 @@ import TicketDetails from "./pages/customer/TicketDetails";
 import MyBookings from "./pages/customer/MyBookings";
 import Profile from "./pages/customer/Profile";
 import CustomerDashboard from "./pages/customer/CustomerDashboard";
+import PaymentSuccess from "./pages/customer/PaymentSuccess";
+import PaymentCancel from "./pages/customer/PaymentCancel";
 
 // ================= AUTH =================
 
@@ -27,6 +29,7 @@ import EventBookings from "./pages/organizer/EventBookings";
 import OrganizerLayout from "./components/OrganizerLayout";
 import OrganizerAnalytics from "./pages/organizer/OrganizerAnalytics";
 import OrganizerBookings from "./pages/organizer/OrganizerBookings";
+import OrganizerTickets from "./pages/organizer/OrganizerTickets";
 
 
 
@@ -88,6 +91,16 @@ function App() {
             </ProtectedRoute>
           }
         />
+       <Route
+  path="/payment-success"
+  element={<PaymentSuccess />}
+/>
+
+<Route
+  path="/payment-cancel"
+  element={<PaymentCancel />}
+/>
+
 
         <Route path="/events" element={<Events />} />
 
@@ -126,6 +139,10 @@ function App() {
   <Route
   path="bookings"
   element={<OrganizerBookings />}
+/>
+<Route
+  path="tickets"
+  element={<OrganizerTickets />}
 />
 
   <Route
