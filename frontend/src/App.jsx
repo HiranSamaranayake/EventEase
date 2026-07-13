@@ -44,6 +44,7 @@ import AdminOrganizers from "./pages/admin/AdminOrganizers";
 import AdminEvents from "./pages/admin/AdminEvents";
 import AdminBookings from "./pages/admin/AdminBookings";
 import AdminSettings from "./pages/admin/AdminSettings";
+import TicketView from "./pages/customer/TicketView";
 
 // ================= SECURITY =================
 
@@ -111,6 +112,10 @@ function App() {
         <Route path="/booking-success" element={<BookingConfirmation />} />
 
         <Route path="/ticket/:id" element={<TicketDetails />} />
+        <Route
+    path="/ticket/:id"
+    element={<TicketView />}
+/>
 
         {/* ================= ORGANIZER ================= */}
 

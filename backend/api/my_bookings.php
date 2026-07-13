@@ -1,59 +1,83 @@
 <?php
 
-header("Access-Control-Allow-Origin: *");
-header("Content-Type: application/json");
+header("Access-Control-Allow-Origin:*");
+header("Content-Type:application/json");
 
 require_once "../config/database.php";
 
-$userId = $_GET["user_id"] ?? 0;
 
-if (!$userId) {
+$user_id = $_GET["user_id"] ?? 0;
+
+
+if(!$user_id){
 
     echo json_encode([
-        "success" => false,
-        "message" => "User ID required"
+        "success"=>false,
+        "message"=>"User id required"
     ]);
 
     exit;
+
 }
+
+
+
 $query = "
+
 SELECT
-    bookings.id,
-    bookings.booking_date,
-    bookings.booking_status,
-    bookings.payment_status,
 
-    events.title,
-    events.event_date,
-    events.location,
+bookings.id,
+bookings.ticket_quantity,
+bookings.total_amount,
+bookings.payment_status,
+bookings.booking_status,
+bookings.booking_date,
 
-    tickets.id AS ticket_id,
-    tickets.ticket_code,
-    tickets.status AS ticket_status
+events.title,
+events.event_date,
+events.location,
+events.image
+
 
 FROM bookings
 
 INNER JOIN events
+
 ON bookings.event_id = events.id
 
-INNER JOIN tickets
-ON bookings.id = tickets.booking_id
 
-WHERE bookings.user_id = $userId
+WHERE bookings.user_id='$user_id'
+AND bookings.payment_status='Paid'
+AND bookings.booking_status='Confirmed'
 
-ORDER BY bookings.booking_date DESC
+ORDER BY bookings.id DESC
+
 ";
 
-$result = mysqli_query($conn, $query);
 
-$bookings = [];
 
-while ($row = mysqli_fetch_assoc($result)) {
+$result=mysqli_query($conn,$query);
 
-    $bookings[] = $row;
+
+
+$bookings=[];
+
+
+while($row=mysqli_fetch_assoc($result)){
+
+    $bookings[]=$row;
+
 }
 
+
+
 echo json_encode([
-    "success" => true,
-    "bookings" => $bookings
+
+    "success"=>true,
+
+    "bookings"=>$bookings
+
 ]);
+
+
+?>

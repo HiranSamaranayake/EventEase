@@ -1,153 +1,122 @@
 <?php
 
-require_once "../vendor/autoload.php";
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+header("Content-Type: application/json");
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
+
 require_once "../config/database.php";
 
-use Dompdf\Dompdf;
+$booking_id = $_GET["booking_id"] ?? 0;
 
-$id = $_GET["id"] ?? 0;
 
-/*
------------------------------------------
-Get Ticket
------------------------------------------
-*/
+if(!$booking_id){
+
+    echo json_encode([
+        "success"=>false,
+        "message"=>"Booking ID missing"
+    ]);
+
+    exit;
+
+}
+
+
 
 $query = "
+
 SELECT
-    tickets.id,
-    tickets.ticket_code,
-    tickets.qr_code,
 
-    events.title,
-    events.event_date,
-    events.location
+bookings.id AS booking_id,
+bookings.ticket_quantity,
+bookings.total_amount,
+bookings.booking_date,
 
-FROM tickets
+tickets.ticket_code,
+tickets.qr_code,
+tickets.status,
 
-INNER JOIN bookings
-ON tickets.booking_id = bookings.id
+events.title,
+events.event_date,
+events.location,
+
+users.full_name,
+users.email
+
+
+FROM bookings
+
+
+INNER JOIN tickets
+
+ON bookings.id = tickets.booking_id
+
 
 INNER JOIN events
+
 ON bookings.event_id = events.id
 
-WHERE tickets.id = $id
+
+INNER JOIN users
+
+ON bookings.user_id = users.id
+
+
+WHERE bookings.id='$booking_id'
+
+
 LIMIT 1
+
 ";
 
-$result = mysqli_query($conn, $query);
 
-$ticket = mysqli_fetch_assoc($result);
 
-if (!$ticket) {
-    die("Ticket Not Found");
-}
+$result = mysqli_query($conn,$query);
 
-/*
------------------------------------------
-Convert QR Image to Base64
------------------------------------------
-*/
 
-$qrFile = "../" . $ticket["qr_code"];
 
-$qrImage = "";
+if(!$result){
 
-if (file_exists($qrFile)) {
+    echo json_encode([
+        "success"=>false,
+        "message"=>mysqli_error($conn)
+    ]);
 
-    $imageData = base64_encode(file_get_contents($qrFile));
-
-    $qrImage = "data:image/png;base64," . $imageData;
-}
-
-/*
------------------------------------------
-Create HTML
------------------------------------------
-*/
-
-$html = '
-
-<div style="text-align:center;">
-
-    <h1 style="color:#6D28D9;">
-        EVENTEASE
-    </h1>
-
-    <h2>
-        Event Ticket
-    </h2>
-
-</div>
-
-<hr>
-
-<p><strong>Ticket Code :</strong> ' . $ticket["ticket_code"] . '</p>
-
-<p><strong>Event :</strong> ' . $ticket["title"] . '</p>
-
-<p><strong>Date :</strong> ' . $ticket["event_date"] . '</p>
-
-<p><strong>Location :</strong> ' . $ticket["location"] . '</p>
-
-<br><br>
-
-<h3 style="text-align:center;">
-Scan this QR Code at the Entrance
-</h3>
-
-<div style="text-align:center;">';
-
-if ($qrImage != "") {
-
-    $html .= '
-        <img
-            src="' . $qrImage . '"
-            width="180"
-        >
-    ';
-
-} else {
-
-    $html .= '
-        <p style="color:red;">
-            QR Code Not Found
-        </p>
-    ';
+    exit;
 
 }
 
-$html .= '
 
-</div>
 
-<br><br>
+$data = mysqli_fetch_assoc($result);
 
-<p style="text-align:center;">
-Thank you for booking with <strong>EventEase</strong>.
-</p>
 
-';
 
-/*
------------------------------------------
-Generate PDF
------------------------------------------
-*/
+if(!$data){
 
-$dompdf = new Dompdf();
+    echo json_encode([
+        "success"=>false,
+        "message"=>"Ticket not generated yet"
+    ]);
 
-$dompdf->loadHtml($html);
+    exit;
 
-$dompdf->setPaper("A4", "portrait");
+}
 
-$dompdf->render();
 
-$dompdf->stream(
-    "Ticket_" . $ticket["ticket_code"] . ".pdf",
-    [
-        "Attachment" => true
-    ]
-);
+
+echo json_encode([
+
+    "success"=>true,
+
+    "ticket"=>$data
+
+]);
+
 
 ?>

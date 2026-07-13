@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const MyBookings = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const user = JSON.parse(localStorage.getItem("user"));
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch(
@@ -121,23 +123,26 @@ const MyBookings = () => {
                 </td>
                 <td className="p-4">
                   <div className="flex gap-2">
-                    <Link
-                      to={`/ticket/${booking.ticket_id}`}
-                      className="
-            bg-purple-600
-            hover:bg-purple-700
-            text-white
-            px-4
-            py-2
-            rounded-lg
-            transition
-        "
-                    >
-                      View
-                    </Link>
+                 <button
+
+onClick={() => navigate(`/ticket/${booking.id}`)}
+
+className="
+bg-blue-600
+text-white
+px-4
+py-2
+rounded-lg
+"
+
+>
+
+View Ticket
+
+</button>
 
                     <a
-                      href={`http://localhost/EventEase/backend/api/download_ticket.php?id=${booking.ticket_id}`}
+                     href={`http://localhost/EventEase/backend/api/download_ticket_pdf.php?booking_id=${booking.id}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="
