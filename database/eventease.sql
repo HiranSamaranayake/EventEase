@@ -2,8 +2,8 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Jul 09, 2026 at 05:06 PM
+-- Host: 127.0.0.1:3307
+-- Generation Time: Jul 28, 2026 at 11:02 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -31,6 +31,11 @@ CREATE TABLE `bookings` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `event_id` int(11) NOT NULL,
+  `ticket_quantity` int(11) NOT NULL DEFAULT 1,
+  `total_amount` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `payment_status` enum('Pending','Paid','Refunded') DEFAULT 'Pending',
+  `booking_status` enum('Pending','Confirmed','Cancelled') DEFAULT 'Pending',
+  `qr_code` varchar(255) DEFAULT NULL,
   `booking_date` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -38,41 +43,61 @@ CREATE TABLE `bookings` (
 -- Dumping data for table `bookings`
 --
 
-INSERT INTO `bookings` (`id`, `user_id`, `event_id`, `booking_date`) VALUES
-(1, 1, 1, '2026-06-13 19:07:00'),
-(2, 3, 1, '2026-06-21 07:59:18'),
-(3, 6, 1, '2026-06-26 08:25:06'),
-(4, 1, 1, '2026-06-26 09:03:14'),
-(5, 1, 1, '2026-06-26 09:03:28'),
-(6, 1, 1, '2026-06-26 09:04:30'),
-(7, 1, 1, '2026-06-26 09:08:15'),
-(8, 1, 1, '2026-06-26 09:15:25'),
-(9, 1, 1, '2026-06-26 09:16:22'),
-(10, 6, 1, '2026-06-26 10:20:32'),
-(11, 1, 1, '2026-06-26 17:40:52'),
-(12, 1, 1, '2026-06-26 17:47:44'),
-(13, 1, 1, '2026-06-27 07:12:19'),
-(14, 1, 1, '2026-06-27 07:12:19'),
-(15, 1, 1, '2026-06-27 07:12:19'),
-(16, 1, 1, '2026-06-27 07:12:19'),
-(17, 1, 1, '2026-06-27 07:12:19'),
-(18, 1, 1, '2026-06-27 07:12:19'),
-(19, 1, 1, '2026-06-27 07:12:20'),
-(20, 1, 1, '2026-06-27 07:12:20'),
-(21, 1, 1, '2026-06-27 07:12:20'),
-(22, 1, 1, '2026-06-27 07:12:20'),
-(23, 1, 1, '2026-06-27 07:12:20'),
-(24, 1, 1, '2026-06-27 07:12:20'),
-(25, 1, 1, '2026-06-27 07:12:35'),
-(26, 1, 4, '2026-07-01 16:13:51'),
-(27, 1, 4, '2026-07-01 16:15:27'),
-(28, 1, 4, '2026-07-01 16:16:31'),
-(29, 1, 4, '2026-07-01 16:17:42'),
-(30, 5, 6, '2026-07-03 18:28:42'),
-(31, 5, 6, '2026-07-03 18:28:42'),
-(32, 5, 6, '2026-07-03 18:28:42'),
-(33, 5, 6, '2026-07-03 18:28:42'),
-(34, 1, 7, '2026-07-05 13:22:32');
+INSERT INTO `bookings` (`id`, `user_id`, `event_id`, `ticket_quantity`, `total_amount`, `payment_status`, `booking_status`, `qr_code`, `booking_date`) VALUES
+(32, 5, 6, 1, 0.00, 'Pending', 'Pending', NULL, '2026-07-03 18:28:42'),
+(33, 5, 6, 1, 0.00, 'Pending', 'Pending', NULL, '2026-07-03 18:28:42'),
+(84, 5, 9, 1, 4000.00, 'Pending', 'Pending', NULL, '2026-07-12 07:48:46'),
+(85, 7, 7, 1, 8000.00, 'Pending', 'Pending', NULL, '2026-07-12 08:07:42'),
+(96, 7, 7, 1, 8000.00, 'Pending', 'Pending', NULL, '2026-07-12 17:20:24'),
+(109, 9, 14, 1, 4000.00, 'Pending', 'Pending', NULL, '2026-07-12 20:38:32'),
+(110, 9, 14, 1, 4000.00, 'Pending', 'Pending', NULL, '2026-07-12 20:40:54'),
+(111, 9, 14, 1, 4000.00, 'Pending', 'Pending', NULL, '2026-07-12 20:45:23'),
+(112, 9, 14, 1, 4000.00, 'Pending', 'Pending', NULL, '2026-07-12 20:49:34'),
+(113, 9, 14, 1, 4000.00, 'Paid', 'Confirmed', NULL, '2026-07-12 20:53:55'),
+(114, 9, 14, 1, 4000.00, 'Paid', 'Confirmed', NULL, '2026-07-12 20:56:44'),
+(115, 9, 6, 1, 6000.00, 'Paid', 'Confirmed', NULL, '2026-07-12 21:08:26'),
+(116, 9, 7, 1, 8000.00, 'Paid', 'Confirmed', NULL, '2026-07-12 21:16:04'),
+(117, 9, 15, 1, 1000.00, 'Paid', 'Confirmed', NULL, '2026-07-12 22:01:34'),
+(118, 9, 7, 1, 8000.00, 'Paid', 'Confirmed', NULL, '2026-07-13 00:04:15'),
+(119, 9, 14, 1, 4000.00, 'Paid', 'Confirmed', NULL, '2026-07-13 00:16:58'),
+(120, 9, 16, 1, 5000.00, 'Paid', 'Confirmed', NULL, '2026-07-13 00:22:02'),
+(121, 9, 17, 1, 5000.00, 'Paid', 'Confirmed', NULL, '2026-07-13 03:09:40'),
+(122, 9, 17, 1, 5000.00, 'Pending', 'Pending', NULL, '2026-07-13 05:15:48'),
+(123, 9, 17, 1, 5000.00, 'Pending', 'Pending', NULL, '2026-07-13 05:15:50'),
+(124, 9, 17, 1, 5000.00, 'Pending', 'Pending', NULL, '2026-07-13 05:15:54'),
+(125, 9, 17, 1, 5000.00, 'Pending', 'Pending', NULL, '2026-07-13 05:15:54'),
+(126, 9, 17, 1, 5000.00, 'Pending', 'Pending', NULL, '2026-07-13 05:15:54'),
+(127, 9, 17, 1, 5000.00, 'Pending', 'Pending', NULL, '2026-07-13 05:15:54'),
+(128, 9, 17, 1, 5000.00, 'Pending', 'Pending', NULL, '2026-07-13 05:15:55'),
+(129, 9, 17, 1, 5000.00, 'Pending', 'Pending', NULL, '2026-07-13 05:15:58'),
+(130, 9, 17, 1, 5000.00, 'Pending', 'Pending', NULL, '2026-07-13 05:15:58'),
+(131, 9, 17, 1, 5000.00, 'Pending', 'Pending', NULL, '2026-07-13 05:15:59'),
+(132, 9, 17, 1, 5000.00, 'Pending', 'Pending', NULL, '2026-07-13 05:15:59'),
+(133, 9, 17, 1, 5000.00, 'Pending', 'Pending', NULL, '2026-07-13 05:15:59'),
+(134, 9, 17, 1, 5000.00, 'Pending', 'Pending', NULL, '2026-07-13 05:15:59'),
+(135, 9, 17, 1, 5000.00, 'Pending', 'Pending', NULL, '2026-07-13 05:16:00'),
+(136, 9, 17, 1, 5000.00, 'Pending', 'Pending', NULL, '2026-07-13 05:16:00'),
+(137, 9, 17, 1, 5000.00, 'Pending', 'Pending', NULL, '2026-07-13 05:16:01'),
+(138, 9, 17, 1, 5000.00, 'Pending', 'Pending', NULL, '2026-07-13 05:16:01'),
+(139, 9, 17, 1, 5000.00, 'Pending', 'Pending', NULL, '2026-07-13 05:16:02'),
+(140, 9, 17, 1, 5000.00, 'Pending', 'Pending', NULL, '2026-07-13 05:16:02'),
+(141, 9, 17, 1, 5000.00, 'Pending', 'Pending', NULL, '2026-07-13 05:16:03'),
+(142, 9, 17, 1, 5000.00, 'Pending', 'Pending', NULL, '2026-07-13 05:16:03'),
+(143, 9, 17, 1, 5000.00, 'Pending', 'Pending', NULL, '2026-07-13 05:16:03'),
+(144, 9, 17, 1, 5000.00, 'Pending', 'Pending', NULL, '2026-07-13 05:16:09'),
+(145, 9, 17, 1, 5000.00, 'Pending', 'Pending', NULL, '2026-07-13 05:16:09'),
+(146, 9, 17, 1, 5000.00, 'Pending', 'Pending', NULL, '2026-07-13 05:16:09'),
+(147, 9, 17, 1, 5000.00, 'Pending', 'Pending', NULL, '2026-07-13 05:16:10'),
+(148, 9, 17, 1, 5000.00, 'Pending', 'Pending', NULL, '2026-07-13 05:16:15'),
+(149, 9, 17, 1, 5000.00, 'Pending', 'Pending', NULL, '2026-07-13 05:16:15'),
+(150, 9, 17, 1, 5000.00, 'Pending', 'Pending', NULL, '2026-07-13 05:16:22'),
+(151, 9, 17, 1, 5000.00, 'Paid', 'Confirmed', NULL, '2026-07-13 05:18:40'),
+(152, 9, 19, 1, 6000.00, 'Paid', 'Confirmed', NULL, '2026-07-13 06:03:18'),
+(153, 9, 19, 1, 6000.00, 'Pending', 'Pending', NULL, '2026-07-13 06:06:31'),
+(154, 9, 20, 1, 500.00, 'Paid', 'Confirmed', NULL, '2026-07-13 06:16:36'),
+(155, 9, 21, 1, 300.00, 'Paid', 'Confirmed', NULL, '2026-07-13 06:36:01'),
+(156, 9, 22, 1, 1000.00, 'Paid', 'Confirmed', NULL, '2026-07-13 06:47:17'),
+(157, 9, 23, 1, 5000.00, 'Paid', 'Confirmed', NULL, '2026-07-13 07:49:18');
 
 -- --------------------------------------------------------
 
@@ -91,18 +116,30 @@ CREATE TABLE `events` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `price` decimal(10,2) NOT NULL DEFAULT 0.00,
   `image` varchar(255) DEFAULT NULL,
-  `category` varchar(100) DEFAULT 'General'
+  `category` varchar(100) DEFAULT 'General',
+  `status` varchar(20) NOT NULL DEFAULT 'pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `events`
 --
 
-INSERT INTO `events` (`id`, `organizer_id`, `title`, `description`, `event_date`, `location`, `capacity`, `created_at`, `price`, `image`, `category`) VALUES
-(1, 2, 'Tech Conference 2026 - Updated', 'Updated event details', '2026-12-25', 'Kandy', 600, '2026-06-12 09:41:41', 2500.00, NULL, 'General'),
-(4, 5, 'football fiesta', 'pattama football parak gahamu', '2026-02-03', 'Negombo', NULL, '2026-07-01 15:39:23', 0.00, NULL, 'General'),
-(6, 5, 'Aluth kalawak', 'Held on portcity colombo ', '2026-02-08', 'Colombo', 1000, '2026-07-03 06:00:21', 6000.00, '1783058421_images.jpg', 'Music'),
-(7, 5, 'Likitha Event', 'Ape likithaya', '2026-04-03', 'Gampaha', 60, '2026-07-03 18:31:49', 8000.00, '1783103509_Green and Yellow Gardening YouTube Banner.png', 'Music');
+INSERT INTO `events` (`id`, `organizer_id`, `title`, `description`, `event_date`, `location`, `capacity`, `created_at`, `price`, `image`, `category`, `status`) VALUES
+(1, 2, 'Tech Conference 2026 - Updated', 'Updated event details', '2026-12-25', 'Kandy', 600, '2026-06-12 09:41:41', 2500.00, NULL, 'General', 'pending'),
+(4, 2, 'football fiesta', 'pattama football parak gahamu', '2026-02-03', 'Negombo', NULL, '2026-07-01 15:39:23', 0.00, NULL, 'General', 'rejected'),
+(6, 2, 'Aluth kalawak', 'Held on portcity colombo ', '2026-02-08', 'Colombo', 1000, '2026-07-03 06:00:21', 6000.00, '1783058421_images.jpg', 'Music', 'approved'),
+(7, 2, 'Likitha Event', 'Ape likithaya', '2026-04-03', 'Gampaha', 60, '2026-07-03 18:31:49', 8000.00, '1783103509_Green and Yellow Gardening YouTube Banner.png', 'Music', 'approved'),
+(9, 2, 'Chess ', 'sport', '2026-07-21', 'Campus', 2998, '2026-07-12 06:46:38', 4000.00, '', 'General', 'rejected'),
+(14, 2, 'HER', 'Music Event', '2026-07-15', 'Colombo', 300, '2026-07-12 18:51:33', 4000.00, '1783882293_Screenshot 2026-07-12 221402.png', 'Music', 'approved'),
+(15, 2, 'Praharshana', 'Drama Event', '2026-07-18', 'UWU', 299, '2026-07-12 21:59:11', 1000.00, '1783893551_download.jpg', 'Entertainment', 'approved'),
+(16, 2, 'Mariens Live in concert', 'Come Have Fun with the mariens ', '2026-07-25', 'Negombo', 200, '2026-07-13 00:19:49', 5000.00, '1783901989_MARIANS_Unplugged_Live_in_Dubai_2015_may_15_Sheikh_Rashid_Auditorium_The_Indian_High_School_25147-full.jpg', 'Music', 'approved'),
+(17, 2, 'Gypsis Live in Concert', 'Come Have fun with us', '2026-07-31', 'Kalutara', 100, '2026-07-13 03:07:46', 5000.00, '1783912066_LIVE_IM_PARK_Gypsys.jpg', 'Music', 'approved'),
+(18, 2, 'cricket event', 'cricket event for all', '2026-07-15', 'Kandy', 300, '2026-07-13 05:29:53', 500.00, '', 'Sports', 'pending'),
+(19, 2, 'Dancing night', 'all can dance', '2026-07-18', 'Gampaha', 100, '2026-07-13 05:58:14', 6000.00, '1783922294_MARIANS_Unplugged_Live_in_Dubai_2015_may_15_Sheikh_Rashid_Auditorium_The_Indian_High_School_25147-full.jpg', 'Music', 'approved'),
+(20, 2, 'chess event', 'you all can play chess', '2026-07-16', 'Kandy', 100, '2026-07-13 06:12:49', 500.00, '1783923169_LIVE_IM_PARK_Gypsys.jpg', 'Sports', 'approved'),
+(21, 2, 'chagudu ewent', 'have sun fun', '2026-07-25', 'Kandy', 1000, '2026-07-13 06:31:52', 300.00, '', 'Sports', 'approved'),
+(22, 2, 'F1 race', 'cars race', '2026-07-25', 'Kandy', 500, '2026-07-13 06:43:33', 1000.00, '', 'Sports', 'approved'),
+(23, 2, 'Sarith surith event', 'Music event vfor all', '2026-07-24', 'Kandy', 100, '2026-07-13 07:45:10', 5000.00, '1783928710_maxresdefault.jpg', 'Music', 'approved');
 
 -- --------------------------------------------------------
 
@@ -122,7 +159,8 @@ CREATE TABLE `organizers` (
 --
 
 INSERT INTO `organizers` (`id`, `user_id`, `organization_name`, `verification_status`) VALUES
-(1, 3, 'ABC Events', 'approved');
+(1, 3, 'ABC Events', 'approved'),
+(2, 5, 'Yumeth Events', 'approved');
 
 -- --------------------------------------------------------
 
@@ -144,7 +182,58 @@ CREATE TABLE `payments` (
 --
 
 INSERT INTO `payments` (`id`, `booking_id`, `amount`, `transaction_id`, `payment_status`, `created_at`) VALUES
-(1, 1, 2000.00, 'TXN001', 'success', '2026-06-05 05:51:33');
+(46, 84, 4000.00, NULL, 'pending', '2026-07-12 07:48:46'),
+(47, 85, 8000.00, NULL, 'pending', '2026-07-12 08:07:42'),
+(58, 96, 8000.00, NULL, 'pending', '2026-07-12 17:20:24'),
+(71, 109, 4000.00, NULL, 'pending', '2026-07-12 20:38:32'),
+(72, 110, 4000.00, NULL, 'pending', '2026-07-12 20:40:54'),
+(73, 111, 4000.00, NULL, 'pending', '2026-07-12 20:45:23'),
+(74, 112, 4000.00, NULL, 'pending', '2026-07-12 20:49:34'),
+(75, 113, 4000.00, NULL, 'pending', '2026-07-12 20:53:55'),
+(76, 114, 4000.00, NULL, 'pending', '2026-07-12 20:56:44'),
+(77, 115, 6000.00, NULL, 'pending', '2026-07-12 21:08:26'),
+(78, 116, 8000.00, NULL, 'pending', '2026-07-12 21:16:04'),
+(79, 117, 1000.00, NULL, 'pending', '2026-07-12 22:01:34'),
+(80, 118, 8000.00, NULL, 'pending', '2026-07-13 00:04:15'),
+(81, 119, 4000.00, NULL, 'pending', '2026-07-13 00:16:58'),
+(82, 120, 5000.00, NULL, 'pending', '2026-07-13 00:22:02'),
+(83, 121, 5000.00, NULL, 'pending', '2026-07-13 03:09:40'),
+(84, 122, 5000.00, NULL, 'pending', '2026-07-13 05:15:48'),
+(85, 123, 5000.00, NULL, 'pending', '2026-07-13 05:15:50'),
+(86, 124, 5000.00, NULL, 'pending', '2026-07-13 05:15:54'),
+(87, 125, 5000.00, NULL, 'pending', '2026-07-13 05:15:54'),
+(88, 126, 5000.00, NULL, 'pending', '2026-07-13 05:15:54'),
+(89, 127, 5000.00, NULL, 'pending', '2026-07-13 05:15:54'),
+(90, 128, 5000.00, NULL, 'pending', '2026-07-13 05:15:55'),
+(91, 129, 5000.00, NULL, 'pending', '2026-07-13 05:15:58'),
+(92, 130, 5000.00, NULL, 'pending', '2026-07-13 05:15:58'),
+(93, 131, 5000.00, NULL, 'pending', '2026-07-13 05:15:59'),
+(94, 132, 5000.00, NULL, 'pending', '2026-07-13 05:15:59'),
+(95, 133, 5000.00, NULL, 'pending', '2026-07-13 05:15:59'),
+(96, 134, 5000.00, NULL, 'pending', '2026-07-13 05:15:59'),
+(97, 135, 5000.00, NULL, 'pending', '2026-07-13 05:16:00'),
+(98, 136, 5000.00, NULL, 'pending', '2026-07-13 05:16:00'),
+(99, 137, 5000.00, NULL, 'pending', '2026-07-13 05:16:01'),
+(100, 138, 5000.00, NULL, 'pending', '2026-07-13 05:16:01'),
+(101, 139, 5000.00, NULL, 'pending', '2026-07-13 05:16:02'),
+(102, 140, 5000.00, NULL, 'pending', '2026-07-13 05:16:02'),
+(103, 141, 5000.00, NULL, 'pending', '2026-07-13 05:16:03'),
+(104, 142, 5000.00, NULL, 'pending', '2026-07-13 05:16:03'),
+(105, 143, 5000.00, NULL, 'pending', '2026-07-13 05:16:03'),
+(106, 144, 5000.00, NULL, 'pending', '2026-07-13 05:16:09'),
+(107, 145, 5000.00, NULL, 'pending', '2026-07-13 05:16:09'),
+(108, 146, 5000.00, NULL, 'pending', '2026-07-13 05:16:09'),
+(109, 147, 5000.00, NULL, 'pending', '2026-07-13 05:16:10'),
+(110, 148, 5000.00, NULL, 'pending', '2026-07-13 05:16:15'),
+(111, 149, 5000.00, NULL, 'pending', '2026-07-13 05:16:15'),
+(112, 150, 5000.00, NULL, 'pending', '2026-07-13 05:16:22'),
+(113, 151, 5000.00, NULL, 'pending', '2026-07-13 05:18:40'),
+(114, 152, 6000.00, NULL, 'pending', '2026-07-13 06:03:18'),
+(115, 153, 6000.00, NULL, 'pending', '2026-07-13 06:06:31'),
+(116, 154, 500.00, NULL, 'pending', '2026-07-13 06:16:36'),
+(117, 155, 300.00, NULL, 'pending', '2026-07-13 06:36:01'),
+(118, 156, 1000.00, NULL, 'pending', '2026-07-13 06:47:17'),
+(119, 157, 5000.00, NULL, 'pending', '2026-07-13 07:49:18');
 
 -- --------------------------------------------------------
 
@@ -191,36 +280,31 @@ CREATE TABLE `tickets` (
 --
 
 INSERT INTO `tickets` (`id`, `booking_id`, `ticket_code`, `qr_code`, `created_at`, `status`) VALUES
-(1, 1, 'TKT001', 'qr_placeholder.png', '2026-06-05 05:51:45', 'unused'),
-(2, 4, 'TKT00004', 'qr_placeholder.png', '2026-06-26 09:03:14', 'unused'),
-(3, 5, 'TKT00005', 'qr_placeholder.png', '2026-06-26 09:03:28', 'unused'),
-(4, 6, 'TKT00006', 'qr_placeholder.png', '2026-06-26 09:04:30', 'unused'),
-(5, 7, 'TKT00007', 'qr_placeholder.png', '2026-06-26 09:08:15', 'unused'),
-(6, 10, 'TKT00010', 'qr_placeholder.png', '2026-06-26 10:20:32', 'unused'),
-(7, 11, 'TKT00011', 'qr_placeholder.png', '2026-06-26 17:40:52', 'unused'),
-(8, 12, 'TKT00012', 'qr_placeholder.png', '2026-06-26 17:47:44', 'unused'),
-(9, 16, 'TKT00016', 'uploads/qr/TKT00016.png', '2026-06-27 07:12:20', 'unused'),
-(10, 14, 'TKT00014', 'uploads/qr/TKT00014.png', '2026-06-27 07:12:20', 'unused'),
-(11, 18, 'TKT00018', 'uploads/qr/TKT00018.png', '2026-06-27 07:12:20', 'unused'),
-(12, 15, 'TKT00015', 'uploads/qr/TKT00015.png', '2026-06-27 07:12:20', 'used'),
-(13, 17, 'TKT00017', 'uploads/qr/TKT00017.png', '2026-06-27 07:12:20', 'unused'),
-(14, 13, 'TKT00013', 'uploads/qr/TKT00013.png', '2026-06-27 07:12:20', 'unused'),
-(15, 19, 'TKT00019', 'uploads/qr/TKT00019.png', '2026-06-27 07:12:20', 'unused'),
-(16, 20, 'TKT00020', 'uploads/qr/TKT00020.png', '2026-06-27 07:12:20', 'unused'),
-(17, 21, 'TKT00021', 'uploads/qr/TKT00021.png', '2026-06-27 07:12:20', 'unused'),
-(18, 22, 'TKT00022', 'uploads/qr/TKT00022.png', '2026-06-27 07:12:20', 'unused'),
-(19, 24, 'TKT00024', 'uploads/qr/TKT00024.png', '2026-06-27 07:12:20', 'unused'),
-(20, 23, 'TKT00023', 'uploads/qr/TKT00023.png', '2026-06-27 07:12:20', 'unused'),
-(21, 25, 'TKT00025', 'uploads/qr/TKT00025.png', '2026-06-27 07:12:35', 'unused'),
-(22, 26, 'TKT00026', 'uploads/qr/TKT00026.png', '2026-07-01 16:13:53', 'unused'),
-(23, 27, 'TKT00027', 'uploads/qr/TKT00027.png', '2026-07-01 16:15:27', 'unused'),
-(24, 28, 'TKT00028', 'uploads/qr/TKT00028.png', '2026-07-01 16:16:31', 'unused'),
-(25, 29, 'TKT00029', 'uploads/qr/TKT00029.png', '2026-07-01 16:17:42', 'unused'),
 (26, 33, 'TKT00033', 'uploads/qr/TKT00033.png', '2026-07-03 18:28:44', 'unused'),
-(27, 32, 'TKT00032', 'uploads/qr/TKT00032.png', '2026-07-03 18:28:44', 'unused'),
-(28, 31, 'TKT00031', 'uploads/qr/TKT00031.png', '2026-07-03 18:28:44', 'unused'),
-(29, 30, 'TKT00030', 'uploads/qr/TKT00030.png', '2026-07-03 18:28:44', 'unused'),
-(30, 34, 'TKT00034', 'uploads/qr/TKT00034.png', '2026-07-05 13:22:34', 'unused');
+(40, 115, 'EVT-115-8065', NULL, '2026-07-12 21:15:44', 'unused'),
+(41, 116, 'EVT-116-4217', NULL, '2026-07-12 21:16:11', 'unused'),
+(42, 116, 'EVT-116-5496', NULL, '2026-07-12 21:16:11', 'unused'),
+(43, 117, 'EVT-117-3580', NULL, '2026-07-12 22:01:49', 'unused'),
+(44, 118, 'EVT-118-4924', 'uploads/qr/ticket_118.png', '2026-07-13 00:04:29', 'unused'),
+(45, 118, 'EVT-118-7188', 'uploads/qr/ticket_118.png', '2026-07-13 00:04:29', 'unused'),
+(46, 119, 'EVT-119-9453', 'uploads/qr/ticket_119.png', '2026-07-13 00:17:13', 'unused'),
+(47, 119, 'EVT-119-6432', 'uploads/qr/ticket_119.png', '2026-07-13 00:17:13', 'unused'),
+(48, 120, 'EVT-120-4215', 'uploads/qr/ticket_120.png', '2026-07-13 00:22:18', 'unused'),
+(49, 120, 'EVT-120-8232', 'uploads/qr/ticket_120.png', '2026-07-13 00:22:18', 'unused'),
+(50, 121, 'EVT-121-3022', 'uploads/qr/ticket_121.png', '2026-07-13 03:09:56', 'unused'),
+(51, 121, 'EVT-121-3294', 'uploads/qr/ticket_121.png', '2026-07-13 03:09:56', 'unused'),
+(52, 151, 'EVT-151-8587', 'uploads/qr/ticket_151.png', '2026-07-13 05:19:05', 'unused'),
+(53, 151, 'EVT-151-3139', 'uploads/qr/ticket_151.png', '2026-07-13 05:19:05', 'unused'),
+(54, 152, 'EVT-152-2744', 'uploads/qr/ticket_152.png', '2026-07-13 06:03:37', 'unused'),
+(55, 152, 'EVT-152-4102', 'uploads/qr/ticket_152.png', '2026-07-13 06:03:37', 'unused'),
+(56, 154, 'EVT-154-2854', 'uploads/qr/ticket_154.png', '2026-07-13 06:17:00', 'unused'),
+(57, 154, 'EVT-154-4158', 'uploads/qr/ticket_154.png', '2026-07-13 06:17:00', 'unused'),
+(58, 155, 'EVT-155-4738', 'uploads/qr/ticket_155.png', '2026-07-13 06:36:20', 'unused'),
+(59, 155, 'EVT-155-1536', 'uploads/qr/ticket_155.png', '2026-07-13 06:36:20', 'unused'),
+(60, 156, 'EVT-156-4334', 'uploads/qr/ticket_156.png', '2026-07-13 06:47:30', 'unused'),
+(61, 156, 'EVT-156-8860', 'uploads/qr/ticket_156.png', '2026-07-13 06:47:30', 'unused'),
+(62, 157, 'EVT-157-3876', 'uploads/qr/ticket_157.png', '2026-07-13 07:49:31', 'unused'),
+(63, 157, 'EVT-157-7118', 'uploads/qr/ticket_157.png', '2026-07-13 07:49:31', 'unused');
 
 -- --------------------------------------------------------
 
@@ -243,12 +327,11 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`) VALUES
-(1, 'Hiran Anjana kamal', 'hirananjana12@gmail.com', '0753565291', '$2y$10$0sCCvIO/7.apZ1mOGaqgzuwnyZvteNEpp6vma.FmqKfK0347bPa1y', 'customer', '2026-06-17 17:32:35'),
 (2, 'Dasun Shanaka', 'dasun@gmail.com', '0740461033', '$2y$10$WZvwgw4Nubb96X88DfUCsOBPYc04l.CdQCzfEZ6qBpL3NFD4Ujx2m', 'customer', '2026-06-17 18:00:12'),
 (3, 'kamal Shanaka', 'test@gmail.com', '0740461034', '$2y$10$Y.8flr95U40QukoYYBiQpee4.Mbj04y2z9o9E2ZJUmS4ZG2YezKnu', 'customer', '2026-06-17 18:11:57'),
-(4, 'Upul Shanaka', 'Upul@gmail.com', '0740461039', '$2y$10$aDP/vooJTjhZ2lt9G0NtiOHOxm0KRVIYqeq6rekfgIOl6geJVeSma', 'organizer', '2026-06-17 18:40:56'),
 (5, 'Yumeth Pahasara', 'yumethpahasara12@gmail.com', '0740709421', '$2y$10$PebIoRxMdvY3HtdmpAULVOLgkq9CaCJGpZks4953q6ZU1TC1zjX5W', 'organizer', '2026-06-20 06:07:02'),
-(6, 'Hashen', 'hashenhewage9098@gmail.com', '0752593623', '$2y$10$FVDW14uFXsNdQny5sAEf2uMSDpE46GVoqzY98ytJOQhLnPDwTiXXy', 'admin', '2026-06-23 05:57:44');
+(7, 'Thimira', 'thimira12@gmail.com', '0713423445', '$2y$10$6J6hpn8p4ZpDRFtiaYarueKDWQqpGwFRJems.vbmuSPbf/kBxGikS', 'admin', '2026-07-10 18:25:53'),
+(9, 'Hiran Anajana', 'hirananjana12@gmail.com', '0701079141', '$2y$10$3yJP/UXffrUO9pErPOkxp.pWboYL7fLhqP/E/F4cWH/4fq1FVuaV6', 'customer', '2026-07-12 20:38:00');
 
 --
 -- Indexes for dumped tables
@@ -313,25 +396,25 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `bookings`
 --
 ALTER TABLE `bookings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=158;
 
 --
 -- AUTO_INCREMENT for table `events`
 --
 ALTER TABLE `events`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `organizers`
 --
 ALTER TABLE `organizers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `payments`
 --
 ALTER TABLE `payments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=120;
 
 --
 -- AUTO_INCREMENT for table `seats`
@@ -343,13 +426,13 @@ ALTER TABLE `seats`
 -- AUTO_INCREMENT for table `tickets`
 --
 ALTER TABLE `tickets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Constraints for dumped tables
@@ -378,7 +461,7 @@ ALTER TABLE `organizers`
 -- Constraints for table `payments`
 --
 ALTER TABLE `payments`
-  ADD CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`id`);
+  ADD CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `seats`
