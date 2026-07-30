@@ -7,6 +7,8 @@ import {
   FaTicketAlt,
   FaCalendarAlt,
   FaUsers,
+  FaUndo,
+  FaCheckCircle,
 } from "react-icons/fa";
 
 import { motion } from "framer-motion";
@@ -70,6 +72,29 @@ const AdminBookings = () => {
 
       if (data.success) {
         setBookings((prev) => prev.filter((booking) => booking.id !== id));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const processRefund = async (id, action = "approve") => {
+    try {
+      const response = await fetch(API + "admin_process_refund.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ booking_id: id, action: action }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setBookings((prev) =>
+          prev.map((b) =>
+            b.id === id ? { ...b, payment_status: data.payment_status } : b,
+          ),
+        );
+        alert(data.message);
       }
     } catch (error) {
       console.log(error);
@@ -212,7 +237,7 @@ text-white
 
               <th className="p-4 text-left">Event Date</th>
 
-              <th className="p-4 text-left">Booking Date</th>
+              <th className="p-4 text-left">Status</th>
 
               <th className="p-4 text-left">Actions</th>
             </tr>
@@ -260,15 +285,44 @@ text-gray-500
 
                   <td className="p-4">{item.event_date}</td>
 
-                  <td className="p-4">{item.booking_date}</td>
+                  <td className="p-4">
+                    {item.payment_status === "Refund Requested" ? (
+                      <span className="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full animate-pulse">
+                        Refund Pending
+                      </span>
+                    ) : item.payment_status === "Refunded" ? (
+                      <span className="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full">
+                        Refunded
+                      </span>
+                    ) : item.booking_status === "Cancelled" ? (
+                      <span className="bg-rose-100 text-rose-800 text-xs font-bold px-3 py-1 rounded-full">
+                        Cancelled
+                      </span>
+                    ) : (
+                      <span className="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">
+                        {item.payment_status || "Confirmed"}
+                      </span>
+                    )}
+                  </td>
 
                   <td
                     className="
 p-4
 flex
+items-center
 gap-2
 "
                   >
+                    {item.payment_status === "Refund Requested" && (
+                      <button
+                        onClick={() => processRefund(item.id, "approve")}
+                        className="bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs px-3 py-2 rounded-lg flex items-center gap-1 shadow transition"
+                        title="Approve Refund"
+                      >
+                        <FaUndo /> Approve Refund
+                      </button>
+                    )}
+
                     <button
                       onClick={() => setSelected(item)}
                       className="

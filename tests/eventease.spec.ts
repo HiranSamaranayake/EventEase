@@ -89,4 +89,36 @@ test.describe('EventEase Platform E2E Tests', () => {
     await expect(page.getByRole('heading', { name: 'My Saved Wishlist' })).toBeVisible();
   });
 
+  test('Customer My Bookings & Cancellation UI operates correctly', async ({ page }) => {
+    // Set authenticated customer session
+    await page.addInitScript(({ token }) => {
+      window.localStorage.setItem('user', JSON.stringify({
+        id: 9,
+        full_name: 'Hiran Anajana',
+        email: 'hirananjana12@gmail.com',
+        role: 'customer'
+      }));
+      window.localStorage.setItem('token', token);
+    }, { token: dummyToken });
+
+    await page.goto('/my-bookings');
+    await expect(page.getByRole('heading', { name: 'My Bookings' })).toBeVisible();
+  });
+
+  test('Admin Bookings and Refund Processing UI operates correctly', async ({ page }) => {
+    // Set authenticated admin session
+    await page.addInitScript(({ token }) => {
+      window.localStorage.setItem('user', JSON.stringify({
+        id: 7,
+        full_name: 'Thimira Admin',
+        email: 'thimira12@gmail.com',
+        role: 'admin'
+      }));
+      window.localStorage.setItem('token', token);
+    }, { token: dummyToken });
+
+    await page.goto('/admin/bookings');
+    await expect(page.getByRole('heading', { name: 'Booking Management' })).toBeVisible();
+  });
+
 });

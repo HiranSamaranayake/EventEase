@@ -7,77 +7,35 @@ header("Content-Type: application/json");
 
 require_once "../config/database.php";
 
-
-$sql="
-
+$sql = "
 SELECT
-
-bookings.id,
-
-users.full_name AS customer,
-
-users.email,
-
-events.title AS event,
-
-events.event_date,
-
-events.location,
-
-bookings.booking_date
-
-
+    bookings.id,
+    users.full_name AS customer,
+    users.email,
+    events.title AS event,
+    events.event_date,
+    events.location,
+    bookings.booking_date,
+    bookings.booking_status,
+    bookings.payment_status,
+    bookings.total_amount
 FROM bookings
-
-
-LEFT JOIN users
-
-ON bookings.user_id = users.id
-
-
-LEFT JOIN events
-
-ON bookings.event_id = events.id
-
-
+LEFT JOIN users ON bookings.user_id = users.id
+LEFT JOIN events ON bookings.event_id = events.id
 ORDER BY bookings.id DESC
-
-
 ";
 
+$result = $conn->query($sql);
 
+$bookings = [];
 
-$result=$conn->query($sql);
-
-
-
-$bookings=[];
-
-
-
-if($result){
-
-
-while($row=$result->fetch_assoc()){
-
-
-$bookings[]=$row;
-
-
+if ($result) {
+    while ($row = $result->fetch_assoc()) {
+        $bookings[] = $row;
+    }
 }
-
-
-}
-
-
 
 echo json_encode([
-
-"success"=>true,
-
-"bookings"=>$bookings
-
+    "success" => true,
+    "bookings" => $bookings
 ]);
-
-
-?>
