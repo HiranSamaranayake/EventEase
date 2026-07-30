@@ -14,6 +14,7 @@ import CustomerDashboard from "./pages/customer/CustomerDashboard";
 import PaymentSuccess from "./pages/customer/PaymentSuccess";
 import PaymentCancel from "./pages/customer/PaymentCancel";
 import SavedEvents from "./pages/customer/SavedEvents";
+import WaitingList from "./pages/customer/WaitingList";
 
 // ================= AUTH =================
 
@@ -100,6 +101,15 @@ function App() {
           element={
             <ProtectedRoute allowedRole="customer">
               <SavedEvents />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/waiting-list"
+          element={
+            <ProtectedRoute allowedRole="customer">
+              <WaitingList />
             </ProtectedRoute>
           }
         />

@@ -102,6 +102,18 @@ const Sidebar = () => {
                             >
                                 ❤️ Saved Wishlist
                             </Link>
+
+                            <Link
+                                to="/waiting-list"
+                                className="
+                                    flex items-center gap-3
+                                    p-3 rounded-xl
+                                    hover:bg-purple-100
+                                    transition
+                                "
+                            >
+                                ⏳ Waiting List
+                            </Link>
                         </>
                     )}
 

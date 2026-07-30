@@ -121,4 +121,20 @@ test.describe('EventEase Platform E2E Tests', () => {
     await expect(page.getByRole('heading', { name: 'Booking Management' })).toBeVisible();
   });
 
+  test('Customer Waiting List Queue UI operates correctly', async ({ page }) => {
+    // Set authenticated customer session
+    await page.addInitScript(({ token }) => {
+      window.localStorage.setItem('user', JSON.stringify({
+        id: 9,
+        full_name: 'Hiran Anajana',
+        email: 'hirananjana12@gmail.com',
+        role: 'customer'
+      }));
+      window.localStorage.setItem('token', token);
+    }, { token: dummyToken });
+
+    await page.goto('/waiting-list');
+    await expect(page.getByRole('heading', { name: 'My Waiting Lists' })).toBeVisible();
+  });
+
 });
