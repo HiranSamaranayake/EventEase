@@ -13,6 +13,7 @@ import Profile from "./pages/customer/Profile";
 import CustomerDashboard from "./pages/customer/CustomerDashboard";
 import PaymentSuccess from "./pages/customer/PaymentSuccess";
 import PaymentCancel from "./pages/customer/PaymentCancel";
+import SavedEvents from "./pages/customer/SavedEvents";
 
 // ================= AUTH =================
 
@@ -30,6 +31,7 @@ import OrganizerLayout from "./components/OrganizerLayout";
 import OrganizerAnalytics from "./pages/organizer/OrganizerAnalytics";
 import OrganizerBookings from "./pages/organizer/OrganizerBookings";
 import OrganizerTickets from "./pages/organizer/OrganizerTickets";
+import ScanTicket from "./pages/organizer/ScanTicket";
 
 
 
@@ -89,6 +91,15 @@ function App() {
           element={
             <ProtectedRoute allowedRole="customer">
               <MyBookings />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/saved-events"
+          element={
+            <ProtectedRoute allowedRole="customer">
+              <SavedEvents />
             </ProtectedRoute>
           }
         />
@@ -153,6 +164,10 @@ function App() {
   <Route
     path="analytics"
     element={<OrganizerAnalytics />}
+  />
+  <Route
+    path="scan-ticket"
+    element={<ScanTicket />}
   />
 </Route>
 

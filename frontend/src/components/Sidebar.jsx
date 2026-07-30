@@ -90,6 +90,18 @@ const Sidebar = () => {
                             >
                                 🎫 My Bookings
                             </Link>
+
+                            <Link
+                                to="/saved-events"
+                                className="
+                                    flex items-center gap-3
+                                    p-3 rounded-xl
+                                    hover:bg-purple-100
+                                    transition
+                                "
+                            >
+                                ❤️ Saved Wishlist
+                            </Link>
                         </>
                     )}
 

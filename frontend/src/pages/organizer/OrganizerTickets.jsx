@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 import {
   FaTicketAlt,
@@ -6,6 +7,7 @@ import {
   FaCheckCircle,
   FaTimesCircle,
   FaClock,
+  FaQrcode,
 } from "react-icons/fa";
 
 const OrganizerTickets = () => {
@@ -64,9 +66,17 @@ const cancelledTickets =
 
   return (
     <div className="min-h-screen">
-      <h1 className="text-4xl font-bold text-purple-700 mb-8">
-        Ticket Management
-      </h1>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+        <h1 className="text-4xl font-bold text-purple-700">
+          Ticket Management
+        </h1>
+        <Link
+          to="/organizer/scan-ticket"
+          className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold rounded-2xl shadow-lg hover:shadow-emerald-500/20 transition flex items-center justify-center gap-2 self-start sm:self-auto"
+        >
+          <FaQrcode className="text-xl" /> Scan Venue Tickets
+        </Link>
+      </div>
 
       <div className="grid md:grid-cols-4 gap-6 mb-8">
 

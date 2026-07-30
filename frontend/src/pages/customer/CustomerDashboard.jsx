@@ -21,6 +21,8 @@ import {
   FaTrash,
   FaBell,
   FaCheckCircle,
+  FaHeart,
+  FaBookmark
 } from "react-icons/fa";
 
 import {
@@ -64,6 +66,8 @@ const CustomerDashboard = () => {
   const [bookingChart, setBookingChart] = useState([]);
 
   const [ticketChart, setTicketChart] = useState([]);
+
+  const [recommendations, setRecommendations] = useState([]);
 
   const [loading, setLoading] = useState(true);
 
@@ -185,6 +189,8 @@ const CustomerDashboard = () => {
           bookingChartRes,
 
           ticketChartRes,
+          
+          recommendRes
         ] = await Promise.all([
           fetch(
             "http://localhost/EventEase/backend/api/customer_dashboard.php",
@@ -205,6 +211,10 @@ const CustomerDashboard = () => {
           fetch(
             `http://localhost/EventEase/backend/api/customer_ticket_chart.php?user_id=${user.id}`,
           ),
+          
+          fetch(
+            `http://localhost/EventEase/backend/api/event_recommendations.php?user_id=${user.id}`,
+          ),
         ]);
 
         const statsData = await statsRes.json();
@@ -216,6 +226,8 @@ const CustomerDashboard = () => {
         const bookingChartData = await bookingChartRes.json();
 
         const ticketChartData = await ticketChartRes.json();
+        
+        const recommendData = await recommendRes.json();
 
         if (statsData.success) {
           setStats({
@@ -238,6 +250,9 @@ const CustomerDashboard = () => {
 
         if (ticketChartData.success)
           setTicketChart(ticketChartData.chart || []);
+          
+        if (recommendData.success)
+          setRecommendations(recommendData.recommendations || []);
       } catch (error) {
         console.log(error);
       } finally {
@@ -522,6 +537,28 @@ gap-2
                 >
                   <FaHome />
                   Return Home
+                </button>
+
+                <button
+                  onClick={() => navigate("/saved-events")}
+                  className="
+bg-rose-500
+hover:bg-rose-600
+text-white
+px-7
+py-3
+rounded-2xl
+font-bold
+hover:scale-105
+transition
+flex
+items-center
+gap-2
+shadow-lg
+"
+                >
+                  <FaHeart />
+                  My Saved Wishlist
                 </button>
 
                 {/* <button
@@ -852,6 +889,79 @@ text-sm
             </motion.div>
           ))}
         </div>
+
+        {/* ================= RECOMMENDED EVENTS FOR YOU ================= */}
+        {recommendations.length > 0 && (
+          <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-100 space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-black text-gray-900 flex items-center gap-2">
+                  <FaStar className="text-amber-500" /> Recommended For You
+                </h2>
+                <p className="text-gray-500 text-sm mt-0.5">
+                  Hand-picked events tailored to your favorite categories and booking interests.
+                </p>
+              </div>
+              <button
+                onClick={() => navigate("/events")}
+                className="text-sm font-bold text-purple-700 hover:text-purple-900 hover:underline"
+              >
+                View All Events →
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {recommendations.map((rec) => (
+                <div
+                  key={rec.id}
+                  onClick={() => navigate(`/event/${rec.id}`)}
+                  className="bg-slate-50 rounded-2xl overflow-hidden border border-gray-200 hover:shadow-lg transition cursor-pointer group flex flex-col justify-between"
+                >
+                  <div className="relative h-40 bg-slate-800">
+                    {rec.image ? (
+                      <img
+                        src={`http://localhost/EventEase/backend/uploads/${rec.image}`}
+                        alt={rec.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-purple-900 flex items-center justify-center text-white text-3xl">
+                        🎟️
+                      </div>
+                    )}
+                    <span className="absolute top-3 left-3 bg-purple-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">
+                      {rec.category || "General"}
+                    </span>
+                  </div>
+
+                  <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
+                    <div>
+                      <h3 className="font-bold text-gray-900 group-hover:text-purple-700 transition line-clamp-1">
+                        {rec.title}
+                      </h3>
+                      <div className="flex items-center gap-2 text-xs text-gray-500 mt-2">
+                        <FaCalendarAlt className="text-indigo-500" />
+                        <span>{rec.event_date}</span>
+                        <span className="mx-1">•</span>
+                        <FaMapMarkerAlt className="text-rose-500" />
+                        <span className="line-clamp-1">{rec.location || "TBD"}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between pt-3 border-t border-gray-200">
+                      <span className="font-extrabold text-sm text-gray-900">
+                        {parseFloat(rec.price) > 0 ? `LKR ${parseFloat(rec.price).toLocaleString()}` : "Free"}
+                      </span>
+                      <span className="text-xs font-bold text-purple-700 group-hover:translate-x-1 transition flex items-center gap-1">
+                        Book <FaTicketAlt className="text-xs" />
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* ================= CHARTS ================= */}
 

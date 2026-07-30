@@ -11,6 +11,7 @@ import {
   FaCog,
   FaHome,
   FaSignOutAlt,
+  FaQrcode,
 } from "react-icons/fa";
 
 const OrganizerSidebar = () => {
@@ -48,6 +49,11 @@ const OrganizerSidebar = () => {
   title: "Tickets",
   icon: <FaTicketAlt />,
   path: "/organizer/tickets",
+},
+{
+  title: "QR Scanner",
+  icon: <FaQrcode />,
+  path: "/organizer/scan-ticket",
 },
 
 ];

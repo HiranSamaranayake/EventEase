@@ -1,29 +1,56 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 
 const EventDetails = () => {
-
     const { id } = useParams();
-
+    const navigate = useNavigate();
     const [event, setEvent] = useState(null);
+    const [isFavorite, setIsFavorite] = useState(false);
+    const user = JSON.parse(localStorage.getItem("user"));
 
     useEffect(() => {
+        fetch(`http://localhost/EventEase/backend/api/event_details.php?id=${id}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    setEvent(data.event);
+                }
+            });
 
-        fetch(
-            `http://localhost/EventEase/backend/api/event_details.php?id=${id}`
-        )
-        .then(res => res.json())
-        .then(data => {
-
-            if (data.success) {
-
-                setEvent(data.event);
-
-            }
-
-        });
-
+        const currentUser = JSON.parse(localStorage.getItem("user"));
+        if (currentUser && currentUser.id) {
+            fetch(`http://localhost/EventEase/backend/api/my_favorites.php?user_id=${currentUser.id}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success && data.favorite_ids) {
+                        setIsFavorite(data.favorite_ids.some(favId => parseInt(favId) === parseInt(id)));
+                    }
+                });
+        }
     }, [id]);
+
+    const handleToggleFavorite = async () => {
+        const currentUser = JSON.parse(localStorage.getItem("user"));
+        if (!currentUser || !currentUser.id) {
+            navigate("/login");
+            return;
+        }
+
+        try {
+            const res = await fetch("http://localhost/EventEase/backend/api/toggle_favorite.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ user_id: currentUser.id, event_id: id })
+            });
+            const data = await res.json();
+            if (data.success) {
+                setIsFavorite(data.is_favorite);
+            }
+        } catch (err) {
+            console.error("Error toggling favorite", err);
+        }
+    };
 
     if (!event) {
 
@@ -57,6 +84,24 @@ const EventDetails = () => {
                     {/* Banner */}
 
                     <div className="relative">
+                        <button
+                            onClick={handleToggleFavorite}
+                            className={`absolute top-6 right-6 z-20 px-5 py-3 rounded-full shadow-2xl backdrop-blur-md transition flex items-center gap-2 font-bold text-sm ${
+                                isFavorite
+                                    ? "bg-rose-500 text-white hover:bg-rose-600 scale-105"
+                                    : "bg-white/80 hover:bg-white text-gray-800 hover:text-rose-500"
+                            }`}
+                        >
+                            {isFavorite ? (
+                                <>
+                                    <FaHeart className="text-white text-lg" /> Saved to Wishlist
+                                </>
+                            ) : (
+                                <>
+                                    <FaRegHeart className="text-rose-500 text-lg" /> Save to Wishlist
+                                </>
+                            )}
+                        </button>
 
                         <img
                             src={
