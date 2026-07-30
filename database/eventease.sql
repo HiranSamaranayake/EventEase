@@ -2,8 +2,8 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1:3307
--- Generation Time: Jul 28, 2026 at 11:02 AM
+-- Host: 127.0.0.1
+-- Generation Time: Jul 30, 2026 at 07:36 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -58,7 +58,7 @@ INSERT INTO `bookings` (`id`, `user_id`, `event_id`, `ticket_quantity`, `total_a
 (115, 9, 6, 1, 6000.00, 'Paid', 'Confirmed', NULL, '2026-07-12 21:08:26'),
 (116, 9, 7, 1, 8000.00, 'Paid', 'Confirmed', NULL, '2026-07-12 21:16:04'),
 (117, 9, 15, 1, 1000.00, 'Paid', 'Confirmed', NULL, '2026-07-12 22:01:34'),
-(118, 9, 7, 1, 8000.00, 'Paid', 'Confirmed', NULL, '2026-07-13 00:04:15'),
+(118, 9, 7, 1, 8000.00, '', 'Cancelled', NULL, '2026-07-13 00:04:15'),
 (119, 9, 14, 1, 4000.00, 'Paid', 'Confirmed', NULL, '2026-07-13 00:16:58'),
 (120, 9, 16, 1, 5000.00, 'Paid', 'Confirmed', NULL, '2026-07-13 00:22:02'),
 (121, 9, 17, 1, 5000.00, 'Paid', 'Confirmed', NULL, '2026-07-13 03:09:40'),
@@ -95,9 +95,11 @@ INSERT INTO `bookings` (`id`, `user_id`, `event_id`, `ticket_quantity`, `total_a
 (152, 9, 19, 1, 6000.00, 'Paid', 'Confirmed', NULL, '2026-07-13 06:03:18'),
 (153, 9, 19, 1, 6000.00, 'Pending', 'Pending', NULL, '2026-07-13 06:06:31'),
 (154, 9, 20, 1, 500.00, 'Paid', 'Confirmed', NULL, '2026-07-13 06:16:36'),
-(155, 9, 21, 1, 300.00, 'Paid', 'Confirmed', NULL, '2026-07-13 06:36:01'),
+(155, 9, 21, 1, 300.00, '', 'Cancelled', NULL, '2026-07-13 06:36:01'),
 (156, 9, 22, 1, 1000.00, 'Paid', 'Confirmed', NULL, '2026-07-13 06:47:17'),
-(157, 9, 23, 1, 5000.00, 'Paid', 'Confirmed', NULL, '2026-07-13 07:49:18');
+(157, 9, 23, 1, 5000.00, 'Paid', 'Confirmed', NULL, '2026-07-13 07:49:18'),
+(158, 9, 17, 1, 5000.00, 'Pending', 'Pending', NULL, '2026-07-30 09:50:18'),
+(159, 9, 16, 1, 7500.00, 'Paid', 'Confirmed', NULL, '2026-07-30 17:05:20');
 
 -- --------------------------------------------------------
 
@@ -144,6 +146,69 @@ INSERT INTO `events` (`id`, `organizer_id`, `title`, `description`, `event_date`
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `event_booked_seats`
+--
+
+CREATE TABLE `event_booked_seats` (
+  `id` int(11) NOT NULL,
+  `event_id` int(11) NOT NULL,
+  `booking_id` int(11) DEFAULT NULL,
+  `seat_code` varchar(50) NOT NULL,
+  `tier_name` varchar(50) NOT NULL,
+  `price` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `user_id` int(11) NOT NULL,
+  `booked_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `event_booked_seats`
+--
+
+INSERT INTO `event_booked_seats` (`id`, `event_id`, `booking_id`, `seat_code`, `tier_name`, `price`, `user_id`, `booked_at`) VALUES
+(1, 16, 159, 'C10', 'Platinum Tier', 7500.00, 9, '2026-07-30 17:05:20');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `favorites`
+--
+
+CREATE TABLE `favorites` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `event_id` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `notifications`
+--
+
+CREATE TABLE `notifications` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `type` varchar(50) NOT NULL DEFAULT 'info',
+  `title` varchar(255) NOT NULL,
+  `message` text NOT NULL,
+  `link` varchar(255) DEFAULT NULL,
+  `is_read` tinyint(1) NOT NULL DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `notifications`
+--
+
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES
+(1, 7, 'booking', '🎟️ Ticket Booking Confirmed!', 'Your ticket reservation for \'Summer Music Festival 2026\' has been confirmed. Seat: VIP-A1.', '/my-bookings', 0, '2026-07-30 17:30:54'),
+(2, 7, 'waiting_list', '🎉 Waiting List Priority Alert!', 'A ticket slot opened up for \'Tech Innovators Summit\'. Click to claim your priority ticket.', '/waiting-list', 0, '2026-07-30 17:30:54'),
+(3, 7, 'verification', '🛡️ Organizer Account Status Update', 'Your organizer business registration document has been reviewed and verified.', '/organizer/verify', 0, '2026-07-30 17:30:54');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `organizers`
 --
 
@@ -151,16 +216,23 @@ CREATE TABLE `organizers` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `organization_name` varchar(150) NOT NULL,
-  `verification_status` enum('pending','approved','rejected') DEFAULT 'pending'
+  `verification_status` enum('pending','approved','rejected') DEFAULT 'pending',
+  `phone` varchar(50) DEFAULT NULL,
+  `website` varchar(255) DEFAULT NULL,
+  `address` text DEFAULT NULL,
+  `business_registration_number` varchar(100) DEFAULT NULL,
+  `nic_passport` varchar(100) DEFAULT NULL,
+  `document_path` varchar(255) DEFAULT NULL,
+  `rejection_reason` text DEFAULT NULL,
+  `submitted_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `organizers`
 --
 
-INSERT INTO `organizers` (`id`, `user_id`, `organization_name`, `verification_status`) VALUES
-(1, 3, 'ABC Events', 'approved'),
-(2, 5, 'Yumeth Events', 'approved');
+INSERT INTO `organizers` (`id`, `user_id`, `organization_name`, `verification_status`, `phone`, `website`, `address`, `business_registration_number`, `nic_passport`, `document_path`, `rejection_reason`, `submitted_at`) VALUES
+(2, 5, 'Yumeth Events', 'approved', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -233,7 +305,9 @@ INSERT INTO `payments` (`id`, `booking_id`, `amount`, `transaction_id`, `payment
 (116, 154, 500.00, NULL, 'pending', '2026-07-13 06:16:36'),
 (117, 155, 300.00, NULL, 'pending', '2026-07-13 06:36:01'),
 (118, 156, 1000.00, NULL, 'pending', '2026-07-13 06:47:17'),
-(119, 157, 5000.00, NULL, 'pending', '2026-07-13 07:49:18');
+(119, 157, 5000.00, NULL, 'pending', '2026-07-13 07:49:18'),
+(120, 158, 5000.00, NULL, 'pending', '2026-07-30 09:50:18'),
+(121, 159, 7500.00, NULL, '', '2026-07-30 17:05:20');
 
 -- --------------------------------------------------------
 
@@ -272,39 +346,42 @@ CREATE TABLE `tickets` (
   `ticket_code` varchar(100) DEFAULT NULL,
   `qr_code` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `status` enum('unused','used') NOT NULL DEFAULT 'unused'
+  `status` enum('unused','used') NOT NULL DEFAULT 'unused',
+  `seat_number` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `tickets`
 --
 
-INSERT INTO `tickets` (`id`, `booking_id`, `ticket_code`, `qr_code`, `created_at`, `status`) VALUES
-(26, 33, 'TKT00033', 'uploads/qr/TKT00033.png', '2026-07-03 18:28:44', 'unused'),
-(40, 115, 'EVT-115-8065', NULL, '2026-07-12 21:15:44', 'unused'),
-(41, 116, 'EVT-116-4217', NULL, '2026-07-12 21:16:11', 'unused'),
-(42, 116, 'EVT-116-5496', NULL, '2026-07-12 21:16:11', 'unused'),
-(43, 117, 'EVT-117-3580', NULL, '2026-07-12 22:01:49', 'unused'),
-(44, 118, 'EVT-118-4924', 'uploads/qr/ticket_118.png', '2026-07-13 00:04:29', 'unused'),
-(45, 118, 'EVT-118-7188', 'uploads/qr/ticket_118.png', '2026-07-13 00:04:29', 'unused'),
-(46, 119, 'EVT-119-9453', 'uploads/qr/ticket_119.png', '2026-07-13 00:17:13', 'unused'),
-(47, 119, 'EVT-119-6432', 'uploads/qr/ticket_119.png', '2026-07-13 00:17:13', 'unused'),
-(48, 120, 'EVT-120-4215', 'uploads/qr/ticket_120.png', '2026-07-13 00:22:18', 'unused'),
-(49, 120, 'EVT-120-8232', 'uploads/qr/ticket_120.png', '2026-07-13 00:22:18', 'unused'),
-(50, 121, 'EVT-121-3022', 'uploads/qr/ticket_121.png', '2026-07-13 03:09:56', 'unused'),
-(51, 121, 'EVT-121-3294', 'uploads/qr/ticket_121.png', '2026-07-13 03:09:56', 'unused'),
-(52, 151, 'EVT-151-8587', 'uploads/qr/ticket_151.png', '2026-07-13 05:19:05', 'unused'),
-(53, 151, 'EVT-151-3139', 'uploads/qr/ticket_151.png', '2026-07-13 05:19:05', 'unused'),
-(54, 152, 'EVT-152-2744', 'uploads/qr/ticket_152.png', '2026-07-13 06:03:37', 'unused'),
-(55, 152, 'EVT-152-4102', 'uploads/qr/ticket_152.png', '2026-07-13 06:03:37', 'unused'),
-(56, 154, 'EVT-154-2854', 'uploads/qr/ticket_154.png', '2026-07-13 06:17:00', 'unused'),
-(57, 154, 'EVT-154-4158', 'uploads/qr/ticket_154.png', '2026-07-13 06:17:00', 'unused'),
-(58, 155, 'EVT-155-4738', 'uploads/qr/ticket_155.png', '2026-07-13 06:36:20', 'unused'),
-(59, 155, 'EVT-155-1536', 'uploads/qr/ticket_155.png', '2026-07-13 06:36:20', 'unused'),
-(60, 156, 'EVT-156-4334', 'uploads/qr/ticket_156.png', '2026-07-13 06:47:30', 'unused'),
-(61, 156, 'EVT-156-8860', 'uploads/qr/ticket_156.png', '2026-07-13 06:47:30', 'unused'),
-(62, 157, 'EVT-157-3876', 'uploads/qr/ticket_157.png', '2026-07-13 07:49:31', 'unused'),
-(63, 157, 'EVT-157-7118', 'uploads/qr/ticket_157.png', '2026-07-13 07:49:31', 'unused');
+INSERT INTO `tickets` (`id`, `booking_id`, `ticket_code`, `qr_code`, `created_at`, `status`, `seat_number`) VALUES
+(26, 33, 'TKT00033', 'uploads/qr/TKT00033.png', '2026-07-03 18:28:44', 'unused', NULL),
+(40, 115, 'EVT-115-8065', NULL, '2026-07-12 21:15:44', 'unused', NULL),
+(41, 116, 'EVT-116-4217', NULL, '2026-07-12 21:16:11', 'unused', NULL),
+(42, 116, 'EVT-116-5496', NULL, '2026-07-12 21:16:11', 'unused', NULL),
+(43, 117, 'EVT-117-3580', NULL, '2026-07-12 22:01:49', 'unused', NULL),
+(44, 118, 'EVT-118-4924', 'uploads/qr/ticket_118.png', '2026-07-13 00:04:29', 'used', NULL),
+(45, 118, 'EVT-118-7188', 'uploads/qr/ticket_118.png', '2026-07-13 00:04:29', 'used', NULL),
+(46, 119, 'EVT-119-9453', 'uploads/qr/ticket_119.png', '2026-07-13 00:17:13', 'unused', NULL),
+(47, 119, 'EVT-119-6432', 'uploads/qr/ticket_119.png', '2026-07-13 00:17:13', 'unused', NULL),
+(48, 120, 'EVT-120-4215', 'uploads/qr/ticket_120.png', '2026-07-13 00:22:18', 'unused', NULL),
+(49, 120, 'EVT-120-8232', 'uploads/qr/ticket_120.png', '2026-07-13 00:22:18', 'unused', NULL),
+(50, 121, 'EVT-121-3022', 'uploads/qr/ticket_121.png', '2026-07-13 03:09:56', 'unused', NULL),
+(51, 121, 'EVT-121-3294', 'uploads/qr/ticket_121.png', '2026-07-13 03:09:56', 'unused', NULL),
+(52, 151, 'EVT-151-8587', 'uploads/qr/ticket_151.png', '2026-07-13 05:19:05', 'unused', NULL),
+(53, 151, 'EVT-151-3139', 'uploads/qr/ticket_151.png', '2026-07-13 05:19:05', 'unused', NULL),
+(54, 152, 'EVT-152-2744', 'uploads/qr/ticket_152.png', '2026-07-13 06:03:37', 'unused', NULL),
+(55, 152, 'EVT-152-4102', 'uploads/qr/ticket_152.png', '2026-07-13 06:03:37', 'unused', NULL),
+(56, 154, 'EVT-154-2854', 'uploads/qr/ticket_154.png', '2026-07-13 06:17:00', 'unused', NULL),
+(57, 154, 'EVT-154-4158', 'uploads/qr/ticket_154.png', '2026-07-13 06:17:00', 'unused', NULL),
+(58, 155, 'EVT-155-4738', 'uploads/qr/ticket_155.png', '2026-07-13 06:36:20', 'used', NULL),
+(59, 155, 'EVT-155-1536', 'uploads/qr/ticket_155.png', '2026-07-13 06:36:20', 'used', NULL),
+(60, 156, 'EVT-156-4334', 'uploads/qr/ticket_156.png', '2026-07-13 06:47:30', 'unused', NULL),
+(61, 156, 'EVT-156-8860', 'uploads/qr/ticket_156.png', '2026-07-13 06:47:30', 'unused', NULL),
+(62, 157, 'EVT-157-3876', 'uploads/qr/ticket_157.png', '2026-07-13 07:49:31', 'unused', NULL),
+(63, 157, 'EVT-157-7118', 'uploads/qr/ticket_157.png', '2026-07-13 07:49:31', 'unused', NULL),
+(64, 159, 'EVT-159-6495', 'uploads/qr/ticket_159.png', '2026-07-30 17:06:50', 'unused', NULL),
+(65, 159, 'EVT-159-2149', 'uploads/qr/ticket_159.png', '2026-07-30 17:06:50', 'unused', NULL);
 
 -- --------------------------------------------------------
 
@@ -327,11 +404,12 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`) VALUES
-(2, 'Dasun Shanaka', 'dasun@gmail.com', '0740461033', '$2y$10$WZvwgw4Nubb96X88DfUCsOBPYc04l.CdQCzfEZ6qBpL3NFD4Ujx2m', 'customer', '2026-06-17 18:00:12'),
+(2, 'Dasun Shanaka', 'dasun@gmail.com', '0740461033', '$2y$10$WZvwgw4Nubb96X88DfUCsOBPYc04l.CdQCzfEZ6qBpL3NFD4Ujx2m', 'organizer', '2026-06-17 18:00:12'),
 (3, 'kamal Shanaka', 'test@gmail.com', '0740461034', '$2y$10$Y.8flr95U40QukoYYBiQpee4.Mbj04y2z9o9E2ZJUmS4ZG2YezKnu', 'customer', '2026-06-17 18:11:57'),
 (5, 'Yumeth Pahasara', 'yumethpahasara12@gmail.com', '0740709421', '$2y$10$PebIoRxMdvY3HtdmpAULVOLgkq9CaCJGpZks4953q6ZU1TC1zjX5W', 'organizer', '2026-06-20 06:07:02'),
 (7, 'Thimira', 'thimira12@gmail.com', '0713423445', '$2y$10$6J6hpn8p4ZpDRFtiaYarueKDWQqpGwFRJems.vbmuSPbf/kBxGikS', 'admin', '2026-07-10 18:25:53'),
-(9, 'Hiran Anajana', 'hirananjana12@gmail.com', '0701079141', '$2y$10$3yJP/UXffrUO9pErPOkxp.pWboYL7fLhqP/E/F4cWH/4fq1FVuaV6', 'customer', '2026-07-12 20:38:00');
+(9, 'Hiran Anajana', 'hirananjana12@gmail.com', '0701079141', '$2y$10$3yJP/UXffrUO9pErPOkxp.pWboYL7fLhqP/E/F4cWH/4fq1FVuaV6', 'customer', '2026-07-12 20:38:00'),
+(10, 'Navod Teshan', 'navod12@gmail.com', '0702564785', '$2y$10$o6F4UGj3V6HRBMBmbgbdoeNkEcF3rjg2BWKEjKbJ2BKOgT9zdR6za', 'organizer', '2026-07-30 13:20:43');
 
 --
 -- Indexes for dumped tables
@@ -351,6 +429,29 @@ ALTER TABLE `bookings`
 ALTER TABLE `events`
   ADD PRIMARY KEY (`id`),
   ADD KEY `organizer_id` (`organizer_id`);
+
+--
+-- Indexes for table `event_booked_seats`
+--
+ALTER TABLE `event_booked_seats`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `event_seat_unique` (`event_id`,`seat_code`);
+
+--
+-- Indexes for table `favorites`
+--
+ALTER TABLE `favorites`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `user_event` (`user_id`,`event_id`),
+  ADD KEY `event_id` (`event_id`);
+
+--
+-- Indexes for table `notifications`
+--
+ALTER TABLE `notifications`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id_idx` (`user_id`),
+  ADD KEY `is_read_idx` (`is_read`);
 
 --
 -- Indexes for table `organizers`
@@ -396,13 +497,31 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `bookings`
 --
 ALTER TABLE `bookings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=158;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=160;
 
 --
 -- AUTO_INCREMENT for table `events`
 --
 ALTER TABLE `events`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+
+--
+-- AUTO_INCREMENT for table `event_booked_seats`
+--
+ALTER TABLE `event_booked_seats`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `favorites`
+--
+ALTER TABLE `favorites`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+
+--
+-- AUTO_INCREMENT for table `notifications`
+--
+ALTER TABLE `notifications`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `organizers`
@@ -414,7 +533,7 @@ ALTER TABLE `organizers`
 -- AUTO_INCREMENT for table `payments`
 --
 ALTER TABLE `payments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=120;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=122;
 
 --
 -- AUTO_INCREMENT for table `seats`
@@ -426,13 +545,13 @@ ALTER TABLE `seats`
 -- AUTO_INCREMENT for table `tickets`
 --
 ALTER TABLE `tickets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Constraints for dumped tables
@@ -450,6 +569,13 @@ ALTER TABLE `bookings`
 --
 ALTER TABLE `events`
   ADD CONSTRAINT `events_ibfk_1` FOREIGN KEY (`organizer_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `favorites`
+--
+ALTER TABLE `favorites`
+  ADD CONSTRAINT `favorites_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `favorites_ibfk_2` FOREIGN KEY (`event_id`) REFERENCES `events` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `organizers`

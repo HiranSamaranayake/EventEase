@@ -1,13 +1,14 @@
-import { FaHome, FaBell, FaUserCircle, FaSun, FaMoon } from "react-icons/fa";
+import { FaHome, FaUserCircle, FaSun, FaMoon } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 import { useTheme } from "../../../context/ThemeContext";
+import NotificationCenter from "../../../components/NotificationCenter";
 
 const Topbar = () => {
   const navigate = useNavigate();
-  const [show, setShow] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const isDark = theme === "dark";
+
+  const user = JSON.parse(localStorage.getItem("user")) || { id: 7 };
 
   return (
     <header className="h-20 bg-white border-b border-gray-100 shadow-sm flex items-center justify-between px-8">
@@ -42,23 +43,12 @@ const Topbar = () => {
           <FaHome /> Home
         </button>
 
-        <div className="relative">
-          <button onClick={() => setShow(!show)}>
-            <FaBell className="text-2xl text-gray-600 hover:text-purple-600 transition" />
-          </button>
-
-          {show && (
-            <div className="absolute right-0 top-10 bg-white shadow-2xl rounded-2xl w-64 p-4 z-50 border border-gray-100">
-              <p className="font-bold text-gray-900 mb-3 text-sm">Notifications</p>
-              <p className="text-xs text-gray-600 py-1">New booking received</p>
-              <p className="text-xs text-gray-600 py-1">New organizer registered</p>
-            </div>
-          )}
-        </div>
+        {/* Real-time Notification Center */}
+        <NotificationCenter userId={user.id || 7} />
 
         <div className="flex items-center gap-2">
           <FaUserCircle className="text-3xl text-purple-700" />
-          <span className="font-bold text-sm text-gray-800">Admin</span>
+          <span className="font-bold text-sm text-gray-800">{user.full_name || "Admin"}</span>
         </div>
       </div>
     </header>

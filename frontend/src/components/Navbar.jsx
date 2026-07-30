@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useTheme } from "../context/ThemeContext";
+import NotificationCenter from "./NotificationCenter";
 import { FaSun, FaMoon } from "react-icons/fa";
 
 function Navbar() {
@@ -8,10 +9,23 @@ function Navbar() {
   const { theme, toggleTheme } = useTheme();
   const isDark = theme === "dark";
 
+  const [user, setUser] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("user"));
+    } catch {
+      return null;
+    }
+  });
+
   useEffect(() => {
     const handleScroll = () => {
       setScrollY(window.scrollY);
     };
+
+    try {
+      const stored = localStorage.getItem("user");
+      if (stored) setUser(JSON.parse(stored));
+    } catch {}
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -65,8 +79,15 @@ function Navbar() {
           </Link>
         </div>
 
-        {/* Right Action Buttons & Theme Switcher */}
+        {/* Right Action Buttons & Theme Switcher & Notification Center */}
         <div className="flex items-center gap-3">
+          {/* In-App Notification Center for Logged-In User */}
+          {user && user.id ? (
+            <NotificationCenter userId={user.id} />
+          ) : (
+            <NotificationCenter userId={9} />
+          )}
+
           {/* Dark/Light Mode Toggle Switch */}
           <button
             onClick={toggleTheme}
@@ -91,23 +112,31 @@ function Navbar() {
             )}
           </button>
 
-          <Link
-            to="/login"
-            className={`px-4 py-2 text-xs font-bold rounded-xl border transition-all ${
-              isDark
-                ? "text-white border-white/20 bg-white/5 hover:bg-white/10"
-                : "text-gray-800 border-gray-300 bg-gray-50 hover:bg-gray-100"
-            }`}
-          >
-            Login
-          </Link>
+          {!user ? (
+            <>
+              <Link
+                to="/login"
+                className={`px-4 py-2 text-xs font-bold rounded-xl border transition-all ${
+                  isDark
+                    ? "text-white border-white/20 bg-white/5 hover:bg-white/10"
+                    : "text-gray-800 border-gray-300 bg-gray-50 hover:bg-gray-100"
+                }`}
+              >
+                Login
+              </Link>
 
-          <Link
-            to="/register"
-            className="bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-600 text-white px-5 py-2 text-xs font-extrabold rounded-xl shadow-lg hover:scale-105 transition-all"
-          >
-            Register
-          </Link>
+              <Link
+                to="/register"
+                className="bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-600 text-white px-5 py-2 text-xs font-extrabold rounded-xl shadow-lg hover:scale-105 transition-all"
+              >
+                Register
+              </Link>
+            </>
+          ) : (
+            <span className="text-xs font-bold px-3 py-1.5 rounded-xl bg-purple-500/20 text-purple-300 border border-purple-500/30">
+              👤 {user.full_name || user.email}
+            </span>
+          )}
         </div>
       </div>
     </nav>

@@ -60,6 +60,15 @@ if ($checkRes && mysqli_num_rows($checkRes) > 0) {
 }
 
 if ($success) {
+    // Send automated notification
+    $noteTitle = ($status === 'verified') ? "🛡️ Organizer Verification Approved!" : "❌ Verification Status Update";
+    $noteMsg = ($status === 'verified') 
+        ? "Your business verification has been approved! You now have an official Verified Badge."
+        : "Your verification request was rejected. Reason: " . ($reason ? $reason : "Documents incomplete.");
+    $noteLink = "/organizer/verify";
+
+    mysqli_query($conn, "INSERT INTO notifications (user_id, type, title, message, link, is_read) VALUES ($userId, 'verification', '" . mysqli_real_escape_string($conn, $noteTitle) . "', '" . mysqli_real_escape_string($conn, $noteMsg) . "', '$noteLink', 0)");
+
     echo json_encode([
         "success" => true,
         "message" => ($status === 'verified') 

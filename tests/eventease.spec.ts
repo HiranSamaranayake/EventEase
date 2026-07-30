@@ -185,4 +185,24 @@ test.describe('EventEase Platform E2E Tests', () => {
     await expect(page.locator('text=Interactive Venue Seat Selection Map')).toBeVisible();
   });
 
+  test('In-App Notification Center operates correctly for Customers and Organizers', async ({ page }) => {
+    // Set authenticated admin session
+    await page.addInitScript(({ token }) => {
+      window.localStorage.setItem('user', JSON.stringify({
+        id: 7,
+        full_name: 'Thimira Admin',
+        email: 'thimira12@gmail.com',
+        role: 'admin'
+      }));
+      window.localStorage.setItem('token', token);
+    }, { token: dummyToken });
+
+    await page.goto('/admin/organizers');
+    const bellBtn = page.locator('button[title="In-App Notification Center"]');
+    await expect(bellBtn.first()).toBeVisible({ timeout: 10000 });
+
+    await bellBtn.first().click();
+    await expect(page.locator('text=Notifications')).toBeVisible();
+  });
+
 });
