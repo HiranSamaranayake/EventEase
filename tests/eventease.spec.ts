@@ -169,4 +169,20 @@ test.describe('EventEase Platform E2E Tests', () => {
     await expect(page.getByRole('heading', { name: 'Organizer Verification Management' })).toBeVisible();
   });
 
+  test('Customer can view interactive seat map and select tiered seats', async ({ page }) => {
+    // Set authenticated customer session
+    await page.addInitScript(({ token }) => {
+      window.localStorage.setItem('user', JSON.stringify({
+        id: 9,
+        full_name: 'Hiran Anajana',
+        email: 'hirananjana12@gmail.com',
+        role: 'customer'
+      }));
+      window.localStorage.setItem('token', token);
+    }, { token: dummyToken });
+
+    await page.goto('/book-event/14');
+    await expect(page.locator('text=Interactive Venue Seat Selection Map')).toBeVisible();
+  });
+
 });

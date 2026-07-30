@@ -1,45 +1,54 @@
-
 @import "tailwindcss";
+
+:root {
+  color-scheme: light dark;
+}
+
+html.light body {
+  background-color: #f8fafc;
+  color: #0f172a;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+html.dark body {
+  background-color: #020617;
+  color: #f8fafc;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
 
 @keyframes floatOrb1 {
   0% {
-      transform: translate(0, 0);
+    transform: translate(0, 0);
   }
-
   50% {
-      transform: translate(30px, -40px);
+    transform: translate(30px, -40px);
   }
-
   100% {
-      transform: translate(0, 0);
+    transform: translate(0, 0);
   }
 }
 
 @keyframes floatOrb2 {
   0% {
-      transform: translate(0, 0);
+    transform: translate(0, 0);
   }
-
   50% {
-      transform: translate(-40px, 30px);
+    transform: translate(-40px, 30px);
   }
-
   100% {
-      transform: translate(0, 0);
+    transform: translate(0, 0);
   }
 }
 
 @keyframes floatOrb3 {
   0% {
-      transform: translate(0, 0);
+    transform: translate(0, 0);
   }
-
   50% {
-      transform: translate(20px, 40px);
+    transform: translate(20px, 40px);
   }
-
   100% {
-      transform: translate(0, 0);
+    transform: translate(0, 0);
   }
 }
 
