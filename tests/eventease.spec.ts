@@ -137,4 +137,36 @@ test.describe('EventEase Platform E2E Tests', () => {
     await expect(page.getByRole('heading', { name: 'My Waiting Lists' })).toBeVisible();
   });
 
+  test('Organizer Business Verification UI operates correctly', async ({ page }) => {
+    // Set authenticated organizer session
+    await page.addInitScript(({ token }) => {
+      window.localStorage.setItem('user', JSON.stringify({
+        id: 5,
+        full_name: 'Yumeth Pahasara',
+        email: 'yumethpahasara12@gmail.com',
+        role: 'organizer'
+      }));
+      window.localStorage.setItem('token', token);
+    }, { token: dummyToken });
+
+    await page.goto('/organizer/verify');
+    await expect(page.getByRole('heading', { name: 'Organizer Business Verification' })).toBeVisible();
+  });
+
+  test('Admin Organizers Verification management UI operates correctly', async ({ page }) => {
+    // Set authenticated admin session
+    await page.addInitScript(({ token }) => {
+      window.localStorage.setItem('user', JSON.stringify({
+        id: 7,
+        full_name: 'Thimira Admin',
+        email: 'thimira12@gmail.com',
+        role: 'admin'
+      }));
+      window.localStorage.setItem('token', token);
+    }, { token: dummyToken });
+
+    await page.goto('/admin/organizers');
+    await expect(page.getByRole('heading', { name: 'Organizer Verification Management' })).toBeVisible();
+  });
+
 });

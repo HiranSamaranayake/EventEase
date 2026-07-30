@@ -33,6 +33,7 @@ import OrganizerAnalytics from "./pages/organizer/OrganizerAnalytics";
 import OrganizerBookings from "./pages/organizer/OrganizerBookings";
 import OrganizerTickets from "./pages/organizer/OrganizerTickets";
 import ScanTicket from "./pages/organizer/ScanTicket";
+import OrganizerVerification from "./pages/organizer/OrganizerVerification";
 
 
 
@@ -178,6 +179,10 @@ function App() {
   <Route
     path="scan-ticket"
     element={<ScanTicket />}
+  />
+  <Route
+    path="verify"
+    element={<OrganizerVerification />}
   />
 </Route>
 

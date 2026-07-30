@@ -12,6 +12,7 @@ import {
   FaHome,
   FaSignOutAlt,
   FaQrcode,
+  FaShieldAlt,
 } from "react-icons/fa";
 
 const OrganizerSidebar = () => {
@@ -55,7 +56,11 @@ const OrganizerSidebar = () => {
   icon: <FaQrcode />,
   path: "/organizer/scan-ticket",
 },
-
+{
+  title: "Verification",
+  icon: <FaShieldAlt />,
+  path: "/organizer/verify",
+},
 ];
 
   const logout = () => {
