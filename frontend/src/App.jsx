@@ -52,15 +52,17 @@ import TicketView from "./pages/customer/TicketView";
 
 // ================= SECURITY =================
 
+import GuestCustomerPortal from "./pages/customer/GuestCustomerPortal";
 import ProtectedRoute from "./routes/ProtectedRoute";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* ================= HOME ================= */}
+        {/* ================= HOME & GUEST PORTAL ================= */}
 
         <Route path="/" element={<Home />} />
+        <Route path="/guest" element={<GuestCustomerPortal />} />
 
         {/* ================= AUTH ================= */}
 
@@ -129,15 +131,12 @@ function App() {
 
         <Route path="/event/:id" element={<EventDetails />} />
 
+        <Route path="/book/:id" element={<BookEvent />} />
         <Route path="/book-event/:id" element={<BookEvent />} />
 
         <Route path="/booking-success" element={<BookingConfirmation />} />
 
         <Route path="/ticket/:id" element={<TicketDetails />} />
-        <Route
-    path="/ticket/:id"
-    element={<TicketView />}
-/>
 
         {/* ================= ORGANIZER ================= */}
 

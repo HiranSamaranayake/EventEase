@@ -21,6 +21,10 @@ const Events = () => {
                     setFilteredEvents(data.events);
                 }
                 setLoading(false);
+            })
+            .catch((err) => {
+                console.error(err);
+                setLoading(false);
             });
 
         const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -105,7 +109,7 @@ const Events = () => {
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 py-12 px-6 max-w-7xl mx-auto space-y-8">
+        <div className="min-h-screen bg-slate-50 pt-28 pb-12 px-6 max-w-7xl mx-auto space-y-8">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">

@@ -341,6 +341,67 @@ return ( <div
 </select>
                             </div>
 
+                            {/* ORGANIZER VALIDITY VERIFICATION FIELDS */}
+                            {formData.role === "organizer" && (
+                              <>
+                                <div>
+                                  <label className="block mb-2 font-medium text-gray-700">
+                                    Company / Organization Name *
+                                  </label>
+                                  <input
+                                    type="text"
+                                    name="organizationName"
+                                    value={formData.organizationName || ""}
+                                    onChange={handleChange}
+                                    placeholder="e.g. Apex Event Management Ltd"
+                                    className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                  />
+                                </div>
+
+                                <div>
+                                  <label className="block mb-2 font-medium text-gray-700">
+                                    Business Registration (BR) Number *
+                                  </label>
+                                  <input
+                                    type="text"
+                                    name="brNumber"
+                                    value={formData.brNumber || ""}
+                                    onChange={handleChange}
+                                    placeholder="e.g. PV-123456"
+                                    className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                  />
+                                </div>
+
+                                <div>
+                                  <label className="block mb-2 font-medium text-gray-700">
+                                    Tax Identification (TIN) Number *
+                                  </label>
+                                  <input
+                                    type="text"
+                                    name="tinNumber"
+                                    value={formData.tinNumber || ""}
+                                    onChange={handleChange}
+                                    placeholder="e.g. TIN-987654321"
+                                    className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                  />
+                                </div>
+
+                                <div>
+                                  <label className="block mb-2 font-medium text-gray-700">
+                                    Company Address / Details
+                                  </label>
+                                  <input
+                                    type="text"
+                                    name="companyDetails"
+                                    value={formData.companyDetails || ""}
+                                    onChange={handleChange}
+                                    placeholder="Company Address & Business Details"
+                                    className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                  />
+                                </div>
+                              </>
+                            )}
+
                             {/* Password */}
                             <div>
                                 <label className="block mb-2 font-medium text-gray-700">

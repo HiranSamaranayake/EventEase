@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { FaHeart, FaRegHeart, FaClock, FaCheckCircle, FaUserClock, FaTicketAlt, FaExclamationTriangle } from "react-icons/fa";
+import { FaHeart, FaRegHeart, FaClock, FaCheckCircle, FaUserClock, FaTicketAlt, FaExclamationTriangle, FaUserPlus, FaSignInAlt, FaInfoCircle, FaShieldAlt, FaGraduationCap, FaBriefcase, FaLock, FaTag } from "react-icons/fa";
 
 const EventDetails = () => {
     const { id } = useParams();
@@ -9,6 +9,11 @@ const EventDetails = () => {
     const [isFavorite, setIsFavorite] = useState(false);
     const [isWaiting, setIsWaiting] = useState(false);
     const [waitingPos, setWaitingPos] = useState(null);
+
+    // Modal state for Guest Customer attempting Verified Customer actions
+    const [guestModal, setGuestModal] = useState({ open: false, featureName: "" });
+
+    const currentUser = JSON.parse(localStorage.getItem("user"));
 
     useEffect(() => {
         fetch(`http://localhost/EventEase/backend/api/event_details.php?id=${id}`)
@@ -19,7 +24,6 @@ const EventDetails = () => {
                 }
             });
 
-        const currentUser = JSON.parse(localStorage.getItem("user"));
         if (currentUser && currentUser.id) {
             fetch(`http://localhost/EventEase/backend/api/my_favorites.php?user_id=${currentUser.id}`)
                 .then(res => res.json())
@@ -44,9 +48,8 @@ const EventDetails = () => {
     }, [id]);
 
     const handleToggleFavorite = async () => {
-        const currentUser = JSON.parse(localStorage.getItem("user"));
         if (!currentUser || !currentUser.id) {
-            navigate("/login");
+            setGuestModal({ open: true, featureName: "Save to Wishlist" });
             return;
         }
 
@@ -66,9 +69,8 @@ const EventDetails = () => {
     };
 
     const handleJoinWaitingList = async () => {
-        const currentUser = JSON.parse(localStorage.getItem("user"));
         if (!currentUser || !currentUser.id) {
-            navigate("/login");
+            setGuestModal({ open: true, featureName: "Join Priority Waiting List" });
             return;
         }
 
@@ -89,6 +91,13 @@ const EventDetails = () => {
         }
     };
 
+    const handleBookTicketClick = (e) => {
+        if (!currentUser || !currentUser.id) {
+            e.preventDefault();
+            setGuestModal({ open: true, featureName: "Ticket Booking & Checkout" });
+        }
+    };
+
     if (!event) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -98,10 +107,49 @@ const EventDetails = () => {
     }
 
     const isSoldOut = event.is_sold_out || (event.capacity > 0 && event.available_seats <= 0);
+    const isRestricted = event.audience_restriction_type && event.audience_restriction_type !== 'public';
+
+    // Parse ONLY the categories added by the organizer for this event
+    let categoriesList = [];
+    if (event.custom_categories) {
+        try {
+            const parsed = typeof event.custom_categories === "string" ? JSON.parse(event.custom_categories) : event.custom_categories;
+            if (Array.isArray(parsed) && parsed.length > 0) {
+                categoriesList = parsed;
+            }
+        } catch (e) {
+            console.error("Error parsing categories", e);
+        }
+    }
+
+    if (categoriesList.length === 0) {
+        categoriesList = [{ name: "General Admission", price: event.price || 0 }];
+    }
 
     return (
         <div className="bg-gray-100 min-h-screen py-10">
             <div className="max-w-7xl mx-auto px-6 space-y-6">
+                {/* Guest Customer Level Banner */}
+                {!currentUser && (
+                    <div className="bg-purple-900 text-white rounded-2xl p-4 px-6 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-md">
+                        <div className="flex items-center gap-3">
+                            <span className="bg-purple-700 text-white p-2 rounded-xl text-lg"><FaInfoCircle /></span>
+                            <div>
+                                <h4 className="font-extrabold text-sm text-white">Guest Customer Mode</h4>
+                                <p className="text-xs text-purple-200">You are browsing event details as a Guest Customer. To book tickets, register an account to become a <strong>Verified Customer</strong>!</p>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                            <Link to="/register" className="bg-white text-purple-900 hover:bg-purple-100 text-xs font-black px-4 py-2 rounded-xl shadow transition">
+                                Register as Customer
+                            </Link>
+                            <Link to="/login" className="bg-purple-800 hover:bg-purple-700 text-white text-xs font-bold px-4 py-2 rounded-xl border border-purple-600 transition">
+                                Log In
+                            </Link>
+                        </div>
+                    </div>
+                )}
+
                 <div className="bg-white rounded-3xl shadow-xl overflow-hidden">
                     {/* Banner */}
                     <div className="relative">
@@ -147,6 +195,12 @@ const EventDetails = () => {
                                     : `Rs. ${Number(event.price).toLocaleString()}`}
                             </span>
 
+                            {isRestricted && (
+                                <span className="bg-amber-600 text-white px-4 py-2 rounded-full font-extrabold uppercase shadow-lg flex items-center gap-1.5">
+                                    <FaLock /> {event.restriction_label || "Restricted Target Audience"}
+                                </span>
+                            )}
+
                             {isSoldOut && (
                                 <span className="bg-rose-600 text-white px-4 py-2 rounded-full font-extrabold uppercase animate-pulse shadow-lg flex items-center gap-1">
                                     <FaExclamationTriangle /> SOLD OUT
@@ -184,6 +238,17 @@ const EventDetails = () => {
                                     </div>
                                 </div>
 
+                                {isRestricted && (
+                                    <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 space-y-2">
+                                        <h4 className="font-extrabold text-amber-900 text-sm flex items-center gap-2">
+                                            <FaLock className="text-amber-600" /> Target Audience Limitation: {event.restriction_label || "Restricted Event"}
+                                        </h4>
+                                        <p className="text-xs text-amber-800 leading-relaxed">
+                                            This event is restricted. Outside attendees without an authorized email domain or student/company passcode are not permitted to reserve tickets.
+                                        </p>
+                                    </div>
+                                )}
+
                                 <div className="bg-gray-50 rounded-2xl p-8 border">
                                     <h2 className="text-2xl font-bold mb-4">About This Event</h2>
                                     <p className="text-gray-700 leading-8 text-base">{event.description}</p>
@@ -194,63 +259,106 @@ const EventDetails = () => {
                             <div className="bg-white rounded-3xl shadow-xl border p-8 h-fit sticky top-8 space-y-6">
                                 <h3 className="text-2xl font-bold text-gray-900">Ticket Reservation</h3>
 
-                                <div className="space-y-4 text-sm border-t border-b py-4">
-                                    <div className="flex justify-between">
-                                        <span className="text-gray-500">Price</span>
-                                        <span className="font-bold text-green-700">
-                                            {Number(event.price) === 0 ? "FREE" : `Rs. ${Number(event.price).toLocaleString()}`}
-                                        </span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-gray-500">Total Capacity</span>
-                                        <span className="font-medium text-gray-800">{event.capacity ? `${event.capacity} Seats` : 'Unlimited'}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-gray-500">Remaining</span>
-                                        <span className={`font-bold ${isSoldOut ? 'text-rose-600' : 'text-emerald-600'}`}>
-                                            {isSoldOut ? "Sold Out" : `${event.available_seats} Seats`}
-                                        </span>
+                                {/* DYNAMIC ORGANIZER TICKET CATEGORIES ONLY */}
+                                <div className="space-y-3 text-xs border-t border-b py-4">
+                                    <h4 className="font-extrabold text-gray-900 uppercase tracking-wider text-[11px] mb-1 flex items-center gap-1.5">
+                                        <FaTag className="text-purple-600" /> Ticket Categories Added by Organizer
+                                    </h4>
+                                    
+                                    <div className="space-y-2">
+                                        {categoriesList.map((cat, idx) => (
+                                            <div key={idx} className="bg-purple-50/80 border border-purple-200 rounded-xl p-3 flex justify-between items-center">
+                                                <div className="flex items-center gap-2">
+                                                    <span className="w-5 h-5 rounded-full bg-purple-200 text-purple-900 font-bold text-[10px] flex items-center justify-center shrink-0">
+                                                        {idx + 1}
+                                                    </span>
+                                                    <div>
+                                                        <p className="font-extrabold text-purple-950 text-xs">{cat.name || `Category ${idx + 1}`}</p>
+                                                        <p className="text-[10px] text-purple-700 font-semibold">Organizer Set Pricing Tier</p>
+                                                    </div>
+                                                </div>
+                                                <span className="font-black text-purple-900 text-sm">
+                                                    {Number(cat.price) === 0 ? "FREE" : `Rs. ${Number(cat.price).toLocaleString()}`}
+                                                </span>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
 
-                                {!isSoldOut ? (
-                                    <Link
-                                        to={`/book-event/${event.id}`}
-                                        className="w-full py-4 bg-purple-700 hover:bg-purple-800 text-white font-bold rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-base"
-                                    >
-                                        <FaTicketAlt /> Book Ticket Now
-                                    </Link>
-                                ) : (
-                                    <div className="space-y-3">
-                                        <div className="bg-rose-50 border border-rose-200 p-4 rounded-2xl text-center">
-                                            <p className="text-xs font-bold text-rose-700">⚠️ All tickets for this event are currently booked.</p>
+                                {isSoldOut ? (
+                                    <div className="space-y-4">
+                                        <div className="bg-rose-50 border border-rose-200 rounded-2xl p-4 text-center text-xs text-rose-700 font-bold">
+                                            ⚠️ All seats for this event are fully booked!
                                         </div>
 
                                         <button
                                             onClick={handleJoinWaitingList}
-                                            className={`w-full py-4 font-bold rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-sm ${
+                                            className={`w-full py-4 rounded-2xl font-extrabold text-sm transition shadow-lg flex items-center justify-center gap-2 ${
                                                 isWaiting
-                                                    ? "bg-amber-100 text-amber-900 hover:bg-amber-200 border border-amber-300"
-                                                    : "bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-slate-950 font-black shadow-amber-500/20"
+                                                    ? "bg-amber-500 hover:bg-amber-600 text-white"
+                                                    : "bg-purple-700 hover:bg-purple-800 text-white"
                                             }`}
                                         >
-                                            {isWaiting ? (
-                                                <>
-                                                    <FaUserClock className="text-amber-700 text-base" /> Joined Queue (Position #{waitingPos || 1}) - Leave
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <FaClock className="text-base" /> Join Priority Waiting List
-                                                </>
-                                            )}
+                                            <FaUserClock />
+                                            {isWaiting
+                                                ? `In Waiting List (Position #${waitingPos || 1}) - Leave`
+                                                : "Join Priority Waiting List"}
                                         </button>
                                     </div>
+                                ) : (
+                                    <Link
+                                        to={`/book/${event.id}`}
+                                        onClick={handleBookTicketClick}
+                                        className="w-full block text-center py-4 bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-sm rounded-2xl shadow-xl transition cursor-pointer"
+                                    >
+                                        <FaTicketAlt className="inline mr-2" /> Reserve Seats & Book Ticket
+                                    </Link>
                                 )}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            {/* GUEST CUSTOMER VERIFICATION MODAL */}
+            {guestModal.open && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+                    <div className="bg-white rounded-3xl p-8 max-w-md w-full text-center space-y-6 shadow-2xl relative border border-purple-100">
+                        <div className="w-16 h-16 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center mx-auto text-3xl">
+                            <FaShieldAlt />
+                        </div>
+
+                        <div>
+                            <h3 className="text-2xl font-black text-gray-900">Verified Customer Required</h3>
+                            <p className="text-gray-600 text-xs mt-2 leading-relaxed">
+                                You are currently browsing as a <strong>Guest Customer</strong>. Accessing <strong>"{guestModal.featureName}"</strong> requires a registered customer account!
+                            </p>
+                        </div>
+
+                        <div className="space-y-3 pt-2">
+                            <Link
+                                to="/register"
+                                className="w-full py-3.5 bg-purple-700 hover:bg-purple-800 text-white font-bold text-sm rounded-xl shadow-lg transition flex items-center justify-center gap-2"
+                            >
+                                <FaUserPlus /> Register New Account
+                            </Link>
+                            <Link
+                                to="/login"
+                                className="w-full py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-sm rounded-xl transition flex items-center justify-center gap-2"
+                            >
+                                <FaSignInAlt /> Log In to Existing Account
+                            </Link>
+                        </div>
+
+                        <button
+                            onClick={() => setGuestModal({ open: false, featureName: "" })}
+                            className="text-xs text-gray-400 hover:text-gray-600 font-semibold underline cursor-pointer pt-2 block mx-auto"
+                        >
+                            Continue Browsing as Guest
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

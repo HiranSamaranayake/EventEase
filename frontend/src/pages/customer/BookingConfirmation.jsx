@@ -95,7 +95,7 @@ const BookingConfirmation = () => {
                 "
         >
           <Link
-            to={`/ticket/${ticketId}`}
+            to={`/ticket/${bookingId || ticketId}`}
             className="
                             bg-purple-600
                             text-white

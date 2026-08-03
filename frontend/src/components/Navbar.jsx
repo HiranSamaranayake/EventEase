@@ -2,15 +2,31 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useTheme } from "../context/ThemeContext";
 import NotificationCenter from "./NotificationCenter";
-import { FaSun, FaMoon } from "react-icons/fa";
+import { FaSun, FaMoon, FaUserSecret } from "react-icons/fa";
 
 function Navbar() {
   const [scrollY, setScrollY] = useState(0);
-  const { theme, toggleTheme } = useTheme();
-  const isDark = theme === "dark";
+
+  let isDark = false;
+  let toggleTheme = () => {};
+
+  try {
+    const themeContext = useTheme();
+    if (themeContext) {
+      isDark = themeContext.theme === "dark";
+      toggleTheme = themeContext.toggleTheme;
+    }
+  } catch (e) {
+    console.warn("ThemeContext not available in Navbar", e);
+  }
+
+  const [pathname, setPathname] = useState(() => {
+    return typeof window !== "undefined" ? window.location.pathname : "";
+  });
 
   const [user, setUser] = useState(() => {
     try {
+      if (typeof window !== "undefined" && window.location.pathname === "/guest") return null;
       return JSON.parse(localStorage.getItem("user"));
     } catch {
       return null;
@@ -18,23 +34,39 @@ function Navbar() {
   });
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
+    const handleScroll = () => setScrollY(window.scrollY);
+
+    const updatePathAndUser = () => {
+      const currentPath = window.location.pathname;
+      setPathname(currentPath);
+      if (currentPath === "/guest") {
+        setUser(null);
+      } else {
+        try {
+          const stored = localStorage.getItem("user");
+          setUser(stored ? JSON.parse(stored) : null);
+        } catch {
+          setUser(null);
+        }
+      }
     };
 
-    try {
-      const stored = localStorage.getItem("user");
-      if (stored) setUser(JSON.parse(stored));
-    } catch {}
-
+    updatePathAndUser();
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("popstate", updatePathAndUser);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("popstate", updatePathAndUser);
+    };
   }, []);
+
+  const isGuestUser = !user || pathname === "/guest";
 
   return (
     <nav
       className={`
-        fixed left-1/2 w-full px-4 max-w-7xl z-50 transition-all duration-500 ease-in-out
+        fixed left-1/2 w-full px-4 max-w-7xl z-50 transition-all duration-500 ease-in-out -translate-x-1/2 top-4
         ${
           scrollY < 40
             ? isDark
@@ -49,18 +81,13 @@ function Navbar() {
             : "bg-white/95 backdrop-blur-2xl border border-gray-300 rounded-2xl shadow-xl"
         }
       `}
-      style={{
-        top: "16px",
-        transform: "translateX(-50%)",
-      }}
     >
-      <div className="max-w-7xl mx-auto px-6 py-3.5 flex items-center justify-between">
-        {/* Logo */}
-        <Link
-          to="/"
-          className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-purple-500 via-fuchsia-500 to-pink-500 bg-clip-text text-transparent transition-all duration-300 hover:scale-105"
-        >
-          EventEase
+      <div className="flex items-center justify-between h-16 px-6">
+        {/* Brand Logo */}
+        <Link to="/" className="flex items-center gap-2 font-black text-xl tracking-tight">
+          <span className="bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-600 bg-clip-text text-transparent">
+            EventEase
+          </span>
         </Link>
 
         {/* Center Links */}
@@ -68,24 +95,29 @@ function Navbar() {
           <Link to="/" className="hover:text-purple-500 transition duration-300">
             Home
           </Link>
+          <Link to="/guest" className="text-purple-600 font-extrabold hover:text-purple-500 transition duration-300 flex items-center gap-1">
+            <span>✨</span> Guest Explorer
+          </Link>
           <Link to="/events" className="hover:text-purple-500 transition duration-300">
-            Events
+            Events Catalog
           </Link>
-          <Link to="/saved-events" className="hover:text-purple-500 transition duration-300">
-            Wishlist
-          </Link>
-          <Link to="/my-bookings" className="hover:text-purple-500 transition duration-300">
-            My Bookings
-          </Link>
+          {!isGuestUser && (
+            <>
+              <Link to="/saved-events" className="hover:text-purple-500 transition duration-300">
+                Wishlist
+              </Link>
+              <Link to="/my-bookings" className="hover:text-purple-500 transition duration-300">
+                My Bookings
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Right Action Buttons & Theme Switcher & Notification Center */}
         <div className="flex items-center gap-3">
-          {/* In-App Notification Center for Logged-In User */}
-          {user && user.id ? (
+          {/* In-App Notification Center for Logged-In User ONLY */}
+          {!isGuestUser && user && user.id && (
             <NotificationCenter userId={user.id} />
-          ) : (
-            <NotificationCenter userId={9} />
           )}
 
           {/* Dark/Light Mode Toggle Switch */}
@@ -112,8 +144,12 @@ function Navbar() {
             )}
           </button>
 
-          {!user ? (
-            <>
+          {isGuestUser ? (
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-black px-3 py-1.5 rounded-xl bg-purple-600/20 text-purple-300 border border-purple-500/30 hidden sm:flex items-center gap-1.5">
+                <FaUserSecret /> Guest Customer
+              </span>
+
               <Link
                 to="/login"
                 className={`px-4 py-2 text-xs font-bold rounded-xl border transition-all ${
@@ -131,7 +167,7 @@ function Navbar() {
               >
                 Register
               </Link>
-            </>
+            </div>
           ) : (
             <span className="text-xs font-bold px-3 py-1.5 rounded-xl bg-purple-500/20 text-purple-300 border border-purple-500/30">
               👤 {user.full_name || user.email}

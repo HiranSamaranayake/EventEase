@@ -31,20 +31,15 @@ const InteractiveSeatMap = ({ eventId, basePrice, onSeatSelectionChange }) => {
   const handleSeatClick = (seatCode, tierName, price) => {
     if (bookedSeats.includes(seatCode)) return;
 
-    setSelectedSeats((prev) => {
-      const exists = prev.some((s) => s.seat_code === seatCode);
-      let updated;
-      if (exists) {
-        updated = prev.filter((s) => s.seat_code !== seatCode);
-      } else {
-        updated = [...prev, { seat_code: seatCode, tier_name: tierName, price: price }];
-      }
+    const exists = selectedSeats.some((s) => s.seat_code === seatCode);
+    const updated = exists
+      ? selectedSeats.filter((s) => s.seat_code !== seatCode)
+      : [...selectedSeats, { seat_code: seatCode, tier_name: tierName, price: price }];
 
-      if (onSeatSelectionChange) {
-        onSeatSelectionChange(updated);
-      }
-      return updated;
-    });
+    setSelectedSeats(updated);
+    if (onSeatSelectionChange) {
+      onSeatSelectionChange(updated);
+    }
   };
 
   const totalPrice = selectedSeats.reduce((sum, s) => sum + floatVal(s.price), 0);
