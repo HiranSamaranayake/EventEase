@@ -23,6 +23,7 @@ const OrganizerVerification = () => {
   // Form State
   const [orgName, setOrgName] = useState("");
   const [brn, setBrn] = useState("");
+  const [tin, setTin] = useState("");
   const [nic, setNic] = useState("");
   const [phone, setPhone] = useState("");
   const [website, setWebsite] = useState("");
@@ -44,6 +45,7 @@ const OrganizerVerification = () => {
         setOrganizer(data.organizer);
         setOrgName(data.organizer.organization_name || "");
         setBrn(data.organizer.business_registration_number || "");
+        setTin(data.organizer.tin_number || data.organizer.tax_identification_number || "");
         setNic(data.organizer.nic_passport || "");
         setPhone(data.organizer.phone || "");
         setWebsite(data.organizer.website || "");
@@ -64,6 +66,8 @@ const OrganizerVerification = () => {
     formData.append("user_id", user.id);
     formData.append("organization_name", orgName);
     formData.append("business_registration_number", brn);
+    formData.append("tax_identification_number", tin);
+    formData.append("tin_number", tin);
     formData.append("nic_passport", nic);
     formData.append("phone", phone);
     formData.append("website", website);
@@ -92,7 +96,7 @@ const OrganizerVerification = () => {
   };
 
   const status = organizer?.verification_status || "pending";
-  const isVerified = status === "verified";
+  const isVerified = status === "verified" || status === "approved";
   const isRejected = status === "rejected";
 
   return (
@@ -174,6 +178,19 @@ const OrganizerVerification = () => {
                 value={brn}
                 onChange={(e) => setBrn(e.target.value)}
                 placeholder="e.g. PV-123456"
+                className="w-full p-3.5 border rounded-2xl text-xs outline-none focus:ring-2 focus:ring-purple-600"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-2 uppercase flex items-center gap-1.5">
+                <FaIdCard className="text-purple-600" /> Tax Identification No. (TIN)
+              </label>
+              <input
+                type="text"
+                value={tin}
+                onChange={(e) => setTin(e.target.value)}
+                placeholder="e.g. TIN-98765432"
                 className="w-full p-3.5 border rounded-2xl text-xs outline-none focus:ring-2 focus:ring-purple-600"
               />
             </div>
