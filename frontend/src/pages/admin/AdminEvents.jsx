@@ -30,7 +30,7 @@ const AdminEvents = () => {
   }, []);
 
   const deleteEvent = (id) => {
-    if (!window.confirm("Are you sure you want to delete this event?")) return;
+    if (!window.confirm("Are you sure you want to delete this event? It will be permanently removed everywhere.")) return;
 
     setActionLoading(true);
     fetch("http://localhost/EventEase/backend/api/admin_delete_event.php", {
@@ -41,11 +41,19 @@ const AdminEvents = () => {
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
-          alert("Event deleted successfully");
-          loadEvents();
+          alert("✅ Event deleted successfully!");
+          setEvents((prev) => prev.filter((e) => e.id !== id));
+          if (selectedEvent && selectedEvent.id === id) {
+            setSelectedEvent(null);
+          }
         } else {
-          alert(data.message);
+          alert(data.message || "Failed to delete event");
         }
+        setActionLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        alert("Server error deleting event");
         setActionLoading(false);
       });
   };

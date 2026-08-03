@@ -141,7 +141,9 @@ const TicketDetails = () => {
                 <span className="text-[10px] text-slate-400 uppercase tracking-wider font-extrabold flex items-center gap-1">
                   <FaCalendarAlt className="text-purple-400" /> Event Date & Time
                 </span>
-                <p className="text-sm font-bold text-white">{ticket.event_date}</p>
+                <p className="text-sm font-bold text-white">
+                  {ticket.event_date} {ticket.event_time ? `at ${ticket.event_time}` : ''}
+                </p>
               </div>
 
               <div className="bg-white/5 border border-white/10 p-4 rounded-2xl space-y-1">

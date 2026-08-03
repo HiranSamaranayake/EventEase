@@ -7,6 +7,7 @@ const CreateEvent = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [eventDate, setEventDate] = useState("");
+  const [eventTime, setEventTime] = useState("18:00");
   const [location, setLocation] = useState("");
   const [message, setMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
@@ -91,6 +92,7 @@ const CreateEvent = () => {
     formData.append("title", title);
     formData.append("description", description);
     formData.append("event_date", eventDate);
+    formData.append("event_time", eventTime);
     formData.append("location", location);
     formData.append("capacity", capacity);
     formData.append("category", category);
@@ -192,8 +194,8 @@ const CreateEvent = () => {
             />
           </div>
 
-          {/* Event Date & Location */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Event Date, Time & Location */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className="block text-xs font-bold text-gray-700 uppercase mb-1 flex items-center gap-1.5">
                 <FaCalendarAlt className="text-purple-600" /> Event Date *
@@ -202,6 +204,18 @@ const CreateEvent = () => {
                 type="date"
                 value={eventDate}
                 onChange={(e) => setEventDate(e.target.value)}
+                className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-gray-700 uppercase mb-1 flex items-center gap-1.5">
+                <FaCalendarAlt className="text-purple-600" /> Event Start Time *
+              </label>
+              <input
+                type="time"
+                value={eventTime}
+                onChange={(e) => setEventTime(e.target.value)}
                 className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition"
               />
             </div>

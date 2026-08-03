@@ -321,20 +321,29 @@ text-gray-800
                     {event.title}
                   </h2>
 
-                  <span
-                    className="
-inline-block
-mt-2
-px-3
-py-1
-rounded-full
-bg-purple-100
-text-purple-700
-text-xs
-"
-                  >
-                    {event.category}
-                  </span>
+                  <div className="flex items-center gap-2 mt-2 flex-wrap">
+                    <span className="inline-block px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-xs font-bold">
+                      {event.category}
+                    </span>
+
+                    {(!event.status || event.status.toLowerCase() === 'pending') && (
+                      <span className="inline-block px-3 py-1 rounded-full bg-amber-100 text-amber-800 font-extrabold text-xs border border-amber-300">
+                        ⏳ Pending Admin Approval
+                      </span>
+                    )}
+
+                    {event.status?.toLowerCase() === 'approved' && (
+                      <span className="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 font-extrabold text-xs border border-emerald-300">
+                        ✓ Approved
+                      </span>
+                    )}
+
+                    {event.status?.toLowerCase() === 'rejected' && (
+                      <span className="inline-block px-3 py-1 rounded-full bg-rose-100 text-rose-800 font-extrabold text-xs border border-rose-300">
+                        ✕ Rejected by Admin
+                      </span>
+                    )}
+                  </div>
 
                   <div
                     className="
