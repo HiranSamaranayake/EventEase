@@ -10,10 +10,71 @@ html.light body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+html.dark {
+  background-color: #020617 !important;
+  color: #f8fafc !important;
+}
+
 html.dark body {
-  background-color: #020617;
-  color: #f8fafc;
+  background-color: #020617 !important;
+  color: #f8fafc !important;
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Comprehensive Dark Mode Color & Contrast Overrides */
+html.dark .text-gray-900,
+html.dark .text-gray-800,
+html.dark .text-gray-700,
+html.dark .text-gray-600,
+html.dark .text-black,
+html.dark .text-slate-900,
+html.dark .text-slate-800 {
+  color: #f8fafc !important;
+}
+
+html.dark .text-gray-500,
+html.dark .text-slate-500,
+html.dark .text-gray-400 {
+  color: #cbd5e1 !important;
+}
+
+html.dark .bg-white {
+  background-color: #0f172a !important;
+  border-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+html.dark .bg-slate-50,
+html.dark .bg-gray-50,
+html.dark .bg-gray-100,
+html.dark .bg-slate-100 {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+html.dark input,
+html.dark select,
+html.dark textarea {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+html.dark table th {
+  background-color: #1e293b !important;
+  color: #cbd5e1 !important;
+  border-color: #334155 !important;
+}
+
+html.dark table td {
+  border-color: #1e293b !important;
+  color: #f8fafc !important;
 }
 
 @keyframes floatOrb1 {
@@ -62,4 +123,4 @@ html.dark body {
 
 .animate-orb-3 {
   animation: floatOrb3 18s ease-in-out infinite;
-}
+}
