@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaHeart, FaRegHeart, FaCalendarAlt, FaMapMarkerAlt, FaTags } from "react-icons/fa";
+import { FaHeart, FaRegHeart, FaCalendarAlt, FaMapMarkerAlt, FaTags, FaSearch, FaFilter, FaChair } from "react-icons/fa";
 
 const Events = () => {
     const navigate = useNavigate();
     const [events, setEvents] = useState([]);
+    const [filteredEvents, setFilteredEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [favoriteIds, setFavoriteIds] = useState([]);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [selectedCategory, setSelectedCategory] = useState("All");
+    const [priceFilter, setPriceFilter] = useState("All");
 
     useEffect(() => {
         fetch("http://localhost/EventEase/backend/api/events.php")
@@ -14,6 +18,7 @@ const Events = () => {
             .then(data => {
                 if (data.success) {
                     setEvents(data.events);
+                    setFilteredEvents(data.events);
                 }
                 setLoading(false);
             });
@@ -29,6 +34,34 @@ const Events = () => {
                 });
         }
     }, []);
+
+    useEffect(() => {
+        let result = events;
+
+        if (searchQuery.trim()) {
+            const query = searchQuery.toLowerCase();
+            result = result.filter(e =>
+                e.title.toLowerCase().includes(query) ||
+                (e.description && e.description.toLowerCase().includes(query)) ||
+                (e.location && e.location.toLowerCase().includes(query)) ||
+                (e.category && e.category.toLowerCase().includes(query))
+            );
+        }
+
+        if (selectedCategory !== "All") {
+            result = result.filter(e => (e.category || "General").toLowerCase() === selectedCategory.toLowerCase());
+        }
+
+        if (priceFilter === "Free") {
+            result = result.filter(e => parseFloat(e.price) === 0);
+        } else if (priceFilter === "Paid") {
+            result = result.filter(e => parseFloat(e.price) > 0);
+        }
+
+        setFilteredEvents(result);
+    }, [searchQuery, selectedCategory, priceFilter, events]);
+
+    const categories = ["All", "Concert", "Sports", "Theater", "Workshop", "Seminar", "Cultural", "General"];
 
     const toggleFavorite = async (e, eventId) => {
         e.stopPropagation();
@@ -79,20 +112,77 @@ const Events = () => {
                         Explore Events
                     </h1>
                     <p className="text-gray-500 text-sm mt-1">
-                        Find, save, and book tickets for upcoming concerts, sports, dramas, and workshops.
+                        Find, search, view seat availability, and book tickets for upcoming concerts, sports, dramas, and workshops.
                     </p>
                 </div>
             </div>
 
-            {events.length === 0 ? (
+            {/* Search and Filters Bar */}
+            <div className="bg-white rounded-3xl p-6 shadow-md border border-gray-100 space-y-4">
+                <div className="flex flex-col md:flex-row gap-4">
+                    <div className="relative flex-1">
+                        <FaSearch className="absolute left-4 top-3.5 text-gray-400 text-sm" />
+                        <input
+                            type="text"
+                            placeholder="Search by event name, category, or location..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-600 focus:bg-white transition"
+                        />
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 bg-slate-50 border border-gray-200 rounded-2xl px-4 py-2">
+                            <FaFilter className="text-purple-600 text-xs" />
+                            <select
+                                value={priceFilter}
+                                onChange={(e) => setPriceFilter(e.target.value)}
+                                className="bg-transparent text-xs font-semibold text-gray-700 focus:outline-none cursor-pointer"
+                            >
+                                <option value="All">All Prices</option>
+                                <option value="Free">Free Only</option>
+                                <option value="Paid">Paid Only</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Category Pills */}
+                <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider shrink-0 mr-1">Categories:</span>
+                    {categories.map((cat) => (
+                        <button
+                            key={cat}
+                            onClick={() => setSelectedCategory(cat)}
+                            className={`px-4 py-1.5 rounded-full text-xs font-bold transition shrink-0 ${
+                                selectedCategory === cat
+                                    ? "bg-purple-700 text-white shadow-md"
+                                    : "bg-slate-100 text-gray-600 hover:bg-slate-200"
+                            }`}
+                        >
+                            {cat}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            {filteredEvents.length === 0 ? (
                 <div className="bg-white rounded-3xl p-12 text-center shadow border border-gray-100">
-                    <p className="text-gray-500 font-medium">No events currently available.</p>
+                    <p className="text-gray-500 font-medium">No events found matching your search query or criteria.</p>
+                    <button
+                        onClick={() => { setSearchQuery(""); setSelectedCategory("All"); setPriceFilter("All"); }}
+                        className="mt-4 text-xs font-bold text-purple-700 hover:underline"
+                    >
+                        Reset Search Filters
+                    </button>
                 </div>
             ) : (
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {events.map((event) => {
+                    {filteredEvents.map((event) => {
                         const targetId = parseInt(event.id);
                         const isFav = favoriteIds.includes(targetId);
+                        const isSoldOut = event.is_sold_out || (event.capacity > 0 && event.available_seats <= 0);
+
                         return (
                             <div
                                 key={event.id}
@@ -146,6 +236,12 @@ const Events = () => {
                                             <FaMapMarkerAlt className="text-rose-500" />
                                             <span className="line-clamp-1">{event.location || "Venue TBD"}</span>
                                         </div>
+                                        <div className="flex items-center gap-2">
+                                            <FaChair className="text-emerald-500" />
+                                            <span className={isSoldOut ? "text-rose-600 font-bold" : "text-emerald-700 font-medium"}>
+                                                {isSoldOut ? "Sold Out" : `${event.available_seats || event.capacity || 'Seats available'}`}
+                                            </span>
+                                        </div>
                                     </div>
 
                                     <div className="flex flex-col gap-3 pt-3 border-t border-gray-100">
@@ -197,4 +293,4 @@ const Events = () => {
     );
 };
 
-export default Events;
+export default Events;
