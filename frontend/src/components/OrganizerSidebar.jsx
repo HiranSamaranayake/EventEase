@@ -13,6 +13,7 @@ import {
   FaSignOutAlt,
   FaQrcode,
   FaShieldAlt,
+  FaClock,
 } from "react-icons/fa";
 
 const OrganizerSidebar = () => {
@@ -35,6 +36,11 @@ const OrganizerSidebar = () => {
     title: "Create Event",
     icon: <FaPlusCircle />,
     path: "/organizer/create-event",
+  },
+  {
+    title: "Event Schedules",
+    icon: <FaClock />,
+    path: "/organizer/schedules",
   },
   {
   title: "Analytics",

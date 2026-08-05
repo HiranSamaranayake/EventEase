@@ -32,6 +32,7 @@ import OrganizerLayout from "./components/OrganizerLayout";
 import OrganizerAnalytics from "./pages/organizer/OrganizerAnalytics";
 import OrganizerBookings from "./pages/organizer/OrganizerBookings";
 import OrganizerTickets from "./pages/organizer/OrganizerTickets";
+import OrganizerSchedules from "./pages/organizer/OrganizerSchedules";
 import ScanTicket from "./pages/organizer/ScanTicket";
 import OrganizerVerification from "./pages/organizer/OrganizerVerification";
 
@@ -186,6 +187,10 @@ function App() {
 <Route
   path="tickets"
   element={<OrganizerTickets />}
+/>
+<Route
+  path="schedules"
+  element={<OrganizerSchedules />}
 />
 
   <Route

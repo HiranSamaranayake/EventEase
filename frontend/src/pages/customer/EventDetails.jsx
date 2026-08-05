@@ -9,6 +9,7 @@ const EventDetails = () => {
     const [isFavorite, setIsFavorite] = useState(false);
     const [isWaiting, setIsWaiting] = useState(false);
     const [waitingPos, setWaitingPos] = useState(null);
+    const [schedules, setSchedules] = useState([]);
 
     // Modal state for Guest Customer attempting Verified Customer actions
     const [guestModal, setGuestModal] = useState({ open: false, featureName: "" });
@@ -23,6 +24,15 @@ const EventDetails = () => {
                     setEvent(data.event);
                 }
             });
+
+        fetch(`http://localhost/EventEase/backend/api/get_event_schedules.php?event_id=${id}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success' && data.data) {
+                    setSchedules(data.data);
+                }
+            })
+            .catch(err => console.error("Failed to load schedules", err));
 
         if (currentUser && currentUser.id) {
             fetch(`http://localhost/EventEase/backend/api/my_favorites.php?user_id=${currentUser.id}`)
@@ -253,6 +263,58 @@ const EventDetails = () => {
                                     <h2 className="text-2xl font-bold mb-4">About This Event</h2>
                                     <p className="text-gray-700 leading-8 text-base">{event.description}</p>
                                 </div>
+
+                                {/* MULTI-SESSION EVENT SCHEDULE TIMETABLE */}
+                                {schedules.length > 0 && (
+                                    <div className="bg-white border border-purple-100 rounded-3xl p-8 shadow-xl space-y-6">
+                                        <div className="flex justify-between items-center border-b border-gray-100 pb-4">
+                                            <div>
+                                                <h2 className="text-2xl font-extrabold text-gray-900 flex items-center gap-2">
+                                                    <FaClock className="text-purple-600" /> Event Schedule & Session Timetable
+                                                </h2>
+                                                <p className="text-xs text-gray-500 mt-1">
+                                                    Official multi-slot program lineup and stage schedules provided by the organizer.
+                                                </p>
+                                            </div>
+                                            <span className="bg-purple-100 text-purple-800 text-xs font-bold px-3 py-1 rounded-full uppercase">
+                                                {schedules.length} Sessions
+                                            </span>
+                                        </div>
+
+                                        <div className="space-y-4">
+                                            {schedules.map((session, idx) => (
+                                                <div key={session.id || idx} className="bg-purple-50/50 border border-purple-100 p-5 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:border-purple-200 transition">
+                                                    <div className="space-y-1">
+                                                        <div className="flex items-center gap-2">
+                                                            <span className="text-xs font-bold uppercase px-2.5 py-0.5 rounded-full bg-purple-600 text-white">
+                                                                {session.status || 'Scheduled'}
+                                                            </span>
+                                                            {session.hall_stage && (
+                                                                <span className="text-xs font-bold text-purple-700 bg-purple-100 px-2.5 py-0.5 rounded-full">
+                                                                    📍 {session.hall_stage}
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                        <h3 className="text-lg font-bold text-gray-900">{session.session_title}</h3>
+                                                        <p className="text-xs text-gray-500 font-mono">
+                                                            ⏰ {new Date(session.start_time).toLocaleString()} &rarr; {new Date(session.end_time).toLocaleTimeString()}
+                                                        </p>
+                                                        {session.speaker_performer && (
+                                                            <p className="text-xs font-semibold text-purple-900">
+                                                                🎤 Speaker / Performer: {session.speaker_performer}
+                                                            </p>
+                                                        )}
+                                                        {session.description && (
+                                                            <p className="text-xs text-gray-600 mt-2 bg-white p-3 rounded-xl border border-purple-100">
+                                                                {session.description}
+                                                            </p>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
 
                             {/* Right Side Sticky Booking/Waiting Card */}
