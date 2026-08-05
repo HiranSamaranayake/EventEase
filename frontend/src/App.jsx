@@ -52,6 +52,7 @@ import AdminBookings from "./pages/admin/AdminBookings";
 import AdminSettings from "./pages/admin/AdminSettings";
 import AdminComplaints from "./pages/admin/AdminComplaints";
 import AdminSecurityLogs from "./pages/admin/AdminSecurityLogs";
+import AdminFinancials from "./pages/admin/AdminFinancials";
 import SupportComplaints from "./pages/customer/SupportComplaints";
 import TicketView from "./pages/customer/TicketView";
 
@@ -329,6 +330,17 @@ function App() {
           }
         >
           <Route index element={<AdminSecurityLogs />} />
+        </Route>
+
+        <Route
+          path="/admin-financials"
+          element={
+            <ProtectedRoute allowedRole="admin">
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<AdminFinancials />} />
         </Route>
       </Routes>
     </BrowserRouter>

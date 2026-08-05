@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-
-import { FaSearch, FaTrash, FaUserShield } from "react-icons/fa";
-
+import { FaSearch, FaTrash, FaUserShield, FaUserPlus, FaTimes, FaShieldAlt } from "react-icons/fa";
 import { motion } from "framer-motion";
 
 const AdminUsers = () => {
@@ -11,6 +9,17 @@ const AdminUsers = () => {
   const [role, setRole] = useState("all");
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedSubRole, setSelectedSubRole] = useState("super_admin");
+
+  // New Sub-Admin Modal state
+  const [isAddAdminOpen, setIsAddAdminOpen] = useState(false);
+  const [newAdminForm, setNewAdminForm] = useState({
+    full_name: "",
+    email: "",
+    phone: "0771234567",
+    password: "",
+    admin_role: "junior_admin"
+  });
+  const [creating, setCreating] = useState(false);
 
   useEffect(() => {
     fetchUsers();
@@ -45,6 +54,7 @@ const AdminUsers = () => {
       });
   };
 
+  // Promote existing user to Sub-Admin role
   const handleUpdateAdminRole = () => {
     if (!selectedUser) return;
 
@@ -69,6 +79,38 @@ const AdminUsers = () => {
       .catch((err) => alert("Failed to update role"));
   };
 
+  // Create brand new Sub-Admin account
+  const handleCreateSubAdmin = (e) => {
+    e.preventDefault();
+    if (!newAdminForm.full_name || !newAdminForm.email || !newAdminForm.password) {
+      alert("Please fill in all required fields (Name, Email, Password).");
+      return;
+    }
+
+    setCreating(true);
+    fetch("http://localhost/EventEase/backend/api/create_sub_admin.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newAdminForm),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setCreating(false);
+        if (data.success) {
+          alert(`Success: ${data.message}`);
+          setIsAddAdminOpen(false);
+          setNewAdminForm({ full_name: "", email: "", phone: "0771234567", password: "", admin_role: "junior_admin" });
+          fetchUsers();
+        } else {
+          alert(`Error: ${data.message}`);
+        }
+      })
+      .catch((err) => {
+        setCreating(false);
+        alert("Failed to create sub-admin.");
+      });
+  };
+
   const filteredUsers = users.filter((user) => {
     const matchSearch =
       user.full_name.toLowerCase().includes(search.toLowerCase()) ||
@@ -82,7 +124,7 @@ const AdminUsers = () => {
   const getSubRoleBadge = (subRole) => {
     switch (subRole) {
       case "junior_admin":
-        return <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-300">Support Admin</span>;
+        return <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-300">Junior Support Admin</span>;
       case "financial_admin":
         return <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">Financial Admin</span>;
       case "security_admin":
@@ -97,12 +139,27 @@ const AdminUsers = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-4xl font-bold text-gray-800">
-        User Management & Admin Roles
-      </h1>
+    <div className="space-y-6 max-w-7xl mx-auto">
+      {/* HEADER & TOP ACTIONS */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-extrabold text-gray-900 flex items-center gap-2">
+            <FaShieldAlt className="text-purple-600" /> User Management & Sub-Admin Governance
+          </h1>
+          <p className="text-sm text-gray-500 mt-1">
+            Super Admin center to create new sub-admin accounts or assign specialized roles to existing users.
+          </p>
+        </div>
 
-      {/* SEARCH & FILTER */}
+        <button
+          onClick={() => setIsAddAdminOpen(true)}
+          className="px-5 py-2.5 bg-purple-600 hover:bg-purple-700 text-white text-xs font-black rounded-xl shadow-lg shadow-purple-600/20 transition flex items-center gap-2 shrink-0 cursor-pointer"
+        >
+          <FaUserPlus /> Add New Sub-Admin
+        </button>
+      </div>
+
+      {/* SEARCH & FILTER BAR */}
       <div className="bg-white rounded-2xl shadow p-5 flex flex-col md:flex-row gap-4">
         <div className="flex items-center border rounded-xl px-4 flex-1">
           <FaSearch className="text-gray-400" />
@@ -123,7 +180,7 @@ const AdminUsers = () => {
           <option value="all">All Roles</option>
           <option value="customer">Customer</option>
           <option value="organizer">Organizer</option>
-          <option value="admin">Admin</option>
+          <option value="admin">Admin / Sub-Admin</option>
         </select>
       </div>
 
@@ -168,18 +225,18 @@ const AdminUsers = () => {
                 <td className="p-4 text-sm text-slate-500">{user.created_at?.split(' ')[0]}</td>
                 <td className="p-4 flex gap-2">
                   <button
-                    title="Assign Admin Sub-Role"
-                    className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded-lg flex items-center gap-1.5 text-xs font-semibold transition"
+                    title="Assign/Promote to Admin Sub-Role"
+                    className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded-lg flex items-center gap-1.5 text-xs font-semibold transition cursor-pointer"
                     onClick={() => {
                       setSelectedUser(user);
-                      setSelectedSubRole(user.admin_role || "super_admin");
+                      setSelectedSubRole(user.admin_role || "junior_admin");
                     }}
                   >
-                    <FaUserShield /> Role
+                    <FaUserShield /> Assign Sub-Role
                   </button>
                   <button
                     title="Delete User"
-                    className="bg-red-600 text-white p-2 rounded-lg hover:bg-red-700 transition"
+                    className="bg-red-600 text-white p-2 rounded-lg hover:bg-red-700 transition cursor-pointer"
                     onClick={() => deleteUser(user.id)}
                   >
                     <FaTrash />
@@ -191,15 +248,113 @@ const AdminUsers = () => {
         </table>
       </div>
 
-      {/* SUB-ROLE ASSIGNMENT MODAL */}
+      {/* MODAL 1: ADD BRAND NEW SUB-ADMIN ACCOUNT */}
+      {isAddAdminOpen && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-3xl p-6 max-w-lg w-full shadow-2xl border border-slate-100 space-y-4">
+            <div className="flex justify-between items-center border-b pb-3">
+              <h3 className="text-xl font-extrabold text-slate-900 flex items-center gap-2">
+                <FaUserPlus className="text-purple-600" /> Create New Sub-Admin Account
+              </h3>
+              <button onClick={() => setIsAddAdminOpen(false)} className="text-slate-400 hover:text-slate-600">
+                <FaTimes />
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateSubAdmin} className="space-y-4 pt-2">
+              <div>
+                <label className="block text-xs font-extrabold uppercase text-slate-700 mb-1">Full Name</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Kasun Fernando"
+                  value={newAdminForm.full_name}
+                  onChange={(e) => setNewAdminForm({ ...newAdminForm, full_name: e.target.value })}
+                  className="w-full p-3 border border-slate-300 rounded-xl font-medium text-slate-800 outline-none focus:border-purple-600"
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-extrabold uppercase text-slate-700 mb-1">Email Address</label>
+                  <input
+                    type="email"
+                    placeholder="admin@eventease.com"
+                    value={newAdminForm.email}
+                    onChange={(e) => setNewAdminForm({ ...newAdminForm, email: e.target.value })}
+                    className="w-full p-3 border border-slate-300 rounded-xl font-medium text-slate-800 outline-none focus:border-purple-600"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-extrabold uppercase text-slate-700 mb-1">Phone Number</label>
+                  <input
+                    type="text"
+                    placeholder="0771234567"
+                    value={newAdminForm.phone}
+                    onChange={(e) => setNewAdminForm({ ...newAdminForm, phone: e.target.value })}
+                    className="w-full p-3 border border-slate-300 rounded-xl font-medium text-slate-800 outline-none focus:border-purple-600"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-extrabold uppercase text-slate-700 mb-1">Password</label>
+                <input
+                  type="password"
+                  placeholder="••••••••"
+                  value={newAdminForm.password}
+                  onChange={(e) => setNewAdminForm({ ...newAdminForm, password: e.target.value })}
+                  className="w-full p-3 border border-slate-300 rounded-xl font-medium text-slate-800 outline-none focus:border-purple-600"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-extrabold uppercase text-slate-700 mb-1">Sub-Admin Role</label>
+                <select
+                  value={newAdminForm.admin_role}
+                  onChange={(e) => setNewAdminForm({ ...newAdminForm, admin_role: e.target.value })}
+                  className="w-full p-3 border border-slate-300 rounded-xl font-extrabold text-purple-900 outline-none focus:border-purple-600 bg-purple-50"
+                >
+                  <option value="junior_admin">🎧 Junior Support Admin (Complaints & Moderation)</option>
+                  <option value="financial_admin">💳 Financial Admin (Payments, Payouts & Ledger)</option>
+                  <option value="security_admin">🛡️ Security Admin (Fraud Monitoring & Audit Logs)</option>
+                  <option value="super_admin">⚡ Super Admin (Full Platform Access)</option>
+                </select>
+              </div>
+
+              <div className="flex justify-end gap-3 pt-4 border-t">
+                <button
+                  type="button"
+                  onClick={() => setIsAddAdminOpen(false)}
+                  className="px-4 py-2 text-slate-600 font-semibold hover:bg-slate-100 rounded-xl text-sm"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={creating}
+                  className="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white font-extrabold rounded-xl text-sm shadow transition"
+                >
+                  {creating ? "Creating..." : "Create Sub-Admin Account"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 2: ASSIGN SUB-ROLE TO EXISTING USER */}
       {selectedUser && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border border-slate-100 space-y-4">
             <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-              <FaUserShield className="text-purple-600" /> Configure Admin Sub-Role
+              <FaUserShield className="text-purple-600" /> Assign Sub-Admin Role to Existing User
             </h3>
             <p className="text-sm text-slate-500">
-              Assign a specialized admin role to <strong>{selectedUser.full_name}</strong> according to the proposal governance specification (Page 15).
+              Promote <strong>{selectedUser.full_name}</strong> ({selectedUser.email}) to a specialized sub-admin role.
             </p>
 
             <div className="space-y-3 pt-2">
@@ -209,10 +364,10 @@ const AdminUsers = () => {
                 onChange={(e) => setSelectedSubRole(e.target.value)}
                 className="w-full p-3 border border-slate-300 rounded-xl font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-purple-600"
               >
-                <option value="super_admin">⚡ Super Admin (Full Platform Access)</option>
                 <option value="junior_admin">🎧 Junior Admin / Support (Complaints & Moderation)</option>
                 <option value="financial_admin">💳 Financial Admin (Payments & Refunds)</option>
                 <option value="security_admin">🛡️ Security Admin (Fraud Monitoring & Audit Logs)</option>
+                <option value="super_admin">⚡ Super Admin (Full Platform Access)</option>
               </select>
             </div>
 
