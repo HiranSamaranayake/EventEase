@@ -25,28 +25,16 @@ Find Organizer ID
 
 $orgQuery = mysqli_query(
     $conn,
-    "SELECT id FROM organizers WHERE user_id='$user_id'"
+    "SELECT id FROM organizers WHERE user_id='$user_id' OR id='$user_id'"
 );
 
 if (mysqli_num_rows($orgQuery) == 0) {
-
-    echo json_encode([
-        "success" => false,
-        "message" => "Organizer not found"
-    ]);
-
-    exit;
+    // If no row in organizers table, fallback organizer_id to user_id
+    $organizer_id = $user_id;
+} else {
+    $organizer = mysqli_fetch_assoc($orgQuery);
+    $organizer_id = $organizer["id"];
 }
-
-$organizer = mysqli_fetch_assoc($orgQuery);
-
-$organizer_id = $organizer["id"];
-
-/*
------------------------------------------
-Load Organizer Events
------------------------------------------
-*/
 
 $query = mysqli_query(
     $conn,
@@ -75,7 +63,7 @@ $query = mysqli_query(
 
     FROM events
 
-    WHERE organizer_id='$organizer_id'
+    WHERE organizer_id='$organizer_id' OR organizer_id='$user_id'
 
     ORDER BY id DESC
     "

@@ -1,0 +1,664 @@
+-- EventEase Database Backup Snapshot
+-- Generated: 2026-08-05 23:47:48
+-- Database: eventease
+
+SET FOREIGN_KEY_CHECKS=0;
+
+DROP TABLE IF EXISTS `bookings`;
+CREATE TABLE `bookings` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `event_id` int(11) NOT NULL,
+  `ticket_quantity` int(11) NOT NULL DEFAULT 1,
+  `total_amount` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `payment_status` enum('Pending','Paid','Refunded') DEFAULT 'Pending',
+  `booking_status` enum('Pending','Confirmed','Cancelled') DEFAULT 'Pending',
+  `qr_code` varchar(255) DEFAULT NULL,
+  `booking_date` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `event_id` (`event_id`),
+  CONSTRAINT `bookings_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `bookings_ibfk_2` FOREIGN KEY (`event_id`) REFERENCES `events` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=160 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `bookings` (`id`, `user_id`, `event_id`, `ticket_quantity`, `total_amount`, `payment_status`, `booking_status`, `qr_code`, `booking_date`) VALUES ('32', '5', '6', '1', '0.00', 'Pending', 'Pending', NULL, '2026-07-03 23:58:42');
+INSERT INTO `bookings` (`id`, `user_id`, `event_id`, `ticket_quantity`, `total_amount`, `payment_status`, `booking_status`, `qr_code`, `booking_date`) VALUES ('33', '5', '6', '1', '0.00', 'Pending', 'Pending', NULL, '2026-07-03 23:58:42');
+INSERT INTO `bookings` (`id`, `user_id`, `event_id`, `ticket_quantity`, `total_amount`, `payment_status`, `booking_status`, `qr_code`, `booking_date`) VALUES ('84', '5', '9', '1', '4000.00', 'Pending', 'Pending', NULL, '2026-07-12 13:18:46');
+INSERT INTO `bookings` (`id`, `user_id`, `event_id`, `ticket_quantity`, `total_amount`, `payment_status`, `booking_status`, `qr_code`, `booking_date`) VALUES ('85', '7', '7', '1', '8000.00', 'Pending', 'Pending', NULL, '2026-07-12 13:37:42');
+INSERT INTO `bookings` (`id`, `user_id`, `event_id`, `ticket_quantity`, `total_amount`, `payment_status`, `booking_status`, `qr_code`, `booking_date`) VALUES ('96', '7', '7', '1', '8000.00', 'Pending', 'Pending', NULL, '2026-07-12 22:50:24');
+
+DROP TABLE IF EXISTS `complaints`;
+CREATE TABLE `complaints` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `event_id` int(11) DEFAULT NULL,
+  `subject` varchar(255) NOT NULL,
+  `category` enum('booking_issue','payment_dispute','event_cancellation','organizer_conduct','technical_issue','other') NOT NULL DEFAULT 'booking_issue',
+  `description` text NOT NULL,
+  `status` enum('open','in_progress','resolved','dismissed') NOT NULL DEFAULT 'open',
+  `priority` enum('low','medium','high','urgent') NOT NULL DEFAULT 'medium',
+  `admin_response` text DEFAULT NULL,
+  `resolved_by` int(11) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `user_id_idx` (`user_id`),
+  KEY `event_id_idx` (`event_id`),
+  KEY `status_idx` (`status`)
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `complaints` (`id`, `user_id`, `event_id`, `subject`, `category`, `description`, `status`, `priority`, `admin_response`, `resolved_by`, `created_at`, `updated_at`) VALUES ('1', '9', NULL, 'Ticket Refund Inquiry for Mariens Concert', 'booking_issue', 'Payment was processed successfully but seat status requires manual sync.', 'open', 'high', NULL, NULL, '2026-08-06 01:05:19', '2026-08-06 01:05:19');
+INSERT INTO `complaints` (`id`, `user_id`, `event_id`, `subject`, `category`, `description`, `status`, `priority`, `admin_response`, `resolved_by`, `created_at`, `updated_at`) VALUES ('2', '9', NULL, 'Ticket Refund Inquiry for Mariens Concert', 'booking_issue', 'Payment was processed successfully but seat status requires manual sync.', 'open', 'high', NULL, NULL, '2026-08-06 01:05:48', '2026-08-06 01:05:48');
+INSERT INTO `complaints` (`id`, `user_id`, `event_id`, `subject`, `category`, `description`, `status`, `priority`, `admin_response`, `resolved_by`, `created_at`, `updated_at`) VALUES ('3', '9', NULL, 'Ticket Refund Inquiry 1785958563333', 'booking_issue', 'Payment was processed successfully but seat status requires manual sync.', 'open', 'high', 'Support Team verified transaction and synced ticket status.', '7', '2026-08-06 01:06:05', '2026-08-06 01:06:06');
+INSERT INTO `complaints` (`id`, `user_id`, `event_id`, `subject`, `category`, `description`, `status`, `priority`, `admin_response`, `resolved_by`, `created_at`, `updated_at`) VALUES ('4', '9', NULL, 'Ticket Refund Inquiry 1785958601206', 'booking_issue', 'Payment was processed successfully but seat status requires manual sync.', 'open', 'high', 'Support Team verified transaction and synced ticket status.', '7', '2026-08-06 01:06:42', '2026-08-06 01:06:42');
+INSERT INTO `complaints` (`id`, `user_id`, `event_id`, `subject`, `category`, `description`, `status`, `priority`, `admin_response`, `resolved_by`, `created_at`, `updated_at`) VALUES ('5', '9', NULL, 'Ticket Refund Inquiry 1785958603723', 'booking_issue', 'Payment was processed successfully but seat status requires manual sync.', 'open', 'high', 'Support Team verified transaction and synced ticket status.', '7', '2026-08-06 01:06:46', '2026-08-06 01:06:46');
+INSERT INTO `complaints` (`id`, `user_id`, `event_id`, `subject`, `category`, `description`, `status`, `priority`, `admin_response`, `resolved_by`, `created_at`, `updated_at`) VALUES ('6', '9', NULL, 'Ticket Refund Inquiry 1785958654270', 'booking_issue', 'Payment was processed successfully but seat status requires manual sync.', 'open', 'high', 'Support Team verified transaction and synced ticket status.', '7', '2026-08-06 01:07:35', '2026-08-06 01:07:35');
+INSERT INTO `complaints` (`id`, `user_id`, `event_id`, `subject`, `category`, `description`, `status`, `priority`, `admin_response`, `resolved_by`, `created_at`, `updated_at`) VALUES ('7', '9', NULL, 'Ticket Refund Inquiry 1785958655603', 'booking_issue', 'Payment was processed successfully but seat status requires manual sync.', 'open', 'high', 'Support Team verified transaction and synced ticket status.', '7', '2026-08-06 01:07:36', '2026-08-06 01:07:37');
+INSERT INTO `complaints` (`id`, `user_id`, `event_id`, `subject`, `category`, `description`, `status`, `priority`, `admin_response`, `resolved_by`, `created_at`, `updated_at`) VALUES ('8', '9', NULL, 'Ticket Refund Inquiry 1785958685669', 'booking_issue', 'Payment was processed successfully but seat status requires manual sync.', 'open', 'high', 'Support Team verified transaction and synced ticket status.', '7', '2026-08-06 01:08:08', '2026-08-06 01:08:08');
+INSERT INTO `complaints` (`id`, `user_id`, `event_id`, `subject`, `category`, `description`, `status`, `priority`, `admin_response`, `resolved_by`, `created_at`, `updated_at`) VALUES ('9', '9', NULL, 'Ticket Refund Inquiry 1785958716178', 'booking_issue', 'Payment was processed successfully but seat status requires manual sync.', 'open', 'high', 'Support Team verified transaction and synced ticket status.', '7', '2026-08-06 01:08:41', '2026-08-06 01:08:42');
+INSERT INTO `complaints` (`id`, `user_id`, `event_id`, `subject`, `category`, `description`, `status`, `priority`, `admin_response`, `resolved_by`, `created_at`, `updated_at`) VALUES ('10', '9', NULL, 'Ticket Refund Inquiry 1785958752869', 'booking_issue', 'Payment was processed successfully but seat status requires manual sync.', 'open', 'high', 'Support Team verified transaction and synced ticket status.', '7', '2026-08-06 01:09:14', '2026-08-06 01:09:15');
+INSERT INTO `complaints` (`id`, `user_id`, `event_id`, `subject`, `category`, `description`, `status`, `priority`, `admin_response`, `resolved_by`, `created_at`, `updated_at`) VALUES ('11', '9', NULL, 'Ticket Refund Inquiry 1785958820771', 'booking_issue', 'Payment was processed successfully but seat status requires manual sync.', 'resolved', 'high', 'Support Team verified transaction and synced ticket status.', '7', '2026-08-06 01:10:23', '2026-08-06 01:10:23');
+INSERT INTO `complaints` (`id`, `user_id`, `event_id`, `subject`, `category`, `description`, `status`, `priority`, `admin_response`, `resolved_by`, `created_at`, `updated_at`) VALUES ('12', '9', NULL, 'Ticket Refund Inquiry 1785958850691', 'booking_issue', 'Payment was processed successfully but seat status requires manual sync.', 'resolved', 'high', 'Support Team verified transaction and synced ticket status.', '7', '2026-08-06 01:10:51', '2026-08-06 01:10:52');
+INSERT INTO `complaints` (`id`, `user_id`, `event_id`, `subject`, `category`, `description`, `status`, `priority`, `admin_response`, `resolved_by`, `created_at`, `updated_at`) VALUES ('13', '9', NULL, 'Ticket Refund Inquiry 1785959170862', 'booking_issue', 'Payment was processed successfully but seat status requires manual sync.', 'resolved', 'high', 'Support Team verified transaction and synced ticket status.', '7', '2026-08-06 01:16:12', '2026-08-06 01:16:13');
+INSERT INTO `complaints` (`id`, `user_id`, `event_id`, `subject`, `category`, `description`, `status`, `priority`, `admin_response`, `resolved_by`, `created_at`, `updated_at`) VALUES ('14', '9', NULL, 'Ticket Refund Inquiry 1785959614409', 'booking_issue', 'Payment was processed successfully but seat status requires manual sync.', 'resolved', 'high', 'Support Team verified transaction and synced ticket status.', '7', '2026-08-06 01:23:37', '2026-08-06 01:23:38');
+INSERT INTO `complaints` (`id`, `user_id`, `event_id`, `subject`, `category`, `description`, `status`, `priority`, `admin_response`, `resolved_by`, `created_at`, `updated_at`) VALUES ('15', '9', NULL, 'Ticket Refund Inquiry 1785959874736', 'booking_issue', 'Payment was processed successfully but seat status requires manual sync.', 'resolved', 'high', 'Support Team verified transaction and synced ticket status.', '7', '2026-08-06 01:27:56', '2026-08-06 01:27:56');
+INSERT INTO `complaints` (`id`, `user_id`, `event_id`, `subject`, `category`, `description`, `status`, `priority`, `admin_response`, `resolved_by`, `created_at`, `updated_at`) VALUES ('16', '9', NULL, 'Ticket Refund Inquiry 1785960124269', 'booking_issue', 'Payment was processed successfully but seat status requires manual sync.', 'resolved', 'high', 'Support Team verified transaction and synced ticket status.', '7', '2026-08-06 01:32:08', '2026-08-06 01:32:09');
+INSERT INTO `complaints` (`id`, `user_id`, `event_id`, `subject`, `category`, `description`, `status`, `priority`, `admin_response`, `resolved_by`, `created_at`, `updated_at`) VALUES ('17', '9', NULL, 'Ticket Refund Inquiry 1785960445101', 'booking_issue', 'Payment was processed successfully but seat status requires manual sync.', 'resolved', 'high', 'Support Team verified transaction and synced ticket status.', '7', '2026-08-06 01:37:26', '2026-08-06 01:37:26');
+INSERT INTO `complaints` (`id`, `user_id`, `event_id`, `subject`, `category`, `description`, `status`, `priority`, `admin_response`, `resolved_by`, `created_at`, `updated_at`) VALUES ('18', '9', NULL, 'Ticket Refund Inquiry 1785960876310', 'booking_issue', 'Payment was processed successfully but seat status requires manual sync.', 'resolved', 'high', 'Support Team verified transaction and synced ticket status.', '7', '2026-08-06 01:44:37', '2026-08-06 01:44:37');
+INSERT INTO `complaints` (`id`, `user_id`, `event_id`, `subject`, `category`, `description`, `status`, `priority`, `admin_response`, `resolved_by`, `created_at`, `updated_at`) VALUES ('19', '9', NULL, 'Ticket Refund Inquiry 1785960909813', 'booking_issue', 'Payment was processed successfully but seat status requires manual sync.', 'resolved', 'high', 'Support Team verified transaction and synced ticket status.', '7', '2026-08-06 01:45:10', '2026-08-06 01:45:11');
+INSERT INTO `complaints` (`id`, `user_id`, `event_id`, `subject`, `category`, `description`, `status`, `priority`, `admin_response`, `resolved_by`, `created_at`, `updated_at`) VALUES ('20', '9', NULL, 'Ticket Refund Inquiry 1785961032392', 'booking_issue', 'Payment was processed successfully but seat status requires manual sync.', 'resolved', 'high', 'Support Team verified transaction and synced ticket status.', '7', '2026-08-06 01:47:13', '2026-08-06 01:47:14');
+INSERT INTO `complaints` (`id`, `user_id`, `event_id`, `subject`, `category`, `description`, `status`, `priority`, `admin_response`, `resolved_by`, `created_at`, `updated_at`) VALUES ('21', '9', NULL, 'Ticket Refund Inquiry 1785961316634', 'booking_issue', 'Payment was processed successfully but seat status requires manual sync.', 'resolved', 'high', 'Support Team verified transaction and synced ticket status.', '7', '2026-08-06 01:51:57', '2026-08-06 01:51:58');
+INSERT INTO `complaints` (`id`, `user_id`, `event_id`, `subject`, `category`, `description`, `status`, `priority`, `admin_response`, `resolved_by`, `created_at`, `updated_at`) VALUES ('22', '9', NULL, 'Ticket Refund Inquiry 1785961370095', 'booking_issue', 'Payment was processed successfully but seat status requires manual sync.', 'resolved', 'high', 'Support Team verified transaction and synced ticket status.', '7', '2026-08-06 01:52:51', '2026-08-06 01:52:51');
+INSERT INTO `complaints` (`id`, `user_id`, `event_id`, `subject`, `category`, `description`, `status`, `priority`, `admin_response`, `resolved_by`, `created_at`, `updated_at`) VALUES ('23', '9', NULL, 'Ticket Refund Inquiry 1785961548195', 'booking_issue', 'Payment was processed successfully but seat status requires manual sync.', 'resolved', 'high', 'Support Team verified transaction and synced ticket status.', '7', '2026-08-06 01:55:49', '2026-08-06 01:55:50');
+INSERT INTO `complaints` (`id`, `user_id`, `event_id`, `subject`, `category`, `description`, `status`, `priority`, `admin_response`, `resolved_by`, `created_at`, `updated_at`) VALUES ('24', '9', NULL, 'Ticket Refund Inquiry 1785961998761', 'booking_issue', 'Payment was processed successfully but seat status requires manual sync.', 'resolved', 'high', 'Support Team verified transaction and synced ticket status.', '7', '2026-08-06 02:03:20', '2026-08-06 02:03:21');
+INSERT INTO `complaints` (`id`, `user_id`, `event_id`, `subject`, `category`, `description`, `status`, `priority`, `admin_response`, `resolved_by`, `created_at`, `updated_at`) VALUES ('25', '9', NULL, 'Ticket Refund Inquiry 1785962252749', 'booking_issue', 'Payment was processed successfully but seat status requires manual sync.', 'resolved', 'high', 'Support Team verified transaction and synced ticket status.', '7', '2026-08-06 02:07:33', '2026-08-06 02:07:34');
+INSERT INTO `complaints` (`id`, `user_id`, `event_id`, `subject`, `category`, `description`, `status`, `priority`, `admin_response`, `resolved_by`, `created_at`, `updated_at`) VALUES ('26', '9', NULL, 'Ticket Refund Inquiry 1785962571779', 'booking_issue', 'Payment was processed successfully but seat status requires manual sync.', 'resolved', 'high', 'Support Team verified transaction and synced ticket status.', '7', '2026-08-06 02:12:53', '2026-08-06 02:12:53');
+INSERT INTO `complaints` (`id`, `user_id`, `event_id`, `subject`, `category`, `description`, `status`, `priority`, `admin_response`, `resolved_by`, `created_at`, `updated_at`) VALUES ('27', '9', NULL, 'Ticket Refund Inquiry 1785962606739', 'booking_issue', 'Payment was processed successfully but seat status requires manual sync.', 'resolved', 'high', 'Support Team verified transaction and synced ticket status.', '7', '2026-08-06 02:13:27', '2026-08-06 02:13:28');
+INSERT INTO `complaints` (`id`, `user_id`, `event_id`, `subject`, `category`, `description`, `status`, `priority`, `admin_response`, `resolved_by`, `created_at`, `updated_at`) VALUES ('28', '9', NULL, 'Ticket Refund Inquiry 1785962690377', 'booking_issue', 'Payment was processed successfully but seat status requires manual sync.', 'resolved', 'high', 'Support Team verified transaction and synced ticket status.', '7', '2026-08-06 02:14:51', '2026-08-06 02:14:52');
+INSERT INTO `complaints` (`id`, `user_id`, `event_id`, `subject`, `category`, `description`, `status`, `priority`, `admin_response`, `resolved_by`, `created_at`, `updated_at`) VALUES ('29', '9', NULL, 'Ticket Refund Inquiry 1785962856216', 'booking_issue', 'Payment was processed successfully but seat status requires manual sync.', 'resolved', 'high', 'Support Team verified transaction and synced ticket status.', '7', '2026-08-06 02:17:37', '2026-08-06 02:17:38');
+INSERT INTO `complaints` (`id`, `user_id`, `event_id`, `subject`, `category`, `description`, `status`, `priority`, `admin_response`, `resolved_by`, `created_at`, `updated_at`) VALUES ('30', '9', NULL, 'Ticket Refund Inquiry 1785962904534', 'booking_issue', 'Payment was processed successfully but seat status requires manual sync.', 'resolved', 'high', 'Support Team verified transaction and synced ticket status.', '7', '2026-08-06 02:18:26', '2026-08-06 02:18:27');
+INSERT INTO `complaints` (`id`, `user_id`, `event_id`, `subject`, `category`, `description`, `status`, `priority`, `admin_response`, `resolved_by`, `created_at`, `updated_at`) VALUES ('31', '9', NULL, 'Ticket Refund Inquiry 1785962956201', 'booking_issue', 'Payment was processed successfully but seat status requires manual sync.', 'resolved', 'high', 'Support Team verified transaction and synced ticket status.', '7', '2026-08-06 02:19:17', '2026-08-06 02:19:18');
+INSERT INTO `complaints` (`id`, `user_id`, `event_id`, `subject`, `category`, `description`, `status`, `priority`, `admin_response`, `resolved_by`, `created_at`, `updated_at`) VALUES ('32', '9', NULL, 'Ticket Refund Inquiry 1785965641409', 'booking_issue', 'Payment was processed successfully but seat status requires manual sync.', 'resolved', 'high', 'Support Team verified transaction and synced ticket status.', '7', '2026-08-06 03:04:04', '2026-08-06 03:04:05');
+INSERT INTO `complaints` (`id`, `user_id`, `event_id`, `subject`, `category`, `description`, `status`, `priority`, `admin_response`, `resolved_by`, `created_at`, `updated_at`) VALUES ('33', '9', NULL, 'Ticket Refund Inquiry 1785965873143', 'booking_issue', 'Payment was processed successfully but seat status requires manual sync.', 'resolved', 'high', 'Support Team verified transaction and synced ticket status.', '7', '2026-08-06 03:07:55', '2026-08-06 03:07:55');
+INSERT INTO `complaints` (`id`, `user_id`, `event_id`, `subject`, `category`, `description`, `status`, `priority`, `admin_response`, `resolved_by`, `created_at`, `updated_at`) VALUES ('34', '9', NULL, 'Ticket Refund Inquiry 1785965924215', 'booking_issue', 'Payment was processed successfully but seat status requires manual sync.', 'resolved', 'high', 'Support Team verified transaction and synced ticket status.', '7', '2026-08-06 03:08:46', '2026-08-06 03:08:46');
+INSERT INTO `complaints` (`id`, `user_id`, `event_id`, `subject`, `category`, `description`, `status`, `priority`, `admin_response`, `resolved_by`, `created_at`, `updated_at`) VALUES ('35', '9', NULL, 'Ticket Refund Inquiry 1785966162089', 'booking_issue', 'Payment was processed successfully but seat status requires manual sync.', 'resolved', 'high', 'Support Team verified transaction and synced ticket status.', '7', '2026-08-06 03:12:43', '2026-08-06 03:12:44');
+INSERT INTO `complaints` (`id`, `user_id`, `event_id`, `subject`, `category`, `description`, `status`, `priority`, `admin_response`, `resolved_by`, `created_at`, `updated_at`) VALUES ('36', '9', NULL, 'Ticket Refund Inquiry 1785966414180', 'booking_issue', 'Payment was processed successfully but seat status requires manual sync.', 'resolved', 'high', 'Support Team verified transaction and synced ticket status.', '7', '2026-08-06 03:16:55', '2026-08-06 03:16:56');
+INSERT INTO `complaints` (`id`, `user_id`, `event_id`, `subject`, `category`, `description`, `status`, `priority`, `admin_response`, `resolved_by`, `created_at`, `updated_at`) VALUES ('37', '9', NULL, 'Ticket Refund Inquiry 1785966462472', 'booking_issue', 'Payment was processed successfully but seat status requires manual sync.', 'resolved', 'high', 'Support Team verified transaction and synced ticket status.', '7', '2026-08-06 03:17:44', '2026-08-06 03:17:44');
+
+DROP TABLE IF EXISTS `database_backups`;
+CREATE TABLE `database_backups` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `file_name` varchar(255) NOT NULL,
+  `file_path` varchar(255) NOT NULL,
+  `file_size` int(11) NOT NULL DEFAULT 0,
+  `tables_count` int(11) NOT NULL DEFAULT 0,
+  `created_by` int(11) NOT NULL,
+  `status` enum('completed','failed','restored') NOT NULL DEFAULT 'completed',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `created_by_idx` (`created_by`)
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `database_backups` (`id`, `file_name`, `file_path`, `file_size`, `tables_count`, `created_by`, `status`, `created_at`) VALUES ('1', 'eventease_backup_2026-08-05_21-53-08.sql', 'database/backups/eventease_backup_2026-08-05_21-53-08.sql', '66675', '14', '7', 'completed', '2026-08-06 01:23:08');
+INSERT INTO `database_backups` (`id`, `file_name`, `file_path`, `file_size`, `tables_count`, `created_by`, `status`, `created_at`) VALUES ('2', 'eventease_backup_2026-08-05_21-53-41.sql', 'database/backups/eventease_backup_2026-08-05_21-53-41.sql', '67932', '14', '7', 'completed', '2026-08-06 01:23:41');
+INSERT INTO `database_backups` (`id`, `file_name`, `file_path`, `file_size`, `tables_count`, `created_by`, `status`, `created_at`) VALUES ('3', 'eventease_backup_2026-08-05_21-58-01.sql', 'database/backups/eventease_backup_2026-08-05_21-58-01.sql', '69977', '14', '7', 'completed', '2026-08-06 01:28:01');
+INSERT INTO `database_backups` (`id`, `file_name`, `file_path`, `file_size`, `tables_count`, `created_by`, `status`, `created_at`) VALUES ('4', 'eventease_backup_2026-08-05_22-02-11.sql', 'database/backups/eventease_backup_2026-08-05_22-02-11.sql', '71554', '14', '7', 'completed', '2026-08-06 01:32:11');
+INSERT INTO `database_backups` (`id`, `file_name`, `file_path`, `file_size`, `tables_count`, `created_by`, `status`, `created_at`) VALUES ('5', 'eventease_backup_2026-08-05_22-07-31.sql', 'database/backups/eventease_backup_2026-08-05_22-07-31.sql', '75448', '15', '7', 'completed', '2026-08-06 01:37:31');
+INSERT INTO `database_backups` (`id`, `file_name`, `file_path`, `file_size`, `tables_count`, `created_by`, `status`, `created_at`) VALUES ('6', 'eventease_backup_2026-08-05_22-09-53.sql', 'database/backups/eventease_backup_2026-08-05_22-09-53.sql', '77109', '15', '7', 'completed', '2026-08-06 01:39:53');
+INSERT INTO `database_backups` (`id`, `file_name`, `file_path`, `file_size`, `tables_count`, `created_by`, `status`, `created_at`) VALUES ('7', 'eventease_backup_2026-08-05_22-10-16.sql', 'database/backups/eventease_backup_2026-08-05_22-10-16.sql', '77415', '15', '7', 'completed', '2026-08-06 01:40:16');
+INSERT INTO `database_backups` (`id`, `file_name`, `file_path`, `file_size`, `tables_count`, `created_by`, `status`, `created_at`) VALUES ('8', 'eventease_backup_2026-08-05_22-14-40.sql', 'database/backups/eventease_backup_2026-08-05_22-14-40.sql', '81053', '16', '7', 'completed', '2026-08-06 01:44:40');
+INSERT INTO `database_backups` (`id`, `file_name`, `file_path`, `file_size`, `tables_count`, `created_by`, `status`, `created_at`) VALUES ('9', 'eventease_backup_2026-08-05_22-15-14.sql', 'database/backups/eventease_backup_2026-08-05_22-15-14.sql', '84188', '16', '7', 'completed', '2026-08-06 01:45:14');
+INSERT INTO `database_backups` (`id`, `file_name`, `file_path`, `file_size`, `tables_count`, `created_by`, `status`, `created_at`) VALUES ('10', 'eventease_backup_2026-08-05_22-17-26.sql', 'database/backups/eventease_backup_2026-08-05_22-17-26.sql', '86855', '16', '7', 'completed', '2026-08-06 01:47:26');
+INSERT INTO `database_backups` (`id`, `file_name`, `file_path`, `file_size`, `tables_count`, `created_by`, `status`, `created_at`) VALUES ('11', 'eventease_backup_2026-08-05_22-22-01.sql', 'database/backups/eventease_backup_2026-08-05_22-22-01.sql', '91821', '16', '7', 'completed', '2026-08-06 01:52:01');
+INSERT INTO `database_backups` (`id`, `file_name`, `file_path`, `file_size`, `tables_count`, `created_by`, `status`, `created_at`) VALUES ('12', 'eventease_backup_2026-08-05_22-22-54.sql', 'database/backups/eventease_backup_2026-08-05_22-22-54.sql', '94124', '16', '7', 'completed', '2026-08-06 01:52:54');
+INSERT INTO `database_backups` (`id`, `file_name`, `file_path`, `file_size`, `tables_count`, `created_by`, `status`, `created_at`) VALUES ('13', 'eventease_backup_2026-08-05_22-25-55.sql', 'database/backups/eventease_backup_2026-08-05_22-25-55.sql', '99066', '16', '7', 'completed', '2026-08-06 01:55:55');
+INSERT INTO `database_backups` (`id`, `file_name`, `file_path`, `file_size`, `tables_count`, `created_by`, `status`, `created_at`) VALUES ('14', 'eventease_backup_2026-08-05_22-33-25.sql', 'database/backups/eventease_backup_2026-08-05_22-33-25.sql', '103565', '17', '7', 'completed', '2026-08-06 02:03:25');
+INSERT INTO `database_backups` (`id`, `file_name`, `file_path`, `file_size`, `tables_count`, `created_by`, `status`, `created_at`) VALUES ('15', 'eventease_backup_2026-08-05_22-37-39.sql', 'database/backups/eventease_backup_2026-08-05_22-37-39.sql', '106675', '17', '7', 'completed', '2026-08-06 02:07:39');
+INSERT INTO `database_backups` (`id`, `file_name`, `file_path`, `file_size`, `tables_count`, `created_by`, `status`, `created_at`) VALUES ('16', 'eventease_backup_2026-08-05_22-42-59.sql', 'database/backups/eventease_backup_2026-08-05_22-42-59.sql', '84535', '18', '7', 'completed', '2026-08-06 02:12:59');
+INSERT INTO `database_backups` (`id`, `file_name`, `file_path`, `file_size`, `tables_count`, `created_by`, `status`, `created_at`) VALUES ('17', 'eventease_backup_2026-08-05_22-43-32.sql', 'database/backups/eventease_backup_2026-08-05_22-43-32.sql', '87734', '18', '7', 'completed', '2026-08-06 02:13:32');
+INSERT INTO `database_backups` (`id`, `file_name`, `file_path`, `file_size`, `tables_count`, `created_by`, `status`, `created_at`) VALUES ('18', 'eventease_backup_2026-08-05_22-44-56.sql', 'database/backups/eventease_backup_2026-08-05_22-44-56.sql', '91271', '18', '7', 'completed', '2026-08-06 02:14:56');
+INSERT INTO `database_backups` (`id`, `file_name`, `file_path`, `file_size`, `tables_count`, `created_by`, `status`, `created_at`) VALUES ('19', 'eventease_backup_2026-08-05_22-47-44.sql', 'database/backups/eventease_backup_2026-08-05_22-47-44.sql', '95801', '18', '7', 'completed', '2026-08-06 02:17:44');
+INSERT INTO `database_backups` (`id`, `file_name`, `file_path`, `file_size`, `tables_count`, `created_by`, `status`, `created_at`) VALUES ('20', 'eventease_backup_2026-08-05_22-48-38.sql', 'database/backups/eventease_backup_2026-08-05_22-48-38.sql', '99235', '18', '7', 'completed', '2026-08-06 02:18:38');
+INSERT INTO `database_backups` (`id`, `file_name`, `file_path`, `file_size`, `tables_count`, `created_by`, `status`, `created_at`) VALUES ('21', 'eventease_backup_2026-08-05_22-49-22.sql', 'database/backups/eventease_backup_2026-08-05_22-49-22.sql', '102201', '18', '7', 'completed', '2026-08-06 02:19:22');
+INSERT INTO `database_backups` (`id`, `file_name`, `file_path`, `file_size`, `tables_count`, `created_by`, `status`, `created_at`) VALUES ('22', 'eventease_backup_2026-08-05_23-34-09.sql', 'database/backups/eventease_backup_2026-08-05_23-34-09.sql', '107023', '18', '7', 'completed', '2026-08-06 03:04:10');
+INSERT INTO `database_backups` (`id`, `file_name`, `file_path`, `file_size`, `tables_count`, `created_by`, `status`, `created_at`) VALUES ('23', 'eventease_backup_2026-08-05_23-37-59.sql', 'database/backups/eventease_backup_2026-08-05_23-37-59.sql', '111833', '19', '7', 'completed', '2026-08-06 03:07:59');
+INSERT INTO `database_backups` (`id`, `file_name`, `file_path`, `file_size`, `tables_count`, `created_by`, `status`, `created_at`) VALUES ('24', 'eventease_backup_2026-08-05_23-38-51.sql', 'database/backups/eventease_backup_2026-08-05_23-38-51.sql', '115931', '19', '7', 'completed', '2026-08-06 03:08:51');
+INSERT INTO `database_backups` (`id`, `file_name`, `file_path`, `file_size`, `tables_count`, `created_by`, `status`, `created_at`) VALUES ('25', 'eventease_backup_2026-08-05_23-42-48.sql', 'database/backups/eventease_backup_2026-08-05_23-42-48.sql', '119825', '19', '7', 'completed', '2026-08-06 03:12:48');
+INSERT INTO `database_backups` (`id`, `file_name`, `file_path`, `file_size`, `tables_count`, `created_by`, `status`, `created_at`) VALUES ('26', 'eventease_backup_2026-08-05_23-47-00.sql', 'database/backups/eventease_backup_2026-08-05_23-47-00.sql', '124024', '19', '7', 'completed', '2026-08-06 03:17:00');
+
+DROP TABLE IF EXISTS `event_announcements`;
+CREATE TABLE `event_announcements` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `event_id` int(11) NOT NULL,
+  `organizer_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `message` text NOT NULL,
+  `priority` enum('normal','urgent','emergency') NOT NULL DEFAULT 'normal',
+  `broadcast_type` enum('all_attendees','vip_only','waiting_list') NOT NULL DEFAULT 'all_attendees',
+  `sent_count` int(11) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `event_id_idx` (`event_id`),
+  KEY `organizer_id_idx` (`organizer_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `event_announcements` (`id`, `event_id`, `organizer_id`, `title`, `message`, `priority`, `broadcast_type`, `sent_count`, `created_at`) VALUES ('1', '16', '2', 'Gate Opening Time & Parking Advisory', 'Gates will open at 5:30 PM sharp. Parking is available at Gate 2 and Gate 4. Please present your digital QR ticket for fast entry.', 'normal', 'all_attendees', '198', '2026-08-06 03:05:32');
+INSERT INTO `event_announcements` (`id`, `event_id`, `organizer_id`, `title`, `message`, `priority`, `broadcast_type`, `sent_count`, `created_at`) VALUES ('2', '16', '2', 'URGENT: Hall Stage Floor Adjustment', 'Due to high turnout, the main stage floor seating has been upgraded to climate-controlled indoor hall A.', 'urgent', 'all_attendees', '198', '2026-08-06 03:05:32');
+INSERT INTO `event_announcements` (`id`, `event_id`, `organizer_id`, `title`, `message`, `priority`, `broadcast_type`, `sent_count`, `created_at`) VALUES ('3', '17', '2', 'VIP Meet & Greet Session Notice', 'All VIP Platinum pass holders are invited to the pre-event reception at 4:00 PM in Lounge 1.', 'normal', 'vip_only', '45', '2026-08-06 03:05:32');
+INSERT INTO `event_announcements` (`id`, `event_id`, `organizer_id`, `title`, `message`, `priority`, `broadcast_type`, `sent_count`, `created_at`) VALUES ('4', '16', '2', 'Playwright Urgent Gate Advisory 709', 'Gates will open at 5:00 PM. Please have your QR passes ready.', 'normal', 'all_attendees', '50', '2026-08-06 03:08:12');
+INSERT INTO `event_announcements` (`id`, `event_id`, `organizer_id`, `title`, `message`, `priority`, `broadcast_type`, `sent_count`, `created_at`) VALUES ('5', '16', '2', 'Playwright Urgent Gate Advisory 775', 'Gates will open at 5:00 PM. Please have your QR passes ready.', 'normal', 'all_attendees', '50', '2026-08-06 03:08:18');
+INSERT INTO `event_announcements` (`id`, `event_id`, `organizer_id`, `title`, `message`, `priority`, `broadcast_type`, `sent_count`, `created_at`) VALUES ('6', '16', '2', 'Playwright Urgent Gate Advisory 323', 'Gates will open at 5:00 PM. Please have your QR passes ready.', 'normal', 'all_attendees', '50', '2026-08-06 03:09:09');
+INSERT INTO `event_announcements` (`id`, `event_id`, `organizer_id`, `title`, `message`, `priority`, `broadcast_type`, `sent_count`, `created_at`) VALUES ('7', '23', '5', '3 days more', '3 days more guys', 'normal', 'all_attendees', '50', '2026-08-06 03:09:56');
+INSERT INTO `event_announcements` (`id`, `event_id`, `organizer_id`, `title`, `message`, `priority`, `broadcast_type`, `sent_count`, `created_at`) VALUES ('8', '16', '2', 'Playwright Urgent Gate Advisory 768', 'Gates will open at 5:00 PM. Please have your QR passes ready.', 'normal', 'all_attendees', '50', '2026-08-06 03:12:14');
+INSERT INTO `event_announcements` (`id`, `event_id`, `organizer_id`, `title`, `message`, `priority`, `broadcast_type`, `sent_count`, `created_at`) VALUES ('9', '16', '2', 'Playwright Urgent Gate Advisory 634', 'Gates will open at 5:00 PM. Please have your QR passes ready.', 'normal', 'all_attendees', '50', '2026-08-06 03:13:08');
+INSERT INTO `event_announcements` (`id`, `event_id`, `organizer_id`, `title`, `message`, `priority`, `broadcast_type`, `sent_count`, `created_at`) VALUES ('10', '16', '2', 'Playwright Urgent Gate Advisory 675', 'Gates will open at 5:00 PM. Please have your QR passes ready.', 'normal', 'all_attendees', '50', '2026-08-06 03:15:15');
+INSERT INTO `event_announcements` (`id`, `event_id`, `organizer_id`, `title`, `message`, `priority`, `broadcast_type`, `sent_count`, `created_at`) VALUES ('11', '16', '2', 'Playwright Urgent Gate Advisory 135', 'Gates will open at 5:00 PM. Please have your QR passes ready.', 'normal', 'all_attendees', '50', '2026-08-06 03:16:38');
+INSERT INTO `event_announcements` (`id`, `event_id`, `organizer_id`, `title`, `message`, `priority`, `broadcast_type`, `sent_count`, `created_at`) VALUES ('12', '16', '2', 'Playwright Urgent Gate Advisory 251', 'Gates will open at 5:00 PM. Please have your QR passes ready.', 'normal', 'all_attendees', '50', '2026-08-06 03:17:18');
+
+DROP TABLE IF EXISTS `event_booked_seats`;
+CREATE TABLE `event_booked_seats` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `event_id` int(11) NOT NULL,
+  `booking_id` int(11) DEFAULT NULL,
+  `seat_code` varchar(50) NOT NULL,
+  `tier_name` varchar(50) NOT NULL,
+  `price` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `user_id` int(11) NOT NULL,
+  `booked_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `event_seat_unique` (`event_id`,`seat_code`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `event_booked_seats` (`id`, `event_id`, `booking_id`, `seat_code`, `tier_name`, `price`, `user_id`, `booked_at`) VALUES ('1', '16', '159', 'C10', 'Platinum Tier', '7500.00', '9', '2026-07-30 22:35:20');
+
+DROP TABLE IF EXISTS `event_schedules`;
+CREATE TABLE `event_schedules` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `event_id` int(11) NOT NULL,
+  `session_title` varchar(255) NOT NULL,
+  `start_time` datetime NOT NULL,
+  `end_time` datetime NOT NULL,
+  `hall_stage` varchar(150) DEFAULT NULL,
+  `speaker_performer` varchar(255) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `status` enum('scheduled','live','completed','cancelled') NOT NULL DEFAULT 'scheduled',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `event_id_idx` (`event_id`),
+  KEY `status_idx` (`status`)
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `event_schedules` (`id`, `event_id`, `session_title`, `start_time`, `end_time`, `hall_stage`, `speaker_performer`, `description`, `status`, `created_at`) VALUES ('1', '6', 'Opening Ceremony & Intro Act', '2026-08-15 18:00:00', '2026-08-15 19:30:00', 'Main Stage A', 'Marians Band', 'Welcome performance & inauguration ceremony.', 'scheduled', '2026-08-06 01:34:38');
+INSERT INTO `event_schedules` (`id`, `event_id`, `session_title`, `start_time`, `end_time`, `hall_stage`, `speaker_performer`, `description`, `status`, `created_at`) VALUES ('2', '6', 'Headliner Concert Performance', '2026-08-15 20:00:00', '2026-08-15 23:00:00', 'Grand Arena', 'Bathiya & Santhush', 'Live acoustic concert & light show.', 'scheduled', '2026-08-06 01:34:38');
+INSERT INTO `event_schedules` (`id`, `event_id`, `session_title`, `start_time`, `end_time`, `hall_stage`, `speaker_performer`, `description`, `status`, `created_at`) VALUES ('3', '16', 'Acoustic Sound Check & VIP Meet', '2026-07-25 17:00:00', '2026-07-25 18:30:00', 'VIP Lounge', 'Mariens Band Lead', 'Exclusive photo session for VIP ticket holders.', 'scheduled', '2026-08-06 01:34:38');
+INSERT INTO `event_schedules` (`id`, `event_id`, `session_title`, `start_time`, `end_time`, `hall_stage`, `speaker_performer`, `description`, `status`, `created_at`) VALUES ('4', '17', 'Playwright E2E Keynote Session', '2026-09-01 09:00:00', '2026-09-01 12:00:00', 'Main Arena Stage 1', 'Dr. Perera Lead Speaker', '', 'scheduled', '2026-08-06 01:37:33');
+INSERT INTO `event_schedules` (`id`, `event_id`, `session_title`, `start_time`, `end_time`, `hall_stage`, `speaker_performer`, `description`, `status`, `created_at`) VALUES ('5', '17', 'Playwright E2E Keynote Session', '2026-09-01 09:00:00', '2026-09-01 12:00:00', 'Main Arena Stage 1', 'Dr. Perera Lead Speaker', '', 'scheduled', '2026-08-06 01:37:39');
+INSERT INTO `event_schedules` (`id`, `event_id`, `session_title`, `start_time`, `end_time`, `hall_stage`, `speaker_performer`, `description`, `status`, `created_at`) VALUES ('6', '17', 'Playwright E2E Keynote Session', '2026-09-01 09:00:00', '2026-09-01 12:00:00', 'Main Arena Stage 1', 'Dr. Perera Lead Speaker', '', 'scheduled', '2026-08-06 01:44:42');
+INSERT INTO `event_schedules` (`id`, `event_id`, `session_title`, `start_time`, `end_time`, `hall_stage`, `speaker_performer`, `description`, `status`, `created_at`) VALUES ('7', '17', 'Playwright E2E Keynote Session', '2026-09-01 09:00:00', '2026-09-01 12:00:00', 'Main Arena Stage 1', 'Dr. Perera Lead Speaker', '', 'scheduled', '2026-08-06 01:45:15');
+INSERT INTO `event_schedules` (`id`, `event_id`, `session_title`, `start_time`, `end_time`, `hall_stage`, `speaker_performer`, `description`, `status`, `created_at`) VALUES ('8', '17', 'Playwright E2E Keynote Session', '2026-09-01 09:00:00', '2026-09-01 12:00:00', 'Main Arena Stage 1', 'Dr. Perera Lead Speaker', '', 'scheduled', '2026-08-06 01:47:30');
+INSERT INTO `event_schedules` (`id`, `event_id`, `session_title`, `start_time`, `end_time`, `hall_stage`, `speaker_performer`, `description`, `status`, `created_at`) VALUES ('9', '17', 'Playwright E2E Keynote Session', '2026-09-01 09:00:00', '2026-09-01 12:00:00', 'Main Arena Stage 1', 'Dr. Perera Lead Speaker', '', 'scheduled', '2026-08-06 01:49:55');
+INSERT INTO `event_schedules` (`id`, `event_id`, `session_title`, `start_time`, `end_time`, `hall_stage`, `speaker_performer`, `description`, `status`, `created_at`) VALUES ('10', '17', 'Playwright E2E Keynote Session', '2026-09-01 09:00:00', '2026-09-01 12:00:00', 'Main Arena Stage 1', 'Dr. Perera Lead Speaker', '', 'scheduled', '2026-08-06 01:52:02');
+INSERT INTO `event_schedules` (`id`, `event_id`, `session_title`, `start_time`, `end_time`, `hall_stage`, `speaker_performer`, `description`, `status`, `created_at`) VALUES ('11', '17', 'Playwright E2E Keynote Session', '2026-09-01 09:00:00', '2026-09-01 12:00:00', 'Main Arena Stage 1', 'Dr. Perera Lead Speaker', '', 'scheduled', '2026-08-06 01:52:56');
+INSERT INTO `event_schedules` (`id`, `event_id`, `session_title`, `start_time`, `end_time`, `hall_stage`, `speaker_performer`, `description`, `status`, `created_at`) VALUES ('12', '17', 'Playwright E2E Keynote Session', '2026-09-01 09:00:00', '2026-09-01 12:00:00', 'Main Arena Stage 1', 'Dr. Perera Lead Speaker', '', 'scheduled', '2026-08-06 01:53:45');
+INSERT INTO `event_schedules` (`id`, `event_id`, `session_title`, `start_time`, `end_time`, `hall_stage`, `speaker_performer`, `description`, `status`, `created_at`) VALUES ('13', '17', 'Playwright E2E Keynote Session', '2026-09-01 09:00:00', '2026-09-01 12:00:00', 'Main Arena Stage 1', 'Dr. Perera Lead Speaker', '', 'scheduled', '2026-08-06 01:54:13');
+INSERT INTO `event_schedules` (`id`, `event_id`, `session_title`, `start_time`, `end_time`, `hall_stage`, `speaker_performer`, `description`, `status`, `created_at`) VALUES ('14', '17', 'Playwright E2E Keynote Session', '2026-09-01 09:00:00', '2026-09-01 12:00:00', 'Main Arena Stage 1', 'Dr. Perera Lead Speaker', '', 'scheduled', '2026-08-06 01:55:21');
+INSERT INTO `event_schedules` (`id`, `event_id`, `session_title`, `start_time`, `end_time`, `hall_stage`, `speaker_performer`, `description`, `status`, `created_at`) VALUES ('15', '17', 'Playwright E2E Keynote Session', '2026-09-01 09:00:00', '2026-09-01 12:00:00', 'Main Arena Stage 1', 'Dr. Perera Lead Speaker', '', 'scheduled', '2026-08-06 01:55:56');
+INSERT INTO `event_schedules` (`id`, `event_id`, `session_title`, `start_time`, `end_time`, `hall_stage`, `speaker_performer`, `description`, `status`, `created_at`) VALUES ('16', '17', 'Playwright E2E Keynote Session', '2026-09-01 09:00:00', '2026-09-01 12:00:00', 'Main Arena Stage 1', 'Dr. Perera Lead Speaker', '', 'scheduled', '2026-08-06 02:03:27');
+INSERT INTO `event_schedules` (`id`, `event_id`, `session_title`, `start_time`, `end_time`, `hall_stage`, `speaker_performer`, `description`, `status`, `created_at`) VALUES ('17', '17', 'Playwright E2E Keynote Session', '2026-09-01 09:00:00', '2026-09-01 12:00:00', 'Main Arena Stage 1', 'Dr. Perera Lead Speaker', '', 'scheduled', '2026-08-06 02:07:41');
+INSERT INTO `event_schedules` (`id`, `event_id`, `session_title`, `start_time`, `end_time`, `hall_stage`, `speaker_performer`, `description`, `status`, `created_at`) VALUES ('18', '17', 'Playwright E2E Keynote Session', '2026-09-01 09:00:00', '2026-09-01 12:00:00', 'Main Arena Stage 1', 'Dr. Perera Lead Speaker', '', 'scheduled', '2026-08-06 02:13:04');
+INSERT INTO `event_schedules` (`id`, `event_id`, `session_title`, `start_time`, `end_time`, `hall_stage`, `speaker_performer`, `description`, `status`, `created_at`) VALUES ('19', '17', 'Playwright E2E Keynote Session', '2026-09-01 09:00:00', '2026-09-01 12:00:00', 'Main Arena Stage 1', 'Dr. Perera Lead Speaker', '', 'scheduled', '2026-08-06 02:13:34');
+INSERT INTO `event_schedules` (`id`, `event_id`, `session_title`, `start_time`, `end_time`, `hall_stage`, `speaker_performer`, `description`, `status`, `created_at`) VALUES ('20', '17', 'Playwright E2E Keynote Session', '2026-09-01 09:00:00', '2026-09-01 12:00:00', 'Main Arena Stage 1', 'Dr. Perera Lead Speaker', '', 'scheduled', '2026-08-06 02:14:59');
+INSERT INTO `event_schedules` (`id`, `event_id`, `session_title`, `start_time`, `end_time`, `hall_stage`, `speaker_performer`, `description`, `status`, `created_at`) VALUES ('21', '17', 'Playwright E2E Keynote Session', '2026-09-01 09:00:00', '2026-09-01 12:00:00', 'Main Arena Stage 1', 'Dr. Perera Lead Speaker', '', 'scheduled', '2026-08-06 02:17:46');
+INSERT INTO `event_schedules` (`id`, `event_id`, `session_title`, `start_time`, `end_time`, `hall_stage`, `speaker_performer`, `description`, `status`, `created_at`) VALUES ('22', '17', 'Playwright E2E Keynote Session', '2026-09-01 09:00:00', '2026-09-01 12:00:00', 'Main Arena Stage 1', 'Dr. Perera Lead Speaker', '', 'scheduled', '2026-08-06 02:18:41');
+INSERT INTO `event_schedules` (`id`, `event_id`, `session_title`, `start_time`, `end_time`, `hall_stage`, `speaker_performer`, `description`, `status`, `created_at`) VALUES ('23', '17', 'Playwright E2E Keynote Session', '2026-09-01 09:00:00', '2026-09-01 12:00:00', 'Main Arena Stage 1', 'Dr. Perera Lead Speaker', '', 'scheduled', '2026-08-06 02:19:23');
+INSERT INTO `event_schedules` (`id`, `event_id`, `session_title`, `start_time`, `end_time`, `hall_stage`, `speaker_performer`, `description`, `status`, `created_at`) VALUES ('24', '17', 'Playwright E2E Keynote Session', '2026-09-01 09:00:00', '2026-09-01 12:00:00', 'Main Arena Stage 1', 'Dr. Perera Lead Speaker', '', 'scheduled', '2026-08-06 03:03:17');
+INSERT INTO `event_schedules` (`id`, `event_id`, `session_title`, `start_time`, `end_time`, `hall_stage`, `speaker_performer`, `description`, `status`, `created_at`) VALUES ('25', '17', 'Playwright E2E Keynote Session', '2026-09-01 09:00:00', '2026-09-01 12:00:00', 'Main Arena Stage 1', 'Dr. Perera Lead Speaker', '', 'scheduled', '2026-08-06 03:04:12');
+INSERT INTO `event_schedules` (`id`, `event_id`, `session_title`, `start_time`, `end_time`, `hall_stage`, `speaker_performer`, `description`, `status`, `created_at`) VALUES ('26', '17', 'Playwright E2E Keynote Session', '2026-09-01 09:00:00', '2026-09-01 12:00:00', 'Main Arena Stage 1', 'Dr. Perera Lead Speaker', '', 'scheduled', '2026-08-06 03:08:02');
+INSERT INTO `event_schedules` (`id`, `event_id`, `session_title`, `start_time`, `end_time`, `hall_stage`, `speaker_performer`, `description`, `status`, `created_at`) VALUES ('27', '17', 'Playwright E2E Keynote Session', '2026-09-01 09:00:00', '2026-09-01 12:00:00', 'Main Arena Stage 1', 'Dr. Perera Lead Speaker', '', 'scheduled', '2026-08-06 03:08:52');
+INSERT INTO `event_schedules` (`id`, `event_id`, `session_title`, `start_time`, `end_time`, `hall_stage`, `speaker_performer`, `description`, `status`, `created_at`) VALUES ('28', '17', 'Playwright E2E Keynote Session', '2026-09-01 09:00:00', '2026-09-01 12:00:00', 'Main Arena Stage 1', 'Dr. Perera Lead Speaker', '', 'scheduled', '2026-08-06 03:12:50');
+INSERT INTO `event_schedules` (`id`, `event_id`, `session_title`, `start_time`, `end_time`, `hall_stage`, `speaker_performer`, `description`, `status`, `created_at`) VALUES ('29', '17', 'Playwright E2E Keynote Session', '2026-09-01 09:00:00', '2026-09-01 12:00:00', 'Main Arena Stage 1', 'Dr. Perera Lead Speaker', '', 'scheduled', '2026-08-06 03:17:03');
+
+DROP TABLE IF EXISTS `event_seating_configs`;
+CREATE TABLE `event_seating_configs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `event_id` int(11) NOT NULL,
+  `organizer_id` int(11) NOT NULL,
+  `section_name` varchar(100) NOT NULL,
+  `total_rows` int(11) DEFAULT 5,
+  `seats_per_row` int(11) DEFAULT 10,
+  `ticket_price` decimal(10,2) NOT NULL,
+  `color_code` varchar(30) DEFAULT '#8b5cf6',
+  `perks_description` text DEFAULT NULL,
+  `status` enum('active','inactive') NOT NULL DEFAULT 'active',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `event_id_idx` (`event_id`),
+  KEY `organizer_id_idx` (`organizer_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `event_seating_configs` (`id`, `event_id`, `organizer_id`, `section_name`, `total_rows`, `seats_per_row`, `ticket_price`, `color_code`, `perks_description`, `status`, `created_at`) VALUES ('1', '16', '2', 'VIP Front Row Experience', '4', '8', '12000.00', '#8b5cf6', 'Front row seating + Free Welcome Drink + VIP Lanyard', 'active', '2026-08-06 02:10:47');
+INSERT INTO `event_seating_configs` (`id`, `event_id`, `organizer_id`, `section_name`, `total_rows`, `seats_per_row`, `ticket_price`, `color_code`, `perks_description`, `status`, `created_at`) VALUES ('2', '16', '2', 'Gold Middle Floor', '6', '10', '7500.00', '#3b82f6', 'Prime center view + Express Entry Queue', 'active', '2026-08-06 02:10:47');
+INSERT INTO `event_seating_configs` (`id`, `event_id`, `organizer_id`, `section_name`, `total_rows`, `seats_per_row`, `ticket_price`, `color_code`, `perks_description`, `status`, `created_at`) VALUES ('3', '16', '2', 'Silver Rear Gallery', '8', '12', '5000.00', '#10b981', 'Standard seating with clear stage view', 'active', '2026-08-06 02:10:47');
+INSERT INTO `event_seating_configs` (`id`, `event_id`, `organizer_id`, `section_name`, `total_rows`, `seats_per_row`, `ticket_price`, `color_code`, `perks_description`, `status`, `created_at`) VALUES ('4', '17', '2', 'Executive Platinum Deck', '3', '6', '25000.00', '#ec4899', 'Exclusive booth + Complimentary Buffet Access', 'active', '2026-08-06 02:10:47');
+INSERT INTO `event_seating_configs` (`id`, `event_id`, `organizer_id`, `section_name`, `total_rows`, `seats_per_row`, `ticket_price`, `color_code`, `perks_description`, `status`, `created_at`) VALUES ('5', '16', '2', 'Playwright VIP Zone 446', '5', '10', '5000.00', '#8b5cf6', 'Free Beverage + VIP Pass', 'active', '2026-08-06 02:12:32');
+INSERT INTO `event_seating_configs` (`id`, `event_id`, `organizer_id`, `section_name`, `total_rows`, `seats_per_row`, `ticket_price`, `color_code`, `perks_description`, `status`, `created_at`) VALUES ('6', '16', '2', 'Playwright VIP Zone 912', '5', '10', '5000.00', '#8b5cf6', 'Free Beverage + VIP Pass', 'active', '2026-08-06 02:13:19');
+INSERT INTO `event_seating_configs` (`id`, `event_id`, `organizer_id`, `section_name`, `total_rows`, `seats_per_row`, `ticket_price`, `color_code`, `perks_description`, `status`, `created_at`) VALUES ('7', '16', '2', 'Playwright VIP Zone 605', '5', '10', '5000.00', '#8b5cf6', 'Free Beverage + VIP Pass', 'active', '2026-08-06 02:13:43');
+INSERT INTO `event_seating_configs` (`id`, `event_id`, `organizer_id`, `section_name`, `total_rows`, `seats_per_row`, `ticket_price`, `color_code`, `perks_description`, `status`, `created_at`) VALUES ('8', '16', '2', 'Playwright VIP Zone 756', '5', '10', '5000.00', '#8b5cf6', 'Free Beverage + VIP Pass', 'active', '2026-08-06 02:15:09');
+INSERT INTO `event_seating_configs` (`id`, `event_id`, `organizer_id`, `section_name`, `total_rows`, `seats_per_row`, `ticket_price`, `color_code`, `perks_description`, `status`, `created_at`) VALUES ('9', '16', '2', 'Playwright VIP Zone 557', '5', '10', '5000.00', '#8b5cf6', 'Free Beverage + VIP Pass', 'active', '2026-08-06 02:17:58');
+INSERT INTO `event_seating_configs` (`id`, `event_id`, `organizer_id`, `section_name`, `total_rows`, `seats_per_row`, `ticket_price`, `color_code`, `perks_description`, `status`, `created_at`) VALUES ('10', '16', '2', 'Playwright VIP Zone 769', '5', '10', '5000.00', '#8b5cf6', 'Free Beverage + VIP Pass', 'active', '2026-08-06 02:19:00');
+INSERT INTO `event_seating_configs` (`id`, `event_id`, `organizer_id`, `section_name`, `total_rows`, `seats_per_row`, `ticket_price`, `color_code`, `perks_description`, `status`, `created_at`) VALUES ('11', '16', '2', 'Playwright VIP Zone 195', '5', '10', '5000.00', '#8b5cf6', 'Free Beverage + VIP Pass', 'active', '2026-08-06 02:19:29');
+INSERT INTO `event_seating_configs` (`id`, `event_id`, `organizer_id`, `section_name`, `total_rows`, `seats_per_row`, `ticket_price`, `color_code`, `perks_description`, `status`, `created_at`) VALUES ('12', '16', '2', 'Playwright VIP Zone 755', '5', '10', '5000.00', '#8b5cf6', 'Free Beverage + VIP Pass', 'active', '2026-08-06 03:03:21');
+INSERT INTO `event_seating_configs` (`id`, `event_id`, `organizer_id`, `section_name`, `total_rows`, `seats_per_row`, `ticket_price`, `color_code`, `perks_description`, `status`, `created_at`) VALUES ('13', '16', '2', 'Playwright VIP Zone 340', '5', '10', '5000.00', '#8b5cf6', 'Free Beverage + VIP Pass', 'active', '2026-08-06 03:04:21');
+INSERT INTO `event_seating_configs` (`id`, `event_id`, `organizer_id`, `section_name`, `total_rows`, `seats_per_row`, `ticket_price`, `color_code`, `perks_description`, `status`, `created_at`) VALUES ('14', '16', '2', 'Playwright VIP Zone 437', '5', '10', '5000.00', '#8b5cf6', 'Free Beverage + VIP Pass', 'active', '2026-08-06 03:08:09');
+INSERT INTO `event_seating_configs` (`id`, `event_id`, `organizer_id`, `section_name`, `total_rows`, `seats_per_row`, `ticket_price`, `color_code`, `perks_description`, `status`, `created_at`) VALUES ('15', '16', '2', 'Playwright VIP Zone 393', '5', '10', '5000.00', '#8b5cf6', 'Free Beverage + VIP Pass', 'active', '2026-08-06 03:09:01');
+INSERT INTO `event_seating_configs` (`id`, `event_id`, `organizer_id`, `section_name`, `total_rows`, `seats_per_row`, `ticket_price`, `color_code`, `perks_description`, `status`, `created_at`) VALUES ('16', '16', '2', 'Playwright VIP Zone 664', '5', '10', '5000.00', '#8b5cf6', 'Free Beverage + VIP Pass', 'active', '2026-08-06 03:12:59');
+INSERT INTO `event_seating_configs` (`id`, `event_id`, `organizer_id`, `section_name`, `total_rows`, `seats_per_row`, `ticket_price`, `color_code`, `perks_description`, `status`, `created_at`) VALUES ('17', '16', '2', 'Playwright VIP Zone 953', '5', '10', '5000.00', '#8b5cf6', 'Free Beverage + VIP Pass', 'active', '2026-08-06 03:17:39');
+
+DROP TABLE IF EXISTS `events`;
+CREATE TABLE `events` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `organizer_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `event_date` date NOT NULL,
+  `location` varchar(255) DEFAULT NULL,
+  `capacity` int(11) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `price` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `image` varchar(255) DEFAULT NULL,
+  `category` varchar(100) DEFAULT 'General',
+  `status` varchar(20) NOT NULL DEFAULT 'pending',
+  PRIMARY KEY (`id`),
+  KEY `organizer_id` (`organizer_id`),
+  CONSTRAINT `events_ibfk_1` FOREIGN KEY (`organizer_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `events` (`id`, `organizer_id`, `title`, `description`, `event_date`, `location`, `capacity`, `created_at`, `price`, `image`, `category`, `status`) VALUES ('1', '2', 'Tech Conference 2026 - Updated', 'Updated event details', '2026-12-25', 'Kandy', '600', '2026-06-12 15:11:41', '2500.00', NULL, 'General', 'pending');
+INSERT INTO `events` (`id`, `organizer_id`, `title`, `description`, `event_date`, `location`, `capacity`, `created_at`, `price`, `image`, `category`, `status`) VALUES ('4', '2', 'football fiesta', 'pattama football parak gahamu', '2026-02-03', 'Negombo', NULL, '2026-07-01 21:09:23', '0.00', NULL, 'General', 'rejected');
+INSERT INTO `events` (`id`, `organizer_id`, `title`, `description`, `event_date`, `location`, `capacity`, `created_at`, `price`, `image`, `category`, `status`) VALUES ('6', '2', 'Aluth kalawak', 'Held on portcity colombo ', '2026-02-08', 'Colombo', '1000', '2026-07-03 11:30:21', '6000.00', '1783058421_images.jpg', 'Music', 'approved');
+INSERT INTO `events` (`id`, `organizer_id`, `title`, `description`, `event_date`, `location`, `capacity`, `created_at`, `price`, `image`, `category`, `status`) VALUES ('7', '2', 'Likitha Event', 'Ape likithaya', '2026-04-03', 'Gampaha', '60', '2026-07-04 00:01:49', '8000.00', '1783103509_Green and Yellow Gardening YouTube Banner.png', 'Music', 'approved');
+INSERT INTO `events` (`id`, `organizer_id`, `title`, `description`, `event_date`, `location`, `capacity`, `created_at`, `price`, `image`, `category`, `status`) VALUES ('9', '2', 'Chess ', 'sport', '2026-07-21', 'Campus', '2998', '2026-07-12 12:16:38', '4000.00', '', 'General', 'rejected');
+INSERT INTO `events` (`id`, `organizer_id`, `title`, `description`, `event_date`, `location`, `capacity`, `created_at`, `price`, `image`, `category`, `status`) VALUES ('14', '2', 'HER', 'Music Event', '2026-07-15', 'Colombo', '300', '2026-07-13 00:21:33', '4000.00', '1783882293_Screenshot 2026-07-12 221402.png', 'Music', 'approved');
+INSERT INTO `events` (`id`, `organizer_id`, `title`, `description`, `event_date`, `location`, `capacity`, `created_at`, `price`, `image`, `category`, `status`) VALUES ('15', '2', 'Praharshana', 'Drama Event', '2026-07-18', 'UWU', '299', '2026-07-13 03:29:11', '1000.00', '1783893551_download.jpg', 'Entertainment', 'approved');
+INSERT INTO `events` (`id`, `organizer_id`, `title`, `description`, `event_date`, `location`, `capacity`, `created_at`, `price`, `image`, `category`, `status`) VALUES ('16', '2', 'Mariens Live in concert', 'Come Have Fun with the mariens ', '2026-07-25', 'Negombo', '200', '2026-07-13 05:49:49', '5000.00', '1783901989_MARIANS_Unplugged_Live_in_Dubai_2015_may_15_Sheikh_Rashid_Auditorium_The_Indian_High_School_25147-full.jpg', 'Music', 'approved');
+INSERT INTO `events` (`id`, `organizer_id`, `title`, `description`, `event_date`, `location`, `capacity`, `created_at`, `price`, `image`, `category`, `status`) VALUES ('17', '2', 'Gypsis Live in Concert', 'Come Have fun with us', '2026-07-31', 'Kalutara', '100', '2026-07-13 08:37:46', '5000.00', '1783912066_LIVE_IM_PARK_Gypsys.jpg', 'Music', 'approved');
+INSERT INTO `events` (`id`, `organizer_id`, `title`, `description`, `event_date`, `location`, `capacity`, `created_at`, `price`, `image`, `category`, `status`) VALUES ('18', '2', 'cricket event', 'cricket event for all', '2026-07-15', 'Kandy', '300', '2026-07-13 10:59:53', '500.00', '', 'Sports', 'pending');
+INSERT INTO `events` (`id`, `organizer_id`, `title`, `description`, `event_date`, `location`, `capacity`, `created_at`, `price`, `image`, `category`, `status`) VALUES ('19', '2', 'Dancing night', 'all can dance', '2026-07-18', 'Gampaha', '100', '2026-07-13 11:28:14', '6000.00', '1783922294_MARIANS_Unplugged_Live_in_Dubai_2015_may_15_Sheikh_Rashid_Auditorium_The_Indian_High_School_25147-full.jpg', 'Music', 'approved');
+INSERT INTO `events` (`id`, `organizer_id`, `title`, `description`, `event_date`, `location`, `capacity`, `created_at`, `price`, `image`, `category`, `status`) VALUES ('20', '2', 'chess event', 'you all can play chess', '2026-07-16', 'Kandy', '100', '2026-07-13 11:42:49', '500.00', '1783923169_LIVE_IM_PARK_Gypsys.jpg', 'Sports', 'approved');
+INSERT INTO `events` (`id`, `organizer_id`, `title`, `description`, `event_date`, `location`, `capacity`, `created_at`, `price`, `image`, `category`, `status`) VALUES ('21', '2', 'chagudu ewent', 'have sun fun', '2026-07-25', 'Kandy', '1000', '2026-07-13 12:01:52', '300.00', '', 'Sports', 'approved');
+INSERT INTO `events` (`id`, `organizer_id`, `title`, `description`, `event_date`, `location`, `capacity`, `created_at`, `price`, `image`, `category`, `status`) VALUES ('22', '2', 'F1 race', 'cars race', '2026-07-25', 'Kandy', '500', '2026-07-13 12:13:33', '1000.00', '', 'Sports', 'approved');
+INSERT INTO `events` (`id`, `organizer_id`, `title`, `description`, `event_date`, `location`, `capacity`, `created_at`, `price`, `image`, `category`, `status`) VALUES ('23', '2', 'Sarith surith event', 'Music event vfor all', '2026-07-24', 'Kandy', '100', '2026-07-13 13:15:10', '5000.00', '1783928710_maxresdefault.jpg', 'Music', 'approved');
+
+DROP TABLE IF EXISTS `favorites`;
+CREATE TABLE `favorites` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `event_id` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_event` (`user_id`,`event_id`),
+  KEY `event_id` (`event_id`),
+  CONSTRAINT `favorites_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `favorites_ibfk_2` FOREIGN KEY (`event_id`) REFERENCES `events` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `favorites` (`id`, `user_id`, `event_id`, `created_at`) VALUES ('75', '9', '17', '2026-08-06 03:17:35');
+INSERT INTO `favorites` (`id`, `user_id`, `event_id`, `created_at`) VALUES ('76', '9', '16', '2026-08-06 03:17:35');
+
+DROP TABLE IF EXISTS `notifications`;
+CREATE TABLE `notifications` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `type` varchar(50) NOT NULL DEFAULT 'info',
+  `title` varchar(255) NOT NULL,
+  `message` text NOT NULL,
+  `link` varchar(255) DEFAULT NULL,
+  `is_read` tinyint(1) NOT NULL DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `user_id_idx` (`user_id`),
+  KEY `is_read_idx` (`is_read`)
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('1', '7', 'booking', '🎟️ Ticket Booking Confirmed!', 'Your ticket reservation for \'Summer Music Festival 2026\' has been confirmed. Seat: VIP-A1.', '/my-bookings', '1', '2026-07-30 23:00:54');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('2', '7', 'waiting_list', '🎉 Waiting List Priority Alert!', 'A ticket slot opened up for \'Tech Innovators Summit\'. Click to claim your priority ticket.', '/waiting-list', '1', '2026-07-30 23:00:54');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('3', '7', 'verification', '🛡️ Organizer Account Status Update', 'Your organizer business registration document has been reviewed and verified.', '/organizer/verify', '1', '2026-07-30 23:00:54');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('4', '9', 'booking', '🎟️ Ticket Booking Confirmed!', 'Your ticket reservation for \'Summer Music Festival 2026\' has been confirmed. Seat: VIP-A1.', '/my-bookings', '1', '2026-08-06 00:13:17');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('5', '9', 'waiting_list', '🎉 Waiting List Priority Alert!', 'A ticket slot opened up for \'Tech Innovators Summit\'. Click to claim your priority ticket.', '/waiting-list', '1', '2026-08-06 00:13:17');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('6', '9', 'verification', '🛡️ Organizer Account Status Update', 'Your organizer business registration document has been reviewed and verified.', '/organizer/verify', '1', '2026-08-06 00:13:17');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('7', '9', 'support', '🎧 Support Ticket Update: open', 'Your support ticket \'Ticket Refund Inquiry 1785958563333\' has been updated to: OPEN. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', '1', '2026-08-06 01:06:06');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('8', '9', 'support', '🎧 Support Ticket Update: open', 'Your support ticket \'Ticket Refund Inquiry 1785958601206\' has been updated to: OPEN. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', '1', '2026-08-06 01:06:42');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('9', '9', 'support', '🎧 Support Ticket Update: open', 'Your support ticket \'Ticket Refund Inquiry 1785958603723\' has been updated to: OPEN. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', '1', '2026-08-06 01:06:46');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('10', '9', 'support', '🎧 Support Ticket Update: open', 'Your support ticket \'Ticket Refund Inquiry 1785958654270\' has been updated to: OPEN. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', '1', '2026-08-06 01:07:35');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('11', '9', 'support', '🎧 Support Ticket Update: open', 'Your support ticket \'Ticket Refund Inquiry 1785958655603\' has been updated to: OPEN. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', '1', '2026-08-06 01:07:37');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('12', '9', 'support', '🎧 Support Ticket Update: open', 'Your support ticket \'Ticket Refund Inquiry 1785958685669\' has been updated to: OPEN. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', '1', '2026-08-06 01:08:08');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('13', '9', 'support', '🎧 Support Ticket Update: open', 'Your support ticket \'Ticket Refund Inquiry 1785958716178\' has been updated to: OPEN. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', '1', '2026-08-06 01:08:42');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('14', '9', 'support', '🎧 Support Ticket Update: open', 'Your support ticket \'Ticket Refund Inquiry 1785958752869\' has been updated to: OPEN. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', '1', '2026-08-06 01:09:15');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('15', '9', 'support', '🎧 Support Ticket Update: resolved', 'Your support ticket \'Ticket Refund Inquiry 1785958820771\' has been updated to: RESOLVED. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', '1', '2026-08-06 01:10:23');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('16', '9', 'support', '🎧 Support Ticket Update: resolved', 'Your support ticket \'Ticket Refund Inquiry 1785958850691\' has been updated to: RESOLVED. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', '1', '2026-08-06 01:10:52');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('17', '9', 'support', '🎧 Support Ticket Update: resolved', 'Your support ticket \'Ticket Refund Inquiry 1785959170862\' has been updated to: RESOLVED. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', '1', '2026-08-06 01:16:13');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('18', '9', 'support', '🎧 Support Ticket Update: resolved', 'Your support ticket \'Ticket Refund Inquiry 1785959614409\' has been updated to: RESOLVED. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', '1', '2026-08-06 01:23:38');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('19', '9', 'support', '🎧 Support Ticket Update: resolved', 'Your support ticket \'Ticket Refund Inquiry 1785959874736\' has been updated to: RESOLVED. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', '1', '2026-08-06 01:27:56');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('20', '9', 'support', '🎧 Support Ticket Update: resolved', 'Your support ticket \'Ticket Refund Inquiry 1785960124269\' has been updated to: RESOLVED. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', '1', '2026-08-06 01:32:09');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('21', '9', 'support', '🎧 Support Ticket Update: resolved', 'Your support ticket \'Ticket Refund Inquiry 1785960445101\' has been updated to: RESOLVED. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', '1', '2026-08-06 01:37:26');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('22', '9', 'support', '🎧 Support Ticket Update: resolved', 'Your support ticket \'Ticket Refund Inquiry 1785960876310\' has been updated to: RESOLVED. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', '1', '2026-08-06 01:44:37');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('23', '9', 'support', '🎧 Support Ticket Update: resolved', 'Your support ticket \'Ticket Refund Inquiry 1785960909813\' has been updated to: RESOLVED. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', '1', '2026-08-06 01:45:11');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('24', '9', 'support', '🎧 Support Ticket Update: resolved', 'Your support ticket \'Ticket Refund Inquiry 1785961032392\' has been updated to: RESOLVED. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', '1', '2026-08-06 01:47:14');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('25', '9', 'support', '🎧 Support Ticket Update: resolved', 'Your support ticket \'Ticket Refund Inquiry 1785961316634\' has been updated to: RESOLVED. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', '1', '2026-08-06 01:51:58');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('26', '9', 'support', '🎧 Support Ticket Update: resolved', 'Your support ticket \'Ticket Refund Inquiry 1785961370095\' has been updated to: RESOLVED. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', '1', '2026-08-06 01:52:51');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('27', '9', 'support', '🎧 Support Ticket Update: resolved', 'Your support ticket \'Ticket Refund Inquiry 1785961548195\' has been updated to: RESOLVED. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', '1', '2026-08-06 01:55:50');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('28', '9', 'support', '🎧 Support Ticket Update: resolved', 'Your support ticket \'Ticket Refund Inquiry 1785961998761\' has been updated to: RESOLVED. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', '1', '2026-08-06 02:03:21');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('29', '9', 'support', '🎧 Support Ticket Update: resolved', 'Your support ticket \'Ticket Refund Inquiry 1785962252749\' has been updated to: RESOLVED. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', '1', '2026-08-06 02:07:34');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('30', '9', 'support', '🎧 Support Ticket Update: resolved', 'Your support ticket \'Ticket Refund Inquiry 1785962571779\' has been updated to: RESOLVED. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', '1', '2026-08-06 02:12:53');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('31', '9', 'support', '🎧 Support Ticket Update: resolved', 'Your support ticket \'Ticket Refund Inquiry 1785962606739\' has been updated to: RESOLVED. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', '1', '2026-08-06 02:13:28');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('32', '9', 'support', '🎧 Support Ticket Update: resolved', 'Your support ticket \'Ticket Refund Inquiry 1785962690377\' has been updated to: RESOLVED. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', '1', '2026-08-06 02:14:52');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('33', '9', 'support', '🎧 Support Ticket Update: resolved', 'Your support ticket \'Ticket Refund Inquiry 1785962856216\' has been updated to: RESOLVED. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', '1', '2026-08-06 02:17:38');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('34', '9', 'support', '🎧 Support Ticket Update: resolved', 'Your support ticket \'Ticket Refund Inquiry 1785962904534\' has been updated to: RESOLVED. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', '1', '2026-08-06 02:18:27');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('35', '9', 'support', '🎧 Support Ticket Update: resolved', 'Your support ticket \'Ticket Refund Inquiry 1785962956201\' has been updated to: RESOLVED. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', '1', '2026-08-06 02:19:18');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('36', '9', 'support', '🎧 Support Ticket Update: resolved', 'Your support ticket \'Ticket Refund Inquiry 1785965641409\' has been updated to: RESOLVED. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', '1', '2026-08-06 03:04:05');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('37', '9', 'support', '🎧 Support Ticket Update: resolved', 'Your support ticket \'Ticket Refund Inquiry 1785965873143\' has been updated to: RESOLVED. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', '1', '2026-08-06 03:07:55');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('38', '9', 'support', '🎧 Support Ticket Update: resolved', 'Your support ticket \'Ticket Refund Inquiry 1785965924215\' has been updated to: RESOLVED. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', '1', '2026-08-06 03:08:46');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('39', '9', 'support', '🎧 Support Ticket Update: resolved', 'Your support ticket \'Ticket Refund Inquiry 1785966162089\' has been updated to: RESOLVED. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', '0', '2026-08-06 03:12:44');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('40', '9', 'support', '🎧 Support Ticket Update: resolved', 'Your support ticket \'Ticket Refund Inquiry 1785966414180\' has been updated to: RESOLVED. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', '0', '2026-08-06 03:16:56');
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES ('41', '9', 'support', '🎧 Support Ticket Update: resolved', 'Your support ticket \'Ticket Refund Inquiry 1785966462472\' has been updated to: RESOLVED. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', '0', '2026-08-06 03:17:44');
+
+DROP TABLE IF EXISTS `organizer_payouts`;
+CREATE TABLE `organizer_payouts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `organizer_id` int(11) NOT NULL,
+  `event_id` int(11) DEFAULT NULL,
+  `gross_revenue` decimal(10,2) NOT NULL,
+  `commission_rate` decimal(5,2) DEFAULT 10.00,
+  `commission_fee` decimal(10,2) NOT NULL,
+  `net_payout` decimal(10,2) NOT NULL,
+  `bank_name` varchar(100) DEFAULT NULL,
+  `account_number` varchar(50) DEFAULT NULL,
+  `status` enum('pending','approved','rejected','transferred') NOT NULL DEFAULT 'pending',
+  `admin_notes` text DEFAULT NULL,
+  `processed_by` int(11) DEFAULT NULL,
+  `requested_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `processed_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `organizer_id_idx` (`organizer_id`),
+  KEY `event_id_idx` (`event_id`),
+  KEY `status_idx` (`status`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `organizer_payouts` (`id`, `organizer_id`, `event_id`, `gross_revenue`, `commission_rate`, `commission_fee`, `net_payout`, `bank_name`, `account_number`, `status`, `admin_notes`, `processed_by`, `requested_at`, `processed_at`) VALUES ('1', '2', '16', '250000.00', '10.00', '25000.00', '225000.00', 'Bank of Ceylon', '8849201948', 'pending', NULL, NULL, '2026-08-06 02:01:30', NULL);
+INSERT INTO `organizer_payouts` (`id`, `organizer_id`, `event_id`, `gross_revenue`, `commission_rate`, `commission_fee`, `net_payout`, `bank_name`, `account_number`, `status`, `admin_notes`, `processed_by`, `requested_at`, `processed_at`) VALUES ('2', '2', '17', '180000.00', '10.00', '18000.00', '162000.00', 'Commercial Bank', '1092837482', 'approved', '', '7', '2026-08-06 02:01:30', '2026-08-05 22:34:32');
+INSERT INTO `organizer_payouts` (`id`, `organizer_id`, `event_id`, `gross_revenue`, `commission_rate`, `commission_fee`, `net_payout`, `bank_name`, `account_number`, `status`, `admin_notes`, `processed_by`, `requested_at`, `processed_at`) VALUES ('3', '2', '6', '450000.00', '10.00', '45000.00', '405000.00', 'Hatton National Bank', '7728192847', 'transferred', 'Automated Playwright E2E Settlement Verification #99812', '7', '2026-08-06 02:01:30', '2026-08-05 23:47:36');
+
+DROP TABLE IF EXISTS `organizers`;
+CREATE TABLE `organizers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `organization_name` varchar(150) NOT NULL,
+  `verification_status` enum('pending','approved','rejected') DEFAULT 'pending',
+  `phone` varchar(50) DEFAULT NULL,
+  `website` varchar(255) DEFAULT NULL,
+  `address` text DEFAULT NULL,
+  `business_registration_number` varchar(100) DEFAULT NULL,
+  `nic_passport` varchar(100) DEFAULT NULL,
+  `document_path` varchar(255) DEFAULT NULL,
+  `rejection_reason` text DEFAULT NULL,
+  `submitted_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `organizers_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `organizers` (`id`, `user_id`, `organization_name`, `verification_status`, `phone`, `website`, `address`, `business_registration_number`, `nic_passport`, `document_path`, `rejection_reason`, `submitted_at`) VALUES ('2', '5', 'Yumeth Events', 'approved', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+
+DROP TABLE IF EXISTS `payments`;
+CREATE TABLE `payments` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `booking_id` int(11) NOT NULL,
+  `amount` decimal(10,2) DEFAULT NULL,
+  `transaction_id` varchar(255) DEFAULT NULL,
+  `payment_status` enum('pending','success','failed') DEFAULT 'pending',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `booking_id` (`booking_id`),
+  CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=122 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `payments` (`id`, `booking_id`, `amount`, `transaction_id`, `payment_status`, `created_at`) VALUES ('46', '84', '4000.00', NULL, 'pending', '2026-07-12 13:18:46');
+INSERT INTO `payments` (`id`, `booking_id`, `amount`, `transaction_id`, `payment_status`, `created_at`) VALUES ('47', '85', '8000.00', NULL, 'pending', '2026-07-12 13:37:42');
+INSERT INTO `payments` (`id`, `booking_id`, `amount`, `transaction_id`, `payment_status`, `created_at`) VALUES ('58', '96', '8000.00', NULL, 'pending', '2026-07-12 22:50:24');
+
+DROP TABLE IF EXISTS `promo_codes`;
+CREATE TABLE `promo_codes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `event_id` int(11) DEFAULT NULL,
+  `organizer_id` int(11) DEFAULT NULL,
+  `code` varchar(50) NOT NULL,
+  `discount_type` enum('percentage','fixed') NOT NULL DEFAULT 'percentage',
+  `discount_value` decimal(10,2) NOT NULL,
+  `min_order_amount` decimal(10,2) DEFAULT 0.00,
+  `max_uses` int(11) DEFAULT 100,
+  `used_count` int(11) DEFAULT 0,
+  `valid_from` datetime DEFAULT NULL,
+  `valid_until` datetime DEFAULT NULL,
+  `status` enum('active','inactive','expired') NOT NULL DEFAULT 'active',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `code_unique` (`code`),
+  KEY `event_id_idx` (`event_id`),
+  KEY `organizer_id_idx` (`organizer_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `promo_codes` (`id`, `event_id`, `organizer_id`, `code`, `discount_type`, `discount_value`, `min_order_amount`, `max_uses`, `used_count`, `valid_from`, `valid_until`, `status`, `created_at`) VALUES ('1', NULL, NULL, 'EVENT20', 'percentage', '20.00', '500.00', '100', '14', '2026-01-01 00:00:00', '2026-12-31 23:59:59', 'active', '2026-08-06 01:42:25');
+INSERT INTO `promo_codes` (`id`, `event_id`, `organizer_id`, `code`, `discount_type`, `discount_value`, `min_order_amount`, `max_uses`, `used_count`, `valid_from`, `valid_until`, `status`, `created_at`) VALUES ('2', '6', '2', 'COLOMBO500', 'fixed', '500.00', '1000.00', '50', '8', '2026-01-01 00:00:00', '2026-12-31 23:59:59', 'active', '2026-08-06 01:42:25');
+INSERT INTO `promo_codes` (`id`, `event_id`, `organizer_id`, `code`, `discount_type`, `discount_value`, `min_order_amount`, `max_uses`, `used_count`, `valid_from`, `valid_until`, `status`, `created_at`) VALUES ('3', NULL, NULL, 'VIPPERK10', 'percentage', '10.00', '0.00', '500', '42', '2026-01-01 00:00:00', '2026-12-31 23:59:59', 'active', '2026-08-06 01:42:25');
+INSERT INTO `promo_codes` (`id`, `event_id`, `organizer_id`, `code`, `discount_type`, `discount_value`, `min_order_amount`, `max_uses`, `used_count`, `valid_from`, `valid_until`, `status`, `created_at`) VALUES ('4', NULL, '2', 'PLAY20TEST', 'percentage', '20.00', '0.00', '100', '0', '2026-08-05 22:13:56', '2027-08-05 22:13:56', 'active', '2026-08-06 01:43:56');
+INSERT INTO `promo_codes` (`id`, `event_id`, `organizer_id`, `code`, `discount_type`, `discount_value`, `min_order_amount`, `max_uses`, `used_count`, `valid_from`, `valid_until`, `status`, `created_at`) VALUES ('5', NULL, '2', 'PLAY20TEST778', 'percentage', '20.00', '0.00', '100', '0', '2026-08-05 22:14:33', '2027-08-05 22:14:33', 'active', '2026-08-06 01:44:33');
+INSERT INTO `promo_codes` (`id`, `event_id`, `organizer_id`, `code`, `discount_type`, `discount_value`, `min_order_amount`, `max_uses`, `used_count`, `valid_from`, `valid_until`, `status`, `created_at`) VALUES ('6', NULL, '2', 'PLAY20TEST560', 'percentage', '20.00', '0.00', '100', '0', '2026-08-05 22:14:56', '2027-08-05 22:14:56', 'active', '2026-08-06 01:44:56');
+INSERT INTO `promo_codes` (`id`, `event_id`, `organizer_id`, `code`, `discount_type`, `discount_value`, `min_order_amount`, `max_uses`, `used_count`, `valid_from`, `valid_until`, `status`, `created_at`) VALUES ('7', NULL, '2', 'PLAY20TEST791', 'percentage', '20.00', '0.00', '100', '0', '2026-08-05 22:15:09', '2027-08-05 22:15:09', 'active', '2026-08-06 01:45:09');
+INSERT INTO `promo_codes` (`id`, `event_id`, `organizer_id`, `code`, `discount_type`, `discount_value`, `min_order_amount`, `max_uses`, `used_count`, `valid_from`, `valid_until`, `status`, `created_at`) VALUES ('8', NULL, '2', 'PLAY20TEST2', 'percentage', '20.00', '0.00', '100', '0', '2026-08-05 22:15:29', '2027-08-05 22:15:29', 'active', '2026-08-06 01:45:29');
+INSERT INTO `promo_codes` (`id`, `event_id`, `organizer_id`, `code`, `discount_type`, `discount_value`, `min_order_amount`, `max_uses`, `used_count`, `valid_from`, `valid_until`, `status`, `created_at`) VALUES ('9', NULL, '2', 'PLAY20TEST535', 'percentage', '20.00', '0.00', '100', '0', '2026-08-05 22:16:14', '2027-08-05 22:16:14', 'active', '2026-08-06 01:46:14');
+INSERT INTO `promo_codes` (`id`, `event_id`, `organizer_id`, `code`, `discount_type`, `discount_value`, `min_order_amount`, `max_uses`, `used_count`, `valid_from`, `valid_until`, `status`, `created_at`) VALUES ('10', NULL, '2', 'PLAY20TEST661', 'percentage', '20.00', '0.00', '100', '0', '2026-08-05 22:17:45', '2027-08-05 22:17:45', 'active', '2026-08-06 01:47:45');
+INSERT INTO `promo_codes` (`id`, `event_id`, `organizer_id`, `code`, `discount_type`, `discount_value`, `min_order_amount`, `max_uses`, `used_count`, `valid_from`, `valid_until`, `status`, `created_at`) VALUES ('11', NULL, '2', 'PLAY20TEST299', 'percentage', '20.00', '0.00', '100', '0', '2026-08-05 22:17:49', '2027-08-05 22:17:49', 'active', '2026-08-06 01:47:49');
+INSERT INTO `promo_codes` (`id`, `event_id`, `organizer_id`, `code`, `discount_type`, `discount_value`, `min_order_amount`, `max_uses`, `used_count`, `valid_from`, `valid_until`, `status`, `created_at`) VALUES ('12', NULL, '2', 'PLAY20TEST275', 'percentage', '20.00', '0.00', '100', '0', '2026-08-05 22:19:13', '2027-08-05 22:19:13', 'active', '2026-08-06 01:49:13');
+INSERT INTO `promo_codes` (`id`, `event_id`, `organizer_id`, `code`, `discount_type`, `discount_value`, `min_order_amount`, `max_uses`, `used_count`, `valid_from`, `valid_until`, `status`, `created_at`) VALUES ('13', NULL, '2', 'PLAY20TEST187', 'percentage', '20.00', '0.00', '100', '0', '2026-08-05 22:20:00', '2027-08-05 22:20:00', 'active', '2026-08-06 01:50:00');
+INSERT INTO `promo_codes` (`id`, `event_id`, `organizer_id`, `code`, `discount_type`, `discount_value`, `min_order_amount`, `max_uses`, `used_count`, `valid_from`, `valid_until`, `status`, `created_at`) VALUES ('14', NULL, '2', 'PLAY20TEST190', 'percentage', '20.00', '0.00', '100', '0', '2026-08-05 22:21:01', '2027-08-05 22:21:01', 'active', '2026-08-06 01:51:01');
+INSERT INTO `promo_codes` (`id`, `event_id`, `organizer_id`, `code`, `discount_type`, `discount_value`, `min_order_amount`, `max_uses`, `used_count`, `valid_from`, `valid_until`, `status`, `created_at`) VALUES ('15', NULL, '2', 'PLAY20TEST829', 'percentage', '20.00', '0.00', '100', '0', '2026-08-05 22:21:55', '2027-08-05 22:21:55', 'active', '2026-08-06 01:51:55');
+INSERT INTO `promo_codes` (`id`, `event_id`, `organizer_id`, `code`, `discount_type`, `discount_value`, `min_order_amount`, `max_uses`, `used_count`, `valid_from`, `valid_until`, `status`, `created_at`) VALUES ('16', NULL, '2', 'PLAY20TEST607', 'percentage', '20.00', '0.00', '100', '0', '2026-08-05 22:22:16', '2027-08-05 22:22:16', 'active', '2026-08-06 01:52:16');
+INSERT INTO `promo_codes` (`id`, `event_id`, `organizer_id`, `code`, `discount_type`, `discount_value`, `min_order_amount`, `max_uses`, `used_count`, `valid_from`, `valid_until`, `status`, `created_at`) VALUES ('17', NULL, '2', 'PLAY20TEST37', 'percentage', '20.00', '0.00', '100', '0', '2026-08-05 22:23:10', '2027-08-05 22:23:10', 'active', '2026-08-06 01:53:10');
+INSERT INTO `promo_codes` (`id`, `event_id`, `organizer_id`, `code`, `discount_type`, `discount_value`, `min_order_amount`, `max_uses`, `used_count`, `valid_from`, `valid_until`, `status`, `created_at`) VALUES ('18', NULL, '2', 'PLAY20TEST615', 'percentage', '20.00', '0.00', '100', '0', '2026-08-05 22:24:00', '2027-08-05 22:24:00', 'active', '2026-08-06 01:54:00');
+INSERT INTO `promo_codes` (`id`, `event_id`, `organizer_id`, `code`, `discount_type`, `discount_value`, `min_order_amount`, `max_uses`, `used_count`, `valid_from`, `valid_until`, `status`, `created_at`) VALUES ('19', NULL, '2', 'PLAY20TEST457', 'percentage', '20.00', '0.00', '100', '0', '2026-08-05 22:24:27', '2027-08-05 22:24:27', 'active', '2026-08-06 01:54:27');
+INSERT INTO `promo_codes` (`id`, `event_id`, `organizer_id`, `code`, `discount_type`, `discount_value`, `min_order_amount`, `max_uses`, `used_count`, `valid_from`, `valid_until`, `status`, `created_at`) VALUES ('20', NULL, '2', 'PLAY20TEST972', 'percentage', '20.00', '0.00', '100', '0', '2026-08-05 22:25:22', '2027-08-05 22:25:22', 'active', '2026-08-06 01:55:22');
+INSERT INTO `promo_codes` (`id`, `event_id`, `organizer_id`, `code`, `discount_type`, `discount_value`, `min_order_amount`, `max_uses`, `used_count`, `valid_from`, `valid_until`, `status`, `created_at`) VALUES ('21', NULL, '2', 'PLAY20TEST530', 'percentage', '20.00', '0.00', '100', '0', '2026-08-05 22:25:58', '2027-08-05 22:25:58', 'active', '2026-08-06 01:55:58');
+INSERT INTO `promo_codes` (`id`, `event_id`, `organizer_id`, `code`, `discount_type`, `discount_value`, `min_order_amount`, `max_uses`, `used_count`, `valid_from`, `valid_until`, `status`, `created_at`) VALUES ('22', NULL, '2', 'PLAY20TEST848', 'percentage', '20.00', '0.00', '100', '0', '2026-08-05 22:33:29', '2027-08-05 22:33:29', 'active', '2026-08-06 02:03:29');
+INSERT INTO `promo_codes` (`id`, `event_id`, `organizer_id`, `code`, `discount_type`, `discount_value`, `min_order_amount`, `max_uses`, `used_count`, `valid_from`, `valid_until`, `status`, `created_at`) VALUES ('23', NULL, '2', 'PLAY20TEST963', 'percentage', '20.00', '0.00', '100', '0', '2026-08-05 22:37:42', '2027-08-05 22:37:42', 'active', '2026-08-06 02:07:42');
+INSERT INTO `promo_codes` (`id`, `event_id`, `organizer_id`, `code`, `discount_type`, `discount_value`, `min_order_amount`, `max_uses`, `used_count`, `valid_from`, `valid_until`, `status`, `created_at`) VALUES ('24', NULL, '2', 'PLAY20TEST150', 'percentage', '20.00', '0.00', '100', '0', '2026-08-05 22:43:09', '2027-08-05 22:43:09', 'active', '2026-08-06 02:13:09');
+INSERT INTO `promo_codes` (`id`, `event_id`, `organizer_id`, `code`, `discount_type`, `discount_value`, `min_order_amount`, `max_uses`, `used_count`, `valid_from`, `valid_until`, `status`, `created_at`) VALUES ('25', NULL, '2', 'PLAY20TEST396', 'percentage', '20.00', '0.00', '100', '0', '2026-08-05 22:43:36', '2027-08-05 22:43:36', 'active', '2026-08-06 02:13:36');
+INSERT INTO `promo_codes` (`id`, `event_id`, `organizer_id`, `code`, `discount_type`, `discount_value`, `min_order_amount`, `max_uses`, `used_count`, `valid_from`, `valid_until`, `status`, `created_at`) VALUES ('26', NULL, '2', 'PLAY20TEST827', 'percentage', '20.00', '0.00', '100', '0', '2026-08-05 22:45:01', '2027-08-05 22:45:01', 'active', '2026-08-06 02:15:01');
+INSERT INTO `promo_codes` (`id`, `event_id`, `organizer_id`, `code`, `discount_type`, `discount_value`, `min_order_amount`, `max_uses`, `used_count`, `valid_from`, `valid_until`, `status`, `created_at`) VALUES ('27', NULL, '2', 'PLAY20TEST252', 'percentage', '20.00', '0.00', '100', '0', '2026-08-05 22:47:50', '2027-08-05 22:47:50', 'active', '2026-08-06 02:17:50');
+INSERT INTO `promo_codes` (`id`, `event_id`, `organizer_id`, `code`, `discount_type`, `discount_value`, `min_order_amount`, `max_uses`, `used_count`, `valid_from`, `valid_until`, `status`, `created_at`) VALUES ('28', NULL, '2', 'PLAY20TEST200', 'percentage', '20.00', '0.00', '100', '0', '2026-08-05 22:48:43', '2027-08-05 22:48:43', 'active', '2026-08-06 02:18:43');
+INSERT INTO `promo_codes` (`id`, `event_id`, `organizer_id`, `code`, `discount_type`, `discount_value`, `min_order_amount`, `max_uses`, `used_count`, `valid_from`, `valid_until`, `status`, `created_at`) VALUES ('29', NULL, '2', 'PLAY20TEST591', 'percentage', '20.00', '0.00', '100', '0', '2026-08-05 22:49:25', '2027-08-05 22:49:25', 'active', '2026-08-06 02:19:25');
+INSERT INTO `promo_codes` (`id`, `event_id`, `organizer_id`, `code`, `discount_type`, `discount_value`, `min_order_amount`, `max_uses`, `used_count`, `valid_from`, `valid_until`, `status`, `created_at`) VALUES ('30', NULL, '2', 'PLAY20TEST870', 'percentage', '20.00', '0.00', '100', '0', '2026-08-05 23:33:19', '2027-08-05 23:33:19', 'active', '2026-08-06 03:03:19');
+INSERT INTO `promo_codes` (`id`, `event_id`, `organizer_id`, `code`, `discount_type`, `discount_value`, `min_order_amount`, `max_uses`, `used_count`, `valid_from`, `valid_until`, `status`, `created_at`) VALUES ('31', NULL, '2', 'PLAY20TEST799', 'percentage', '20.00', '0.00', '100', '0', '2026-08-05 23:34:15', '2027-08-05 23:34:15', 'active', '2026-08-06 03:04:15');
+INSERT INTO `promo_codes` (`id`, `event_id`, `organizer_id`, `code`, `discount_type`, `discount_value`, `min_order_amount`, `max_uses`, `used_count`, `valid_from`, `valid_until`, `status`, `created_at`) VALUES ('32', NULL, '2', 'PLAY20TEST558', 'percentage', '20.00', '0.00', '100', '0', '2026-08-05 23:38:03', '2027-08-05 23:38:03', 'active', '2026-08-06 03:08:03');
+INSERT INTO `promo_codes` (`id`, `event_id`, `organizer_id`, `code`, `discount_type`, `discount_value`, `min_order_amount`, `max_uses`, `used_count`, `valid_from`, `valid_until`, `status`, `created_at`) VALUES ('33', NULL, '2', 'PLAY20TEST715', 'percentage', '20.00', '0.00', '100', '0', '2026-08-05 23:38:55', '2027-08-05 23:38:55', 'active', '2026-08-06 03:08:55');
+INSERT INTO `promo_codes` (`id`, `event_id`, `organizer_id`, `code`, `discount_type`, `discount_value`, `min_order_amount`, `max_uses`, `used_count`, `valid_from`, `valid_until`, `status`, `created_at`) VALUES ('34', NULL, '2', 'PLAY20TEST499', 'percentage', '20.00', '0.00', '100', '0', '2026-08-05 23:42:53', '2027-08-05 23:42:53', 'active', '2026-08-06 03:12:53');
+INSERT INTO `promo_codes` (`id`, `event_id`, `organizer_id`, `code`, `discount_type`, `discount_value`, `min_order_amount`, `max_uses`, `used_count`, `valid_from`, `valid_until`, `status`, `created_at`) VALUES ('35', NULL, '2', 'PLAY20TEST539', 'percentage', '20.00', '0.00', '100', '0', '2026-08-05 23:47:04', '2027-08-05 23:47:04', 'active', '2026-08-06 03:17:04');
+
+DROP TABLE IF EXISTS `seats`;
+CREATE TABLE `seats` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `event_id` int(11) NOT NULL,
+  `seat_number` varchar(20) DEFAULT NULL,
+  `price` decimal(10,2) DEFAULT NULL,
+  `status` enum('available','reserved','booked') DEFAULT 'available',
+  PRIMARY KEY (`id`),
+  KEY `event_id` (`event_id`),
+  CONSTRAINT `seats_ibfk_1` FOREIGN KEY (`event_id`) REFERENCES `events` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `seats` (`id`, `event_id`, `seat_number`, `price`, `status`) VALUES ('1', '1', 'A1', '1000.00', 'available');
+INSERT INTO `seats` (`id`, `event_id`, `seat_number`, `price`, `status`) VALUES ('2', '1', 'A2', '1000.00', 'available');
+INSERT INTO `seats` (`id`, `event_id`, `seat_number`, `price`, `status`) VALUES ('3', '1', 'A3', '1000.00', 'available');
+INSERT INTO `seats` (`id`, `event_id`, `seat_number`, `price`, `status`) VALUES ('4', '1', 'B1', '1500.00', 'available');
+INSERT INTO `seats` (`id`, `event_id`, `seat_number`, `price`, `status`) VALUES ('5', '1', 'B2', '1500.00', 'available');
+
+DROP TABLE IF EXISTS `security_logs`;
+CREATE TABLE `security_logs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) DEFAULT NULL,
+  `event_type` enum('failed_login','unauthorized_access','suspicious_transaction','privilege_change','user_blocked','ticket_scan_anomaly','system_setting_update') NOT NULL DEFAULT 'failed_login',
+  `ip_address` varchar(45) NOT NULL DEFAULT '127.0.0.1',
+  `user_agent` text DEFAULT NULL,
+  `risk_score` enum('low','medium','high','critical') NOT NULL DEFAULT 'low',
+  `details` text NOT NULL,
+  `is_flagged` tinyint(1) NOT NULL DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `user_id_idx` (`user_id`),
+  KEY `risk_score_idx` (`risk_score`),
+  KEY `event_type_idx` (`event_type`)
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `security_logs` (`id`, `user_id`, `event_type`, `ip_address`, `user_agent`, `risk_score`, `details`, `is_flagged`, `created_at`) VALUES ('1', '9', 'failed_login', '192.168.1.45', 'Mozilla/5.0 (Windows NT 10.0)', 'medium', '3 consecutive failed login attempts detected for customer account.', '0', '2026-08-06 01:13:34');
+INSERT INTO `security_logs` (`id`, `user_id`, `event_type`, `ip_address`, `user_agent`, `risk_score`, `details`, `is_flagged`, `created_at`) VALUES ('2', NULL, 'suspicious_transaction', '103.24.12.89', 'curl/7.68.0', 'high', 'Rapid booking attempt of 15 tickets within 2 seconds. Potential bot activity.', '1', '2026-08-06 01:13:34');
+INSERT INTO `security_logs` (`id`, `user_id`, `event_type`, `ip_address`, `user_agent`, `risk_score`, `details`, `is_flagged`, `created_at`) VALUES ('3', '7', 'privilege_change', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0)', 'low', 'Admin role permissions updated for Support Staff user #7.', '0', '2026-08-06 01:13:34');
+INSERT INTO `security_logs` (`id`, `user_id`, `event_type`, `ip_address`, `user_agent`, `risk_score`, `details`, `is_flagged`, `created_at`) VALUES ('4', NULL, 'unauthorized_access', '185.220.101.5', 'Python-urllib/3.8', 'critical', 'Attempted unauthorized endpoint access to /api/admin_organizers.php without JWT.', '1', '2026-08-06 01:13:34');
+INSERT INTO `security_logs` (`id`, `user_id`, `event_type`, `ip_address`, `user_agent`, `risk_score`, `details`, `is_flagged`, `created_at`) VALUES ('5', '2', 'ticket_scan_anomaly', '192.168.1.12', 'EventEase Scanner Android App', 'medium', 'Ticket EVT-118-4924 scanned twice within 30 seconds at Gate B.', '0', '2026-08-06 01:13:34');
+INSERT INTO `security_logs` (`id`, `user_id`, `event_type`, `ip_address`, `user_agent`, `risk_score`, `details`, `is_flagged`, `created_at`) VALUES ('6', '7', 'system_setting_update', '127.0.0.1', NULL, 'medium', 'Super Admin updated system governance and security policies.', '1', '2026-08-06 01:23:08');
+INSERT INTO `security_logs` (`id`, `user_id`, `event_type`, `ip_address`, `user_agent`, `risk_score`, `details`, `is_flagged`, `created_at`) VALUES ('7', '7', 'system_setting_update', '127.0.0.1', NULL, 'medium', 'Super Admin updated system governance and security policies.', '1', '2026-08-06 01:23:41');
+INSERT INTO `security_logs` (`id`, `user_id`, `event_type`, `ip_address`, `user_agent`, `risk_score`, `details`, `is_flagged`, `created_at`) VALUES ('8', '7', 'system_setting_update', '127.0.0.1', NULL, 'medium', 'Super Admin updated system governance and security policies.', '1', '2026-08-06 01:28:02');
+INSERT INTO `security_logs` (`id`, `user_id`, `event_type`, `ip_address`, `user_agent`, `risk_score`, `details`, `is_flagged`, `created_at`) VALUES ('9', '7', 'system_setting_update', '127.0.0.1', NULL, 'medium', 'Super Admin updated system governance and security policies.', '1', '2026-08-06 01:32:12');
+INSERT INTO `security_logs` (`id`, `user_id`, `event_type`, `ip_address`, `user_agent`, `risk_score`, `details`, `is_flagged`, `created_at`) VALUES ('10', '7', 'system_setting_update', '127.0.0.1', NULL, 'medium', 'Super Admin updated system governance and security policies.', '0', '2026-08-06 01:37:31');
+INSERT INTO `security_logs` (`id`, `user_id`, `event_type`, `ip_address`, `user_agent`, `risk_score`, `details`, `is_flagged`, `created_at`) VALUES ('11', '7', 'system_setting_update', '127.0.0.1', NULL, 'medium', 'Super Admin updated system governance and security policies.', '1', '2026-08-06 01:44:41');
+INSERT INTO `security_logs` (`id`, `user_id`, `event_type`, `ip_address`, `user_agent`, `risk_score`, `details`, `is_flagged`, `created_at`) VALUES ('12', '7', 'system_setting_update', '127.0.0.1', NULL, 'medium', 'Super Admin updated system governance and security policies.', '1', '2026-08-06 01:45:14');
+INSERT INTO `security_logs` (`id`, `user_id`, `event_type`, `ip_address`, `user_agent`, `risk_score`, `details`, `is_flagged`, `created_at`) VALUES ('13', '7', 'system_setting_update', '127.0.0.1', NULL, 'medium', 'Super Admin updated system governance and security policies.', '1', '2026-08-06 01:47:26');
+INSERT INTO `security_logs` (`id`, `user_id`, `event_type`, `ip_address`, `user_agent`, `risk_score`, `details`, `is_flagged`, `created_at`) VALUES ('14', '7', 'system_setting_update', '127.0.0.1', NULL, 'medium', 'Super Admin updated system governance and security policies.', '1', '2026-08-06 01:52:01');
+INSERT INTO `security_logs` (`id`, `user_id`, `event_type`, `ip_address`, `user_agent`, `risk_score`, `details`, `is_flagged`, `created_at`) VALUES ('15', '7', 'system_setting_update', '127.0.0.1', NULL, 'medium', 'Super Admin updated system governance and security policies.', '1', '2026-08-06 01:52:54');
+INSERT INTO `security_logs` (`id`, `user_id`, `event_type`, `ip_address`, `user_agent`, `risk_score`, `details`, `is_flagged`, `created_at`) VALUES ('16', '7', 'system_setting_update', '127.0.0.1', NULL, 'medium', 'Super Admin updated system governance and security policies.', '1', '2026-08-06 01:55:55');
+INSERT INTO `security_logs` (`id`, `user_id`, `event_type`, `ip_address`, `user_agent`, `risk_score`, `details`, `is_flagged`, `created_at`) VALUES ('17', '7', 'system_setting_update', '127.0.0.1', NULL, 'medium', 'Super Admin updated system governance and security policies.', '1', '2026-08-06 02:03:25');
+INSERT INTO `security_logs` (`id`, `user_id`, `event_type`, `ip_address`, `user_agent`, `risk_score`, `details`, `is_flagged`, `created_at`) VALUES ('18', '7', 'system_setting_update', '127.0.0.1', NULL, 'medium', 'Super Admin updated system governance and security policies.', '1', '2026-08-06 02:07:39');
+INSERT INTO `security_logs` (`id`, `user_id`, `event_type`, `ip_address`, `user_agent`, `risk_score`, `details`, `is_flagged`, `created_at`) VALUES ('19', '7', 'system_setting_update', '127.0.0.1', NULL, 'medium', 'Super Admin updated system governance and security policies.', '0', '2026-08-06 02:13:00');
+INSERT INTO `security_logs` (`id`, `user_id`, `event_type`, `ip_address`, `user_agent`, `risk_score`, `details`, `is_flagged`, `created_at`) VALUES ('20', '7', 'system_setting_update', '127.0.0.1', NULL, 'medium', 'Super Admin updated system governance and security policies.', '1', '2026-08-06 02:13:32');
+INSERT INTO `security_logs` (`id`, `user_id`, `event_type`, `ip_address`, `user_agent`, `risk_score`, `details`, `is_flagged`, `created_at`) VALUES ('21', '7', 'system_setting_update', '127.0.0.1', NULL, 'medium', 'Super Admin updated system governance and security policies.', '1', '2026-08-06 02:14:57');
+INSERT INTO `security_logs` (`id`, `user_id`, `event_type`, `ip_address`, `user_agent`, `risk_score`, `details`, `is_flagged`, `created_at`) VALUES ('22', '7', 'system_setting_update', '127.0.0.1', NULL, 'medium', 'Super Admin updated system governance and security policies.', '1', '2026-08-06 02:17:44');
+INSERT INTO `security_logs` (`id`, `user_id`, `event_type`, `ip_address`, `user_agent`, `risk_score`, `details`, `is_flagged`, `created_at`) VALUES ('23', '7', 'system_setting_update', '127.0.0.1', NULL, 'medium', 'Super Admin updated system governance and security policies.', '1', '2026-08-06 02:18:38');
+INSERT INTO `security_logs` (`id`, `user_id`, `event_type`, `ip_address`, `user_agent`, `risk_score`, `details`, `is_flagged`, `created_at`) VALUES ('24', '7', 'system_setting_update', '127.0.0.1', NULL, 'medium', 'Super Admin updated system governance and security policies.', '1', '2026-08-06 02:19:22');
+INSERT INTO `security_logs` (`id`, `user_id`, `event_type`, `ip_address`, `user_agent`, `risk_score`, `details`, `is_flagged`, `created_at`) VALUES ('25', '7', 'system_setting_update', '127.0.0.1', NULL, 'medium', 'Super Admin updated system governance and security policies.', '1', '2026-08-06 03:04:10');
+INSERT INTO `security_logs` (`id`, `user_id`, `event_type`, `ip_address`, `user_agent`, `risk_score`, `details`, `is_flagged`, `created_at`) VALUES ('26', '7', 'system_setting_update', '127.0.0.1', NULL, 'medium', 'Super Admin updated system governance and security policies.', '1', '2026-08-06 03:07:59');
+INSERT INTO `security_logs` (`id`, `user_id`, `event_type`, `ip_address`, `user_agent`, `risk_score`, `details`, `is_flagged`, `created_at`) VALUES ('27', '7', 'system_setting_update', '127.0.0.1', NULL, 'medium', 'Super Admin updated system governance and security policies.', '1', '2026-08-06 03:08:51');
+INSERT INTO `security_logs` (`id`, `user_id`, `event_type`, `ip_address`, `user_agent`, `risk_score`, `details`, `is_flagged`, `created_at`) VALUES ('28', '7', 'system_setting_update', '127.0.0.1', NULL, 'medium', 'Super Admin updated system governance and security policies.', '1', '2026-08-06 03:12:48');
+INSERT INTO `security_logs` (`id`, `user_id`, `event_type`, `ip_address`, `user_agent`, `risk_score`, `details`, `is_flagged`, `created_at`) VALUES ('29', '7', 'system_setting_update', '127.0.0.1', NULL, 'medium', 'Super Admin updated system governance and security policies.', '1', '2026-08-06 03:17:01');
+
+DROP TABLE IF EXISTS `system_settings`;
+CREATE TABLE `system_settings` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `setting_key` varchar(100) NOT NULL,
+  `setting_value` text NOT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `setting_key` (`setting_key`)
+) ENGINE=InnoDB AUTO_INCREMENT=151 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `system_settings` (`id`, `setting_key`, `setting_value`, `updated_at`) VALUES ('1', 'maintenance_mode', 'false', '2026-08-06 01:21:51');
+INSERT INTO `system_settings` (`id`, `setting_key`, `setting_value`, `updated_at`) VALUES ('2', 'max_login_attempts', '3', '2026-08-06 01:23:08');
+INSERT INTO `system_settings` (`id`, `setting_key`, `setting_value`, `updated_at`) VALUES ('3', 'session_timeout_mins', '30', '2026-08-06 01:23:08');
+INSERT INTO `system_settings` (`id`, `setting_key`, `setting_value`, `updated_at`) VALUES ('4', 'enforce_tls', 'true', '2026-08-06 01:21:51');
+INSERT INTO `system_settings` (`id`, `setting_key`, `setting_value`, `updated_at`) VALUES ('5', 'auto_backup_frequency', 'daily', '2026-08-06 01:21:51');
+INSERT INTO `system_settings` (`id`, `setting_key`, `setting_value`, `updated_at`) VALUES ('6', 'system_version', 'v2.4.0', '2026-08-06 01:21:51');
+
+DROP TABLE IF EXISTS `tickets`;
+CREATE TABLE `tickets` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `booking_id` int(11) NOT NULL,
+  `ticket_code` varchar(100) DEFAULT NULL,
+  `qr_code` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `status` enum('unused','used') NOT NULL DEFAULT 'unused',
+  `seat_number` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `ticket_code` (`ticket_code`),
+  KEY `booking_id` (`booking_id`),
+  CONSTRAINT `tickets_ibfk_1` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=66 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `tickets` (`id`, `booking_id`, `ticket_code`, `qr_code`, `created_at`, `status`, `seat_number`) VALUES ('26', '33', 'TKT00033', 'uploads/qr/TKT00033.png', '2026-07-03 23:58:44', 'unused', NULL);
+
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `full_name` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `phone` varchar(15) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `role` enum('customer','organizer','admin') DEFAULT 'customer',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `admin_role` enum('super_admin','junior_admin','financial_admin','security_admin') DEFAULT 'super_admin',
+  `user_tier` varchar(20) DEFAULT 'verified',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('2', 'Dasun Shanaka', 'dasun@gmail.com', '0740461033', '$2y$10$WZvwgw4Nubb96X88DfUCsOBPYc04l.CdQCzfEZ6qBpL3NFD4Ujx2m', 'organizer', '2026-06-17 23:30:12', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('3', 'kamal Shanaka', 'test@gmail.com', '0740461034', '$2y$10$Y.8flr95U40QukoYYBiQpee4.Mbj04y2z9o9E2ZJUmS4ZG2YezKnu', 'customer', '2026-06-17 23:41:57', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('5', 'Yumeth Pahasara', 'yumethpahasara12@gmail.com', '0740709421', '$2y$10$PebIoRxMdvY3HtdmpAULVOLgkq9CaCJGpZks4953q6ZU1TC1zjX5W', 'organizer', '2026-06-20 11:37:02', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('7', 'Thimira', 'thimira12@gmail.com', '0713423445', '$2y$10$6J6hpn8p4ZpDRFtiaYarueKDWQqpGwFRJems.vbmuSPbf/kBxGikS', 'admin', '2026-07-10 23:55:53', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('9', 'Hiran Anajana', 'hirananjana12@gmail.com', '0719876543', '$2y$10$3yJP/UXffrUO9pErPOkxp.pWboYL7fLhqP/E/F4cWH/4fq1FVuaV6', 'customer', '2026-08-06 02:17:25', 'super_admin', 'premium');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('10', 'Navod Teshan', 'navod12@gmail.com', '0702564785', '$2y$10$o6F4UGj3V6HRBMBmbgbdoeNkEcF3rjg2BWKEjKbJ2BKOgT9zdR6za', 'organizer', '2026-07-30 18:50:43', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('11', 'Test User Verification', 'testuser_1785955706353@example.com', '0771234567', '$2y$10$AIMpuQdm9K/MveGYAG.tsOVdqHVslakixsVrEk11EM9OUg5a3Hn2C', 'customer', '2026-08-06 00:18:28', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('12', 'Test User Verification', 'testuser_1785955811080@example.com', '0771234567', '$2y$10$d/V/XsrRGOyKvNODk/T35uQVaMv6oOArSPGW0pVjGyEb4LO7IbsZK', 'customer', '2026-08-06 00:20:13', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('13', 'Test User Verification', 'testuser_1785956013355@example.com', '0771234567', '$2y$10$00HPgcWsDNKq4w.CRWc25unbfsuIs/2vAoJ1iRvHs7O.TLIFDucPy', 'customer', '2026-08-06 00:23:35', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('14', 'Test User Verification', 'testuser_1785956160792@example.com', '0771234567', '$2y$10$hSL8RuOD.M3gRomOmnl1Kuk1QLA2brNVrUnTZCqyAqeaLXNRQlY2.', 'customer', '2026-08-06 00:26:03', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('15', 'Test User Verification', 'testuser_1785956347640@example.com', '0771234567', '$2y$10$LdTDiaoOCygd8wi5ebxwiua7oJgv81js6K/NBLnWChUQqivLAJyaC', 'customer', '2026-08-06 00:29:10', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('16', 'Test User Verification', 'testuser_1785956485809@example.com', '0771234567', '$2y$10$7tQZVLC4Ztz8jkHIsXcM.uDNrxCMwHFTD9EXKgO9MYMdbxQcVjxCK', 'customer', '2026-08-06 00:31:30', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('17', 'Test User Verification', 'testuser_1785956666022@example.com', '0771234567', '$2y$10$OLkov1AhgfUtXIzfe7JWIuYqmtOp4OThb0eIq7SFxmpakYN1QmYTW', 'customer', '2026-08-06 00:34:29', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('18', 'Test User Verification', 'testuser_1785956809829@example.com', '0771234567', '$2y$10$994DXCV1cfos7sHrKhKjIuxL2h9PFtfegAYCO82rURH09KAPhvWhK', 'customer', '2026-08-06 00:36:53', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('19', 'Test User Verification', 'testuser_1785958222535@example.com', '0771234567', '$2y$10$FqKs0Ytu8F7gRAybtf3BkOygitpL9ijO8y5hwMd0P1VOiw/Qz0Abe', 'customer', '2026-08-06 01:00:24', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('20', 'Test User Verification', 'testuser_1785958518162@example.com', '0771234567', '$2y$10$zLk4mnrjM5NrACY/YB4rqu.8IqkT1Yc2FsGthmgujtAMO58Byyvp2', 'customer', '2026-08-06 01:05:20', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('21', 'Test User Verification', 'testuser_1785958613786@example.com', '0771234567', '$2y$10$hUiZ8enRc3OkbTa9LZKtv.HrfrkG3.PSWOtn7jP0h0LkWJ1dmaIQ.', 'customer', '2026-08-06 01:06:56', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('22', 'Test User Verification', 'testuser_1785958666358@example.com', '0771234567', '$2y$10$rivYaHgFxPxNl7//Q8e4uuZ27exyU7GM4zNKZyIBWq0js3ERWOFSy', 'customer', '2026-08-06 01:07:49', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('23', 'Test User Verification', 'testuser_1785958767804@example.com', '0771234567', '$2y$10$LklHLI7NdbljCoiyfXMKku5Ip4h.GbVlfbUgKYnrrYunsZMgcDRQS', 'customer', '2026-08-06 01:09:30', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('24', 'Test User Verification', 'testuser_1785958853125@example.com', '0771234567', '$2y$10$UiBQg8hCfjqNv98PDJaYbepTIKNhaBAvf8n.gpKGkl9ogjNPwHPWm', 'customer', '2026-08-06 01:10:56', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('25', 'Test User Verification', 'testuser_1785959174881@example.com', '0771234567', '$2y$10$S.suvcUVp2G8PsqtU8HvqOZaoqQ8hoYPytkvvTSWDsufbY4ZexUoC', 'customer', '2026-08-06 01:16:17', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('26', 'Test User Verification', 'testuser_1785959621329@example.com', '0771234567', '$2y$10$GEBdp6ejwr0aZ8ImMx55c.2LXJ1CPqTL1z9weyiB0CYYtDGUy2jfK', 'customer', '2026-08-06 01:23:43', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('27', 'Test User Verification', 'testuser_1785959882128@example.com', '0771234567', '$2y$10$2JvtHgIrIoIWVYlYMf1GsODZDRIAxvytWXCYckHn2.6Oe/awMVNva', 'customer', '2026-08-06 01:28:04', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('28', 'Test User Verification', 'testuser_1785960132077@example.com', '0771234567', '$2y$10$VgfWBuvRdR45uGgCTlH2I.b5UdBuJn8hU6ToAjkcTTBqS8BT3MmUi', 'customer', '2026-08-06 01:32:14', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('29', 'Test User Verification', 'testuser_1785960453668@example.com', '0771234567', '$2y$10$TMcg3xi5hKbBv3oKacFiSOLNSl4j.tkou7M/IZbLaxMA3tqQfbM1W', 'customer', '2026-08-06 01:37:35', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('30', 'Test User Verification', 'testuser_1785960907266@example.com', '0771234567', '$2y$10$qO9c3g7jsxXKcei1hJhPkufqDarLDYMqq1HTfp0g/Xp09OCnH5lQG', 'customer', '2026-08-06 01:45:09', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('31', 'Test User Verification', 'testuser_1785960940620@example.com', '0771234567', '$2y$10$A3ky/QFwyHrwEhkYoad11eCSr9nmMQ1VSphbRjfvXSyabhWDu38h6', 'customer', '2026-08-06 01:45:45', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('32', 'Test User Verification', 'testuser_1785961076456@example.com', '0771234567', '$2y$10$SJ9b0If57P/oMEzRqtVose/1S7pwleDRsABZE1wv6Woo.6F3vUOWW', 'customer', '2026-08-06 01:48:01', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('33', 'Test User Verification', 'testuser_1785961348235@example.com', '0771234567', '$2y$10$p/i8ubeAXAW8fErjXPvBOuDmwSa9unJqBAGl8wwxwQF.MotlK8KZy', 'customer', '2026-08-06 01:52:30', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('34', 'Test User Verification', 'testuser_1785961402180@example.com', '0771234567', '$2y$10$DIglSoMU2luBkXx7rRXvFezEjmTPiaRW2hNAMEtWwoaD009v.D8G6', 'customer', '2026-08-06 01:53:24', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('35', 'Test User Verification', 'testuser_1785961558650@example.com', '0771234567', '$2y$10$.i3vLuj.2s73FljbXtc4QuWPRXY.z3qO.mpYIfaUDXJEp8A9sK9qq', 'customer', '2026-08-06 01:56:00', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('36', 'Test User Verification', 'testuser_1785962010817@example.com', '0771234567', '$2y$10$sCVwnaOsMbI655ip/WPcEugdMRLiGTvvKVxxLWXWoVfxmCWPOSnCm', 'admin', '2026-08-06 02:03:33', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('37', 'Kasun Junior Admin', 'subadmin_78877@eventease.com', '0771234567', '$2y$10$JK52Eq5iIcbt39q6QS1s5Oa6n2l5o.O9AUlNhYq2Zks34jnKzIyzW', 'admin', '2026-08-05 22:37:07', 'junior_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('38', 'Kasun Junior Admin', 'subadmin_95072@eventease.com', '0771234567', '$2y$10$esZkwRVX97TB4naJokxqTO1Xhi8ID9jAPr1CXwIVj32QkybniKUaC', 'admin', '2026-08-05 22:37:45', 'junior_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('39', 'Test User Verification', 'testuser_1785962265801@example.com', '0771234567', '$2y$10$ccpsOhfUle3AB4XSFihtpOPkhA9HBhKuMdH4x1eRpBZFwAuubdLOa', 'admin', '2026-08-06 02:07:47', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('40', 'Kasun Junior Admin', 'subadmin_57792@eventease.com', '0771234567', '$2y$10$xmVAFUwgIV6.5vCWjJIZY.6TBW2BgWCAKMOAy1B4opJSdAotuqhje', 'admin', '2026-08-05 22:43:16', 'junior_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('41', 'Test User Verification', 'testuser_1785962599568@example.com', '0771234567', '$2y$10$BTZO2rTNR0Z/5Q1M0RPoBOuSnBMSSMw60uTNLOe09MDi7.LU/BU.G', 'admin', '2026-08-06 02:13:21', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('42', 'Kasun Junior Admin', 'subadmin_12416@eventease.com', '0771234567', '$2y$10$Ub3nt98aysC0MhNq3.AMKOL53IDdyWg1XQbQl3LLR/WvOHIdsY6oi', 'admin', '2026-08-05 22:43:41', 'junior_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('43', 'Test User Verification', 'testuser_1785962623399@example.com', '0771234567', '$2y$10$FIb6cMIkxzQQvb49h0LjbOmKPlxk/j1aZgDRgTtEtvvBDUe/EPXaq', 'customer', '2026-08-06 02:13:45', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('44', 'Test User Verification', 'testuser_1785962648384@example.com', '0771234567', '$2y$10$Apf1Fe3rRToh326vgI1p.ulgpZoNxvM92XrBlOG0Nx.B2G.judx4G', 'admin', '2026-08-06 02:14:11', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('45', 'Kasun Junior Admin', 'subadmin_75929@eventease.com', '0771234567', '$2y$10$t/NcHOf6ldqA/sUyTvFfb.Czyt9yNXTwK30WFC4jvlHRXlyITUDGW', 'admin', '2026-08-05 22:45:07', 'junior_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('46', 'Test User Verification', 'testuser_1785962706976@example.com', '0771234567', '$2y$10$uGJ2qsBM.PZYV3Z.kDXVlepSuKQp/e/J.DIpPEoDWEuriXunJQkuq', 'customer', '2026-08-06 02:15:10', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('47', 'Test User Verification', 'testuser_1785962710093@example.com', '0771234567', '$2y$10$C8WOPIRz5twZGDNGqtVAzeCsW160iCbiasDWcAMiJb1ZnW3vgexfC', 'customer', '2026-08-06 02:15:13', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('48', 'Test User Verification', 'testuser_1785962811126@example.com', '0771234567', '$2y$10$0DEnFDYh1Tu5VJN/X43PV.zBJfNuzKi1fh0o5qJgAlgpghCP0ocyC', 'customer', '2026-08-06 02:16:53', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('49', 'Test User Verification', 'testuser_1785962854554@example.com', '0771234567', '$2y$10$2dSe2XZHKDLJxWjM5UMog.Wve0mHHA5LMpi3tkcAuuQVU1OaNtZ7m', 'admin', '2026-08-06 02:17:36', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('50', 'Kasun Junior Admin', 'subadmin_58499@eventease.com', '0771234567', '$2y$10$h49csyGs3WP64Zh7Y3CYYub686wbvdngmpGemg8SwWoxZ4jLR/cyq', 'admin', '2026-08-05 22:47:55', 'junior_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('51', 'Test User Verification', 'testuser_1785962879114@example.com', '0771234567', '$2y$10$BAWzwc8sHHhtMcoZipbtuOGsqzmlA27/uuyWGkcv5xbh3hJxdXtm.', 'admin', '2026-08-06 02:18:01', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('52', 'Kasun Junior Admin', 'subadmin_81776@eventease.com', '0771234567', '$2y$10$hbLaBoF87fIn7W/Qdb1JTe2vttDhw2m.UJ0eyVdJhG.0DE0IatjI6', 'admin', '2026-08-05 22:48:58', 'junior_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('53', 'Test User Verification', 'testuser_1785962940652@example.com', '0771234567', '$2y$10$OincAxJ0xb6Tdmf7Wd5.cumx.hLc9MyVzK3WYztdjbbCnN5aVjIni', 'admin', '2026-08-06 02:19:02', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('54', 'Kasun Junior Admin', 'subadmin_21329@eventease.com', '0771234567', '$2y$10$ZW02B8GgfDc4S6jI6QXswur/Mt2zzLAdd4bFkXHIEM14/jRfCJGvK', 'admin', '2026-08-05 22:49:28', 'junior_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('55', 'Test User Verification', 'testuser_1785962969900@example.com', '0771234567', '$2y$10$gK4pKkxJbos5K8HRWn/zB.xRENOiFB5//3zGYp3UHwZ2ZMsOGIxTW', 'admin', '2026-08-06 02:19:31', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('56', 'Kasun Junior Admin', 'subadmin_20416@eventease.com', '0771234567', '$2y$10$CSn0QTRer..dHjtrgPjWHugiAVSK8GPU9xk0I4S.rweScFFJzSZa2', 'admin', '2026-08-05 23:28:35', 'junior_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('57', 'Kasun Junior Admin', 'subadmin_87648@eventease.com', '0771234567', '$2y$10$vas8jMCrKR0jVoBxPRxMvOUynKgFb6guDQnTn3KGiJB1WviIJn/I2', 'admin', '2026-08-05 23:34:19', 'junior_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('58', 'Test User Verification', 'testuser_1785965661702@example.com', '0771234567', '$2y$10$OoMtBI0ANua1IWkmjLIR5ea1DNVuTr9StS/uAllQU2VaHEYG8YRaO', 'admin', '2026-08-06 03:04:23', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('59', 'Kasun Junior Admin', 'subadmin_3864@eventease.com', '0771234567', '$2y$10$LBrpUsmRr9TwD.iqWTM9PuGweF9m6FmZn8WGyUG0mBkfPcjHgD4V.', 'admin', '2026-08-05 23:38:06', 'junior_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('60', 'Test User Verification', 'testuser_1785965889853@example.com', '0771234567', '$2y$10$AO8RFoCM6rYh9JXDDo9S2O91Hk2PvtXNmN2gu4WjsD3jBZUyTrcwq', 'admin', '2026-08-06 03:08:11', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('61', 'Kasun Junior Admin', 'subadmin_24939@eventease.com', '0771234567', '$2y$10$mYOk8YGFecm7Z7zIUUbpaO2zy22FDoliVl.zU0qd2c1ST4gTblSau', 'admin', '2026-08-05 23:38:59', 'junior_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('62', 'Test User Verification', 'testuser_1785965942047@example.com', '0771234567', '$2y$10$7HsUJHnG0ZpT4uwvfwBUmOfINSpmvy/b423X8ZWqT4GSCDCi84aMm', 'admin', '2026-08-06 03:09:03', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('63', 'Kasun Junior Admin', 'subadmin_3597@eventease.com', '0771234567', '$2y$10$1Qoqc9xVczVDZktYTKGlV.ZiP5J1CEKXuWpDU7Kmq4PNKJQcNLIqi', 'admin', '2026-08-05 23:42:57', 'junior_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('64', 'Test User Verification', 'testuser_1785966179934@example.com', '0771234567', '$2y$10$YTIZ2/O0Ywj6H1HtNr5WueujUKtsZ9/PHCFuH9.csug8vhVNdZJ8S', 'admin', '2026-08-06 03:13:01', 'super_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('65', 'Kasun Junior Admin', 'subadmin_6528@eventease.com', '0771234567', '$2y$10$TVrEGu.yfwnE4qJOsODk.e1zvG7LGj5QoqT/wvWPrmATzPYoQqVBm', 'admin', '2026-08-05 23:47:37', 'junior_admin', 'verified');
+INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `admin_role`, `user_tier`) VALUES ('66', 'Test User Verification', 'testuser_1785966459908@example.com', '0771234567', '$2y$10$XGqc.W/l1UmCFuDdjiKP2OB0jqDUaK8TcItAYyy.E9gfciDraQ.fS', 'customer', '2026-08-06 03:17:42', 'super_admin', 'verified');
+
+SET FOREIGN_KEY_CHECKS=1;

@@ -41,18 +41,16 @@ test.describe('Function 16: Organizer & Admin Promo Code & Discount Campaign Man
     // 6. Verify Toast Confirmation and Promo Item rendering in table
     await expect(page.locator(`text=${promoCode}`).first()).toBeVisible({ timeout: 10000 });
 
-    // 7. Navigate to Customer Event Details Page (Event #16)
+    // 7. Clear organizer session & Navigate to Customer Event Details Page (Event #16)
+    await page.evaluate(() => localStorage.clear());
     await page.goto('/event/16');
 
     // 8. Verify Promo Code input box on Event Details page
-    const promoInput = page.locator('#promo-code-input');
-    await expect(promoInput).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('#promo-code-input')).toBeVisible({ timeout: 10000 });
 
     // 9. Enter Promo Code and Click Apply
-    await promoInput.fill(promoCode);
-
-    const applyBtn = page.locator('#apply-promo-btn');
-    await applyBtn.click();
+    await page.fill('#promo-code-input', promoCode);
+    await page.click('#apply-promo-btn');
 
     // 10. Verify Applied Code Toast and Discount Savings
     await expect(page.locator(`text=Code '${promoCode}' Applied`).first()).toBeVisible({ timeout: 10000 });

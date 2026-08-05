@@ -11,7 +11,10 @@ const Profile = () => {
     const [loading, setLoading] = useState(true);
 
     const loadProfile = () => {
-        if (!user.id) return;
+        if (!user.id) {
+            setLoading(false);
+            return;
+        }
         fetch(`http://localhost/EventEase/backend/api/profile.php?user_id=${user.id}`)
             .then(res => res.json())
             .then(data => {

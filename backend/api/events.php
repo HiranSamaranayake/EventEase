@@ -3,18 +3,17 @@
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
 
-require_once "../config/database.php";
+require_once __DIR__ . "/../config/database.php";
 
 $query = "
 
 SELECT
 events.*,
-users.full_name
+COALESCE(organizers.organization_name, users.full_name, 'Verified Organizer') AS full_name,
+COALESCE(organizers.organization_name, users.full_name, 'Verified Organizer') AS organization_name
 FROM events
-INNER JOIN organizers
-ON events.organizer_id = organizers.id
-INNER JOIN users
-ON organizers.user_id = users.id
+LEFT JOIN users ON events.organizer_id = users.id
+LEFT JOIN organizers ON users.id = organizers.user_id OR events.organizer_id = organizers.id
 WHERE events.status = 'approved'
 ORDER BY events.event_date DESC
 ";

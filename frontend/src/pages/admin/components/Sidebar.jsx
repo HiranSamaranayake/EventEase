@@ -136,38 +136,35 @@ font-medium
             </span>
           </NavLink>
         ))}
-      </nav>
 
-      {/* BOTTOM SECTION */}
-
-      <div
-        className="
-absolute
-bottom-6
-left-6
-right-6
-"
-      >
+        {/* LOGOUT BUTTON DIRECTLY BELOW SETTINGS */}
         <button
           onClick={handleLogout}
           className="
 w-full
 flex
 items-center
-justify-center
-gap-3
-bg-red-500
-hover:bg-red-600
+gap-4
+px-4
 py-3
 rounded-xl
-font-semibold
-transition
+bg-rose-600/90
+hover:bg-rose-700
+text-white
+font-medium
+transition-all
+duration-300
+shadow-md
+mt-4
+cursor-pointer
 "
         >
-          <FaSignOutAlt />
-          Logout
+          <span className="text-xl">
+            <FaSignOutAlt />
+          </span>
+          <span>Logout</span>
         </button>
-      </div>
+      </nav>
     </aside>
   );
 };

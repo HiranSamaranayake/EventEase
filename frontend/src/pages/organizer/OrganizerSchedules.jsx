@@ -241,6 +241,7 @@ export default function OrganizerSchedules() {
           <div className="text-sm text-slate-400">No events found. Please create an event first.</div>
         ) : (
           <select
+            id="select-event-schedule-dropdown"
             value={selectedEventId}
             onChange={(e) => setSelectedEventId(e.target.value)}
             className="w-full md:w-1/2 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white font-semibold text-sm focus:outline-none focus:border-purple-500"
