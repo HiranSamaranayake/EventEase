@@ -13,6 +13,7 @@ SELECT
     email,
     phone,
     role,
+    admin_role,
     created_at
 
 FROM users

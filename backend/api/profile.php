@@ -16,23 +16,24 @@ if (!$userId) {
     exit;
 }
 
+// Ensure user_tier column exists
+$colCheck = mysqli_query($conn, "SHOW COLUMNS FROM users LIKE 'user_tier'");
+if (!$colCheck || mysqli_num_rows($colCheck) == 0) {
+    mysqli_query($conn, "ALTER TABLE users ADD COLUMN user_tier VARCHAR(20) DEFAULT 'verified'");
+}
+
 $query = "
-
 SELECT
-
     id,
     full_name,
     email,
     phone,
     role,
+    user_tier,
     created_at
-
 FROM users
-
 WHERE id = '$userId'
-
 LIMIT 1
-
 ";
 
 $result = mysqli_query($conn, $query);

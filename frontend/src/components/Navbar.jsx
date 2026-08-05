@@ -1,24 +1,10 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useTheme } from "../context/ThemeContext";
 import NotificationCenter from "./NotificationCenter";
-import { FaSun, FaMoon, FaUserSecret } from "react-icons/fa";
 
 function Navbar() {
   const [scrollY, setScrollY] = useState(0);
-
-  let isDark = false;
-  let toggleTheme = () => {};
-
-  try {
-    const themeContext = useTheme();
-    if (themeContext) {
-      isDark = themeContext.theme === "dark";
-      toggleTheme = themeContext.toggleTheme;
-    }
-  } catch (e) {
-    console.warn("ThemeContext not available in Navbar", e);
-  }
+  const navigate = useNavigate();
 
   const [pathname, setPathname] = useState(() => {
     return typeof window !== "undefined" ? window.location.pathname : "";
@@ -61,6 +47,13 @@ function Navbar() {
     };
   }, []);
 
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    setUser(null);
+    navigate("/login");
+  };
+
   const isGuestUser = !user || pathname === "/guest";
 
   return (
@@ -69,16 +62,10 @@ function Navbar() {
         fixed left-1/2 w-full px-4 max-w-7xl z-50 transition-all duration-500 ease-in-out -translate-x-1/2 top-4
         ${
           scrollY < 40
-            ? isDark
-              ? "bg-black/20 backdrop-blur-md border border-white/10 rounded-2xl"
-              : "bg-white/70 backdrop-blur-md border border-gray-200 rounded-2xl shadow-sm"
+            ? "bg-white/80 backdrop-blur-md border border-gray-200 rounded-2xl shadow-sm"
             : scrollY < 300
-            ? isDark
-              ? "bg-slate-950/70 backdrop-blur-xl border border-white/10 rounded-2xl shadow-xl"
-              : "bg-white/90 backdrop-blur-xl border border-gray-200 rounded-2xl shadow-md"
-            : isDark
-            ? "bg-slate-950/90 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl"
-            : "bg-white/95 backdrop-blur-2xl border border-gray-300 rounded-2xl shadow-xl"
+            ? "bg-white/95 backdrop-blur-xl border border-gray-200 rounded-2xl shadow-md"
+            : "bg-white backdrop-blur-2xl border border-gray-300 rounded-2xl shadow-xl"
         }
       `}
     >
@@ -91,88 +78,63 @@ function Navbar() {
         </Link>
 
         {/* Center Links */}
-        <div className={`hidden md:flex items-center gap-8 font-semibold text-sm ${isDark ? "text-slate-200" : "text-gray-700"}`}>
-          <Link to="/" className="hover:text-purple-500 transition duration-300">
+        <div className="hidden md:flex items-center gap-8 font-semibold text-sm text-gray-700">
+          <Link to="/" className="hover:text-purple-600 transition duration-300">
             Home
           </Link>
           <Link to="/guest" className="text-purple-600 font-extrabold hover:text-purple-500 transition duration-300 flex items-center gap-1">
             <span>✨</span> Guest Explorer
           </Link>
-          <Link to="/events" className="hover:text-purple-500 transition duration-300">
+          <Link to="/events" className="hover:text-purple-600 transition duration-300">
             Events Catalog
           </Link>
           {!isGuestUser && (
             <>
-              <Link to="/saved-events" className="hover:text-purple-500 transition duration-300">
+              <Link to="/saved-events" className="hover:text-purple-600 transition duration-300">
                 Wishlist
               </Link>
-              <Link to="/my-bookings" className="hover:text-purple-500 transition duration-300">
+              <Link to="/my-bookings" className="hover:text-purple-600 transition duration-300">
                 My Bookings
+              </Link>
+              <Link to="/profile" className="hover:text-purple-600 transition duration-300">
+                Profile
               </Link>
             </>
           )}
         </div>
 
-        {/* Right Action Buttons & Theme Switcher & Notification Center */}
+        {/* Right Action Buttons */}
         <div className="flex items-center gap-3">
-          {/* In-App Notification Center for Logged-In User ONLY */}
+          {/* Notification Center */}
           {!isGuestUser && user && user.id && (
             <NotificationCenter userId={user.id} />
           )}
 
-          {/* Dark/Light Mode Toggle Switch */}
-          <button
-            onClick={toggleTheme}
-            type="button"
-            className={`p-2.5 rounded-xl border transition-all duration-300 flex items-center gap-2 text-xs font-bold ${
-              isDark
-                ? "bg-slate-900 border-white/10 text-amber-300 hover:bg-slate-800"
-                : "bg-purple-50 border-purple-200 text-purple-700 hover:bg-purple-100"
-            }`}
-            title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
-          >
-            {isDark ? (
-              <>
-                <FaSun className="text-amber-400 text-sm animate-spin-slow" />
-                <span className="hidden sm:inline">Light</span>
-              </>
-            ) : (
-              <>
-                <FaMoon className="text-purple-600 text-sm" />
-                <span className="hidden sm:inline">Dark</span>
-              </>
+          {/* Login & Register Buttons */}
+          <div className="flex items-center gap-2">
+            <Link
+              to="/login"
+              className="px-4 py-2 text-xs font-bold rounded-xl border border-gray-300 bg-gray-50 text-gray-800 hover:bg-gray-100 transition-all shadow-sm"
+            >
+              Login
+            </Link>
+
+            <Link
+              to="/register"
+              className="bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-600 text-white px-5 py-2 text-xs font-extrabold rounded-xl shadow-md hover:opacity-95 transition-all"
+            >
+              Register
+            </Link>
+
+            {!isGuestUser && (
+              <button
+                onClick={handleLogout}
+                className="px-3.5 py-2 text-xs font-bold rounded-xl border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 transition-all"
+              >
+                Logout
+              </button>
             )}
-          </button>
-
-          {isGuestUser ? (
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-black px-3 py-1.5 rounded-xl bg-purple-600/20 text-purple-300 border border-purple-500/30 hidden sm:flex items-center gap-1.5">
-                <FaUserSecret /> Guest Customer
-              </span>
-
-              <Link
-                to="/login"
-                className={`px-4 py-2 text-xs font-bold rounded-xl border transition-all ${
-                  isDark
-                    ? "text-white border-white/20 bg-white/5 hover:bg-white/10"
-                    : "text-gray-800 border-gray-300 bg-gray-50 hover:bg-gray-100"
-                }`}
-              >
-                Login
-              </Link>
-
-              <Link
-                to="/register"
-                className="bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-600 text-white px-5 py-2 text-xs font-extrabold rounded-xl shadow-lg hover:scale-105 transition-all"
-              >
-                Register
-              </Link>
-            </div>
-          ) : (
-            <span className="text-xs font-bold px-3 py-1.5 rounded-xl bg-purple-500/20 text-purple-300 border border-purple-500/30">
-              👤 {user.full_name || user.email}
-            </span>
-          )}
+          </div>
         </div>
       </div>
     </nav>

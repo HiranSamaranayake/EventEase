@@ -15,36 +15,21 @@ const AdminSettings = () => {
       <div className="grid md:grid-cols-3 gap-6">
         {/* System Theme Controls */}
         <div className="bg-white shadow-xl rounded-3xl p-6 border border-gray-100 space-y-4">
-          <div className="w-12 h-12 rounded-2xl bg-purple-100 flex items-center justify-center text-purple-600 text-2xl">
-            {isDark ? <FaMoon /> : <FaSun />}
+          <div className="w-12 h-12 rounded-2xl bg-amber-100 flex items-center justify-center text-amber-600 text-2xl">
+            <FaSun />
           </div>
           <div>
             <h2 className="text-lg font-extrabold text-gray-900">System Theme</h2>
-            <p className="text-xs text-gray-500 mt-0.5">Toggle overall website dark mode & light mode theme.</p>
+            <p className="text-xs text-gray-500 mt-0.5">High contrast Light (Normal) mode is enabled globally for maximum text legibility.</p>
           </div>
 
           <div className="pt-2">
-            <button
-              onClick={toggleTheme}
-              className={`w-full py-3 px-4 rounded-xl font-bold text-xs shadow transition flex items-center justify-center gap-2 ${
-                isDark
-                  ? "bg-slate-900 hover:bg-slate-800 text-amber-300 border border-slate-700"
-                  : "bg-purple-700 hover:bg-purple-800 text-white"
-              }`}
-            >
-              {isDark ? (
-                <>
-                  <FaSun className="text-amber-400 text-base" /> Disable Dark Mode (Switch to Light)
-                </>
-              ) : (
-                <>
-                  <FaMoon className="text-amber-300 text-base" /> Enable Dark Mode (Switch to Dark)
-                </>
-              )}
-            </button>
+            <div className="w-full py-3 px-4 rounded-xl font-bold text-xs bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center justify-center gap-2">
+              <FaCheckCircle className="text-emerald-600 text-base" /> Normal Light Mode Active
+            </div>
 
-            <p className="text-[11px] text-gray-400 mt-2 text-center flex items-center justify-center gap-1">
-              <FaCheckCircle className="text-emerald-500" /> Active Theme: <span className="font-bold text-gray-700 uppercase">{theme}</span>
+            <p className="text-[11px] text-gray-400 mt-2 text-center">
+              Global theme set to <span className="font-bold text-gray-700 uppercase">Normal Mode</span>
             </p>
           </div>
         </div>

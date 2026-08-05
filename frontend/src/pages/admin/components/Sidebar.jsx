@@ -14,56 +14,20 @@ import { NavLink, useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
   const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("user")) || {};
+  const adminRole = user.admin_role || "super_admin";
 
-  const menuItems = [
-    {
-      name: "Dashboard",
-      path: "/admin-dashboard",
-      icon: <FaHome />,
-    },
-
-    {
-      name: "Users",
-      path: "/admin-users",
-      icon: <FaUsers />,
-    },
-
-    {
-      name: "Organizers",
-      path: "/admin-organizers",
-      icon: <FaUserTie />,
-    },
-
-    {
-      name: "Events",
-      path: "/admin-events",
-      icon: <FaCalendarAlt />,
-    },
-
-    {
-      name: "Bookings",
-      path: "/admin-bookings",
-      icon: <FaTicketAlt />,
-    },
-
-    {
-      name: "Payments",
-      path: "/admin-payments",
-      icon: <FaMoneyBillWave />,
-    },
-
-    // {
-    //   name: "Reports",
-    //   path: "/admin-reports",
-    //   icon: <FaChartBar />,
-    // },
-
-    {
-      name: "Settings",
-      path: "/admin-settings",
-      icon: <FaCog />,
-    },
+  const allMenuItems = [
+    { name: "Dashboard", path: "/admin-dashboard", icon: <FaHome />, roles: ["super_admin", "junior_admin", "financial_admin", "security_admin"] },
+    { name: "Users", path: "/admin-users", icon: <FaUsers />, roles: ["super_admin", "security_admin"] },
+    { name: "Organizers", path: "/admin-organizers", icon: <FaUserTie />, roles: ["super_admin", "junior_admin"] },
+    { name: "Events", path: "/admin-events", icon: <FaCalendarAlt />, roles: ["super_admin", "junior_admin"] },
+    { name: "Bookings", path: "/admin-bookings", icon: <FaTicketAlt />, roles: ["super_admin", "financial_admin"] },
+    { name: "Payments", path: "/admin-payments", icon: <FaMoneyBillWave />, roles: ["super_admin", "financial_admin"] },
+    { name: "Settings", path: "/admin-settings", icon: <FaCog />, roles: ["super_admin", "security_admin"] },
   ];
+
+  const menuItems = allMenuItems.filter((item) => item.roles.includes(adminRole));
 
   const handleLogout = () => {
     localStorage.removeItem("user");

@@ -48,7 +48,12 @@ const Topbar = () => {
 
         <div className="flex items-center gap-2">
           <FaUserCircle className="text-3xl text-purple-700" />
-          <span className="font-bold text-sm text-gray-800">{user.full_name || "Admin"}</span>
+          <div className="flex flex-col">
+            <span className="font-bold text-sm text-gray-800">{user.full_name || "Admin"}</span>
+            <span className="text-[10px] font-extrabold uppercase tracking-wider text-purple-600 bg-purple-100 px-2 py-0.5 rounded-md">
+              {user.admin_role ? user.admin_role.replace('_', ' ') : "Super Admin"}
+            </span>
+          </div>
         </div>
       </div>
     </header>

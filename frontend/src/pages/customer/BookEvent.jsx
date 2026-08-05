@@ -26,9 +26,14 @@ const BookEvent = () => {
       });
   }, [id]);
 
-  const calculatedTotal = selectedSeats.length > 0
+  const isPremiumUser = user?.user_tier === 'premium';
+
+  const subTotal = selectedSeats.length > 0
     ? selectedSeats.reduce((sum, s) => sum + floatVal(s.price), 0)
     : (event ? floatVal(event.price) : 0);
+
+  const discountAmount = isPremiumUser ? subTotal * 0.10 : 0;
+  const calculatedTotal = subTotal - discountAmount;
 
   function floatVal(val) {
     const num = parseFloat(val);
@@ -262,6 +267,12 @@ const BookEvent = () => {
                 {selectedSeats.length > 0 ? selectedSeats.map((s) => s.seat_code).join(", ") : "General"}
               </span>
             </div>
+            {isPremiumUser && (
+              <div className="flex justify-between font-bold text-amber-300 bg-amber-500/10 p-2 rounded-xl border border-amber-500/20">
+                <span>👑 Premium VIP 10% Exclusive Offer Discount:</span>
+                <span>- LKR {discountAmount.toLocaleString()}</span>
+              </div>
+            )}
             <div className="flex justify-between text-base pt-2 border-t border-white/10">
               <span className="font-extrabold text-white">Final Total Amount:</span>
               <span className="font-black text-emerald-400 text-xl">LKR {calculatedTotal.toLocaleString()}</span>

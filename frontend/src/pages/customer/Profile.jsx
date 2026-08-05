@@ -134,13 +134,69 @@ const Profile = () => {
                             <span className="text-sm font-extrabold text-gray-800 capitalize">{profile.role}</span>
                         </div>
                         <div className="bg-slate-50 border border-gray-200 p-4 rounded-2xl">
-                            <span className="text-[10px] font-bold text-gray-400 uppercase block">Member Since</span>
-                            <span className="text-sm font-extrabold text-gray-800">{profile.created_at ? profile.created_at.split(' ')[0] : 'Active'}</span>
+                            <span className="text-[10px] font-bold text-gray-400 uppercase block">Membership Tier</span>
+                            <span className={`text-sm font-extrabold capitalize ${profile.user_tier === 'premium' ? 'text-amber-600 flex items-center gap-1' : 'text-gray-800'}`}>
+                                {profile.user_tier === 'premium' ? '⭐ Premium VIP' : 'Standard Verified'}
+                            </span>
                         </div>
                     </div>
                 </div>
 
-                <div className="pt-4">
+                {/* Premium Membership Card (Function 10 Requirement) */}
+                <div className={`p-6 rounded-3xl border-2 transition-all ${
+                    profile.user_tier === 'premium'
+                        ? 'bg-gradient-to-br from-amber-500/10 via-yellow-500/5 to-amber-600/10 border-amber-400 shadow-xl'
+                        : 'bg-slate-900 text-white border-slate-800 shadow-2xl'
+                }`}>
+                    <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                            <span className="text-2xl">👑</span>
+                            <h3 className={`text-lg font-black tracking-tight ${profile.user_tier === 'premium' ? 'text-amber-900' : 'text-yellow-400'}`}>
+                                {profile.user_tier === 'premium' ? 'Premium VIP Membership Active' : 'Upgrade to Premium Customer'}
+                            </h3>
+                        </div>
+                        <span className={`text-xs font-extrabold px-3 py-1 rounded-full uppercase ${
+                            profile.user_tier === 'premium' ? 'bg-amber-400 text-amber-950' : 'bg-yellow-400/20 text-yellow-300 border border-yellow-400/30'
+                        }`}>
+                            {profile.user_tier === 'premium' ? 'VIP Status' : 'Exclusive'}
+                        </span>
+                    </div>
+                    <p className={`text-xs leading-relaxed mb-4 ${profile.user_tier === 'premium' ? 'text-amber-900/80 font-medium' : 'text-slate-300'}`}>
+                        {profile.user_tier === 'premium'
+                            ? 'You are enjoying 10% exclusive ticket discounts, early access booking, priority reservation privileges, and VIP support!'
+                            : 'Unlock 10% exclusive event discounts, priority ticket reservations, early access event passes, and priority customer support.'
+                        }
+                    </p>
+                    {profile.user_tier !== 'premium' ? (
+                        <button
+                            onClick={() => {
+                                fetch("http://localhost/EventEase/backend/api/upgrade_tier.php", {
+                                    method: "POST",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify({ user_id: user.id, user_tier: "premium" })
+                                })
+                                    .then(res => res.json())
+                                    .then(data => {
+                                        if (data.success) {
+                                            setMessage("🎉 Congratulations! Upgraded to Premium VIP Customer.");
+                                            const updated = { ...user, user_tier: "premium" };
+                                            localStorage.setItem("user", JSON.stringify(updated));
+                                            loadProfile();
+                                        }
+                                    });
+                            }}
+                            className="w-full bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-300 hover:to-amber-400 text-slate-950 font-black py-3 rounded-2xl text-xs uppercase tracking-wider shadow-lg transition flex items-center justify-center gap-2"
+                        >
+                            👑 Upgrade to Premium VIP Now
+                        </button>
+                    ) : (
+                        <div className="bg-amber-500/20 border border-amber-400/40 rounded-2xl p-3 text-xs font-bold text-amber-900 text-center">
+                            ✅ 10% Premium Discount Automatically Applied at Checkout
+                        </div>
+                    )}
+                </div>
+
+                <div className="pt-2">
                     <button
                         onClick={updateProfile}
                         className="w-full bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 hover:from-purple-700 hover:to-indigo-800 text-white py-4 rounded-2xl font-black text-sm shadow-xl shadow-purple-600/30 transition flex items-center justify-center gap-2"

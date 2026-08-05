@@ -13,7 +13,7 @@ function Login() {
     const [formData, setFormData] = useState({
         email: "",
         password: "",
-        role: "guest"
+        role: "customer"
     });
 
     const handleChange = (e) => {
