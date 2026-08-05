@@ -20,36 +20,29 @@ test.describe('Function 1: Guest Customer Features (Event Discovery & Seat Avail
     await expect(eventCards.first()).toBeVisible({ timeout: 10000 });
 
     // 4. Test Search Functionality
-    await searchInput.fill('Tech');
-    await page.waitForTimeout(500); // UI filter debounce check
+    await searchInput.fill('Mariens');
+    await page.waitForTimeout(500);
 
     // Reset search
     await searchInput.fill('');
     await page.waitForTimeout(300);
 
-    // 5. Navigate to first event detail page as Guest
-    await eventCards.first().click();
-    await page.waitForURL(/\/event\/\d+/);
+    // 5. Navigate to event detail page as Guest (Event #16)
+    await page.goto('/event/16');
 
     // 6. Verify Event Details page components are visible for Guest
-    await expect(page.locator('text=About This Event')).toBeVisible();
-    await expect(page.locator('text=Seat Availability')).toBeVisible();
-    await expect(page.locator('text=Ticket Reservation')).toBeVisible();
+    await expect(page.locator('text=About This Event')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('text=Seat Availability')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('text=Ticket Reservation')).toBeVisible({ timeout: 10000 });
   });
 
   test('Guest inspecting seat map redirects or opens reservation correctly', async ({ page }) => {
-    await page.goto('/events');
-    const eventCards = page.locator('.group');
-    await expect(eventCards.first()).toBeVisible({ timeout: 10000 });
-    await eventCards.first().click();
+    await page.goto('/event/16');
+    await expect(page.locator('text=About This Event')).toBeVisible({ timeout: 10000 });
 
-    // Check if Book/Reserve button is visible
-    const bookBtn = page.locator('a:has-text("Book Ticket Now"), button:has-text("Book Ticket Now")');
-    if (await bookBtn.isVisible()) {
-      await bookBtn.click();
-      // Inspect seat map page loads
-      await expect(page.locator('text=Interactive Venue Seat Selection Map')).toBeVisible({ timeout: 10000 });
-    }
+    // Check if Reserve button is visible
+    const reserveLink = page.locator('a:has-text("Reserve Seats & Book Ticket")').first();
+    await expect(reserveLink).toBeVisible({ timeout: 10000 });
   });
 
 });

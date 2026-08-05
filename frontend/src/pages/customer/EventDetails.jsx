@@ -11,18 +11,55 @@ const EventDetails = () => {
     const [waitingPos, setWaitingPos] = useState(null);
     const [schedules, setSchedules] = useState([]);
 
+    // Promo Code state
+    const [promoInput, setPromoInput] = useState("");
+    const [promoApplied, setPromoApplied] = useState(null);
+    const [promoError, setPromoError] = useState("");
+
     // Modal state for Guest Customer attempting Verified Customer actions
     const [guestModal, setGuestModal] = useState({ open: false, featureName: "" });
 
     const currentUser = JSON.parse(localStorage.getItem("user"));
 
+    const handleApplyPromoCode = async () => {
+        if (!promoInput) return;
+        setPromoError("");
+        const orderVal = event ? Number(event.price || 1000) : 1000;
+        try {
+            const res = await fetch("http://localhost/EventEase/backend/api/validate_promo_code.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    code: promoInput,
+                    order_amount: orderVal,
+                    event_id: id
+                })
+            });
+            const data = await res.json();
+            if (data.status === "success") {
+                setPromoApplied(data);
+                setPromoError("");
+            } else {
+                setPromoError(data.message || "Invalid promo code");
+                setPromoApplied(null);
+            }
+        } catch (err) {
+            setPromoError("Failed to validate promo code.");
+        }
+    };
+
     useEffect(() => {
         fetch(`http://localhost/EventEase/backend/api/event_details.php?id=${id}`)
             .then(res => res.json())
             .then(data => {
-                if (data.success) {
+                if (data && data.event) {
                     setEvent(data.event);
+                } else if (data && data.title) {
+                    setEvent(data);
                 }
+            })
+            .catch(err => {
+                console.error("Error fetching event details:", err);
             });
 
         fetch(`http://localhost/EventEase/backend/api/get_event_schedules.php?event_id=${id}`)
@@ -345,6 +382,53 @@ const EventDetails = () => {
                                             </div>
                                         ))}
                                     </div>
+                                </div>
+
+                                {/* PROMO CODE CAMPAIGN SECTION */}
+                                <div className="bg-purple-50/70 border border-purple-200 p-4 rounded-2xl space-y-3">
+                                    <label className="block text-[11px] font-extrabold uppercase text-purple-950 flex items-center gap-1.5">
+                                        <FaTag className="text-purple-600" /> Have a Promo Code / Voucher?
+                                    </label>
+                                    
+                                    <div className="flex gap-2">
+                                        <input
+                                            id="promo-code-input"
+                                            type="text"
+                                            placeholder="Enter Code (e.g. EVENT20)"
+                                            value={promoInput}
+                                            onChange={(e) => setPromoInput(e.target.value.toUpperCase())}
+                                            className="w-full bg-white border border-purple-200 rounded-xl px-3 py-2 text-xs font-mono font-bold uppercase text-purple-950 focus:outline-none focus:border-purple-600"
+                                        />
+                                        <button
+                                            id="apply-promo-btn"
+                                            onClick={handleApplyPromoCode}
+                                            disabled={!promoInput}
+                                            className="px-4 py-2 bg-purple-700 hover:bg-purple-800 disabled:opacity-50 text-white font-bold text-xs rounded-xl transition shadow-md shrink-0 cursor-pointer"
+                                        >
+                                            Apply Code
+                                        </button>
+                                    </div>
+
+                                    {promoError && (
+                                        <p className="text-[11px] text-rose-600 font-semibold">{promoError}</p>
+                                    )}
+
+                                    {promoApplied && (
+                                        <div className="bg-emerald-100 border border-emerald-300 text-emerald-950 p-3 rounded-xl text-xs space-y-1">
+                                            <div className="flex justify-between items-center font-bold">
+                                                <span>🎟️ Code '{promoApplied.code}' Applied!</span>
+                                                <button
+                                                    onClick={() => { setPromoApplied(null); setPromoInput(''); }}
+                                                    className="text-emerald-700 hover:text-emerald-950 text-xs underline cursor-pointer"
+                                                >
+                                                    Remove
+                                                </button>
+                                            </div>
+                                            <p className="text-[11px] text-emerald-800 font-medium">
+                                                Discount Savings: <strong className="text-emerald-950">-LKR {Number(promoApplied.discount_amount).toLocaleString()}</strong>
+                                            </p>
+                                        </div>
+                                    )}
                                 </div>
 
                                 {isSoldOut ? (

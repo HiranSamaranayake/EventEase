@@ -14,6 +14,7 @@ import {
   FaQrcode,
   FaShieldAlt,
   FaClock,
+  FaTag,
 } from "react-icons/fa";
 
 const OrganizerSidebar = () => {
@@ -41,6 +42,11 @@ const OrganizerSidebar = () => {
     title: "Event Schedules",
     icon: <FaClock />,
     path: "/organizer/schedules",
+  },
+  {
+    title: "Promo Codes",
+    icon: <FaTag />,
+    path: "/organizer/promos",
   },
   {
   title: "Analytics",
