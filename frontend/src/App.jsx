@@ -48,6 +48,9 @@ import AdminOrganizers from "./pages/admin/AdminOrganizers";
 import AdminEvents from "./pages/admin/AdminEvents";
 import AdminBookings from "./pages/admin/AdminBookings";
 import AdminSettings from "./pages/admin/AdminSettings";
+import AdminComplaints from "./pages/admin/AdminComplaints";
+import AdminSecurityLogs from "./pages/admin/AdminSecurityLogs";
+import SupportComplaints from "./pages/customer/SupportComplaints";
 import TicketView from "./pages/customer/TicketView";
 
 // ================= SECURITY =================
@@ -115,6 +118,20 @@ function App() {
               <WaitingList />
             </ProtectedRoute>
           }
+        />
+
+        <Route
+          path="/customer/support"
+          element={
+            <ProtectedRoute allowedRole="customer">
+              <SupportComplaints />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/support"
+          element={<SupportComplaints />}
         />
        <Route
   path="/payment-success"
@@ -207,6 +224,10 @@ function App() {
 
           <Route path="bookings" element={<AdminBookings />} />
 
+          <Route path="complaints" element={<AdminComplaints />} />
+
+          <Route path="security" element={<AdminSecurityLogs />} />
+
           <Route path="settings" element={<AdminSettings />} />
         </Route>
 
@@ -276,6 +297,28 @@ function App() {
           }
         >
           <Route index element={<AdminSettings />} />
+        </Route>
+
+        <Route
+          path="/admin-complaints"
+          element={
+            <ProtectedRoute allowedRole="admin">
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<AdminComplaints />} />
+        </Route>
+
+        <Route
+          path="/admin-security"
+          element={
+            <ProtectedRoute allowedRole="admin">
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<AdminSecurityLogs />} />
         </Route>
       </Routes>
     </BrowserRouter>

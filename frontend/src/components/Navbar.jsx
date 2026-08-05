@@ -99,6 +99,9 @@ function Navbar() {
               <Link to="/profile" className="hover:text-purple-600 transition duration-300">
                 Profile
               </Link>
+              <Link to="/customer/support" className="hover:text-purple-600 transition duration-300">
+                Support Desk
+              </Link>
             </>
           )}
         </div>

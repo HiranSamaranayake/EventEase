@@ -7,6 +7,8 @@ import {
   FaMoneyBillWave,
   FaChartBar,
   FaCog,
+  FaHeadset,
+  FaShieldAlt,
   FaSignOutAlt,
 } from "react-icons/fa";
 
@@ -23,6 +25,8 @@ const Sidebar = () => {
     { name: "Organizers", path: "/admin-organizers", icon: <FaUserTie />, roles: ["super_admin", "junior_admin"] },
     { name: "Events", path: "/admin-events", icon: <FaCalendarAlt />, roles: ["super_admin", "junior_admin"] },
     { name: "Bookings", path: "/admin-bookings", icon: <FaTicketAlt />, roles: ["super_admin", "financial_admin"] },
+    { name: "Complaints & Support", path: "/admin-complaints", icon: <FaHeadset />, roles: ["super_admin", "junior_admin"] },
+    { name: "Security Audit Logs", path: "/admin-security", icon: <FaShieldAlt />, roles: ["super_admin", "security_admin"] },
     { name: "Payments", path: "/admin-payments", icon: <FaMoneyBillWave />, roles: ["super_admin", "financial_admin"] },
     { name: "Settings", path: "/admin-settings", icon: <FaCog />, roles: ["super_admin", "security_admin"] },
   ];
