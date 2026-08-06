@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaTicketAlt, FaFilePdf, FaBan, FaCheckCircle, FaExclamationTriangle, FaUndo, FaClock } from "react-icons/fa";
+import { FaTicketAlt, FaFilePdf, FaBan, FaCheckCircle, FaExclamationTriangle, FaUndo, FaClock, FaBullhorn, FaTimes, FaInfoCircle } from "react-icons/fa";
 
 const MyBookings = () => {
   const [bookings, setBookings] = useState([]);
@@ -9,6 +9,11 @@ const MyBookings = () => {
   const [cancelReason, setCancelReason] = useState("");
   const [cancelLoading, setCancelLoading] = useState(false);
   const [toastMsg, setToastMsg] = useState(null);
+
+  // Broadcast Modal State
+  const [selectedBookingForBroadcast, setSelectedBookingForBroadcast] = useState(null);
+  const [announcements, setAnnouncements] = useState([]);
+  const [loadingAnnouncements, setLoadingAnnouncements] = useState(false);
 
   const user = JSON.parse(localStorage.getItem("user"));
   const navigate = useNavigate();
@@ -32,6 +37,23 @@ const MyBookings = () => {
       })
       .catch((error) => console.error(error))
       .finally(() => setLoading(false));
+  };
+
+  const handleOpenBroadcastModal = (booking) => {
+    setSelectedBookingForBroadcast(booking);
+    setLoadingAnnouncements(true);
+    const eventId = booking.event_id || booking.id;
+    fetch(`http://localhost/EventEase/backend/api/get_event_announcements.php?event_id=${eventId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === "success") {
+          setAnnouncements(data.data || []);
+        } else {
+          setAnnouncements([]);
+        }
+      })
+      .catch((err) => console.error(err))
+      .finally(() => setLoadingAnnouncements(false));
   };
 
   const handleCancelBooking = async () => {
@@ -79,11 +101,11 @@ const MyBookings = () => {
   };
 
   return (
-    <div className="p-8 max-w-7xl mx-auto space-y-6">
+    <div className="p-8 max-w-7xl mx-auto space-y-6 font-sans">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">My Bookings</h1>
-          <p className="text-gray-500 text-sm mt-1">Manage your event reservations, download PDF tickets, or request cancellations.</p>
+          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">My Bookings & Event Passes</h1>
+          <p className="text-gray-500 text-sm mt-1">Manage your event reservations, view organizer broadcast notices, download PDF tickets, or request cancellations.</p>
         </div>
       </div>
 
@@ -138,7 +160,18 @@ const MyBookings = () => {
 
                   return (
                     <tr key={booking.id} className="hover:bg-slate-50/80 transition">
-                      <td className="p-4 pl-6 font-bold text-gray-900">{booking.title}</td>
+                      <td className="p-4 pl-6 font-bold text-gray-900">
+                        <button
+                          onClick={() => handleOpenBroadcastModal(booking)}
+                          className="hover:text-purple-700 text-left cursor-pointer flex items-center gap-1.5"
+                          title="Click to view Organizer Broadcast Messages"
+                        >
+                          {booking.title}
+                          <span className="text-[10px] bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full font-bold">
+                            📢 Alerts
+                          </span>
+                        </button>
+                      </td>
                       <td className="p-4 text-gray-600">{booking.event_date}</td>
                       <td className="p-4 text-gray-500 text-xs">{booking.booking_date}</td>
                       <td className="p-4">
@@ -183,7 +216,15 @@ const MyBookings = () => {
 
                       {/* Actions */}
                       <td className="p-4 pr-6 text-right">
-                        <div className="flex items-center justify-end gap-2">
+                        <div className="flex items-center justify-end gap-2 flex-wrap">
+                          <button
+                            onClick={() => handleOpenBroadcastModal(booking)}
+                            className="px-3.5 py-1.5 bg-purple-700 hover:bg-purple-800 text-white font-bold text-xs rounded-xl shadow transition flex items-center gap-1.5 cursor-pointer"
+                            title="View Organizer Broadcast Messages"
+                          >
+                            <FaBullhorn /> Broadcast Messages
+                          </button>
+
                           {!isCancelled && (
                             <>
                               <button
@@ -213,7 +254,7 @@ const MyBookings = () => {
                           )}
 
                           {isCancelled && (
-                            <span className="text-xs text-gray-400 font-medium italic">No actions available</span>
+                            <span className="text-xs text-gray-400 font-medium italic">Cancelled</span>
                           )}
                         </div>
                       </td>
@@ -222,6 +263,81 @@ const MyBookings = () => {
                 })}
               </tbody>
             </table>
+          </div>
+        </div>
+      )}
+
+      {/* Broadcast Messages Modal */}
+      {selectedBookingForBroadcast && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-2xl w-full shadow-2xl overflow-hidden border border-purple-100 animate-scaleUp">
+            <div className="p-6 bg-gradient-to-r from-purple-900 via-indigo-900 to-slate-900 text-white flex justify-between items-center">
+              <div>
+                <span className="bg-amber-400 text-amber-950 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase">ORGANIZER BROADCAST ALERTS</span>
+                <h3 className="text-xl font-black text-white mt-1 flex items-center gap-2">
+                  <FaBullhorn className="text-amber-400" /> {selectedBookingForBroadcast.title}
+                </h3>
+              </div>
+              <button
+                onClick={() => setSelectedBookingForBroadcast(null)}
+                className="text-purple-200 hover:text-white text-2xl transition cursor-pointer"
+              >
+                <FaTimes />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+              {loadingAnnouncements ? (
+                <div className="py-12 text-center text-gray-400 text-xs font-bold">
+                  Loading organizer broadcast messages...
+                </div>
+              ) : announcements.length === 0 ? (
+                <div className="py-12 text-center bg-purple-50 rounded-2xl border border-purple-100 p-6 space-y-2">
+                  <FaInfoCircle className="mx-auto text-3xl text-purple-400" />
+                  <p className="font-extrabold text-gray-800 text-sm">No Broadcast Messages Yet</p>
+                  <p className="text-xs text-gray-500">The event organizer has not sent any urgent notices or advisories for this event yet.</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {announcements.map((item) => (
+                    <div key={item.id} className="bg-slate-900 text-white rounded-2xl p-5 space-y-3 shadow-lg border border-purple-800/40">
+                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-purple-800/40 pb-3">
+                        <div className="flex items-center gap-2">
+                          <span className={`text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase ${
+                            item.priority === 'emergency' ? 'bg-rose-500 text-white' :
+                            item.priority === 'urgent' ? 'bg-amber-400 text-amber-950' : 'bg-purple-600 text-white'
+                          }`}>
+                            {item.priority || 'Notice'}
+                          </span>
+                          <h4 className="font-extrabold text-sm text-white">{item.title}</h4>
+                        </div>
+                        <span className="text-[11px] text-purple-300 font-mono">
+                          ⏰ {new Date(item.created_at).toLocaleString()}
+                        </span>
+                      </div>
+
+                      <p className="text-xs sm:text-sm text-purple-100 leading-relaxed font-medium">
+                        {item.message}
+                      </p>
+
+                      <div className="text-[11px] text-purple-300/80 font-mono pt-1 flex justify-between">
+                        <span>Broadcast Target: {item.broadcast_type ? item.broadcast_type.replace('_', ' ') : 'All Attendees'}</span>
+                        <span className="text-emerald-400 font-bold">✓ Official Organizer Notice</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="p-4 bg-gray-50 border-t text-right">
+              <button
+                onClick={() => setSelectedBookingForBroadcast(null)}
+                className="px-6 py-2.5 bg-purple-700 hover:bg-purple-800 text-white font-bold text-xs rounded-xl shadow transition cursor-pointer"
+              >
+                Close Broadcast Modal
+              </button>
+            </div>
           </div>
         </div>
       )}

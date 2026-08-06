@@ -4,7 +4,7 @@ test.describe('Function 20: Verified Organizer Event Announcement & Attendee Bro
 
   const validToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiZW1haWwiOiJ0aGltaXJhMTJAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiZXhwIjoyNTMzMjk5OTk5OX0.dummy';
 
-  test('Verified Organizer can compose urgent announcement alert and broadcast notifications to event attendees', async ({ page }) => {
+  test('Verified Organizer can compose urgent announcement alert and broadcast real notifications to event attendees', async ({ page }) => {
     // 1. Initial Page Load and set Organizer Auth Session in LocalStorage
     await page.goto('/');
     await page.evaluate(({ token }) => {
@@ -31,20 +31,32 @@ test.describe('Function 20: Verified Organizer Event Announcement & Attendee Bro
     const broadcastBtn = page.locator('#broadcast-new-announcement-btn');
     await expect(broadcastBtn).toBeVisible({ timeout: 10000 });
 
-    // 4. Click Broadcast New Announcement
+    // 4. Click Broadcast New Announcement Modal
     await broadcastBtn.click();
-    await expect(page.locator('text=Compose Broadcast Announcement').first()).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('text=Compose & Dispatch Broadcast Alert').first()).toBeVisible({ timeout: 10000 });
 
-    // 5. Fill Announcement Form
-    const alertTitle = 'Playwright Urgent Gate Advisory ' + Math.floor(Math.random() * 1000);
+    // 5. Click Quick Preset Template (Gate Entry Advisory)
+    const presetBtn = page.locator('button:has-text("Gate Entry Advisory")');
+    await expect(presetBtn).toBeVisible({ timeout: 10000 });
+    await presetBtn.click();
+
+    // 6. Append unique Title ID
+    const alertTitle = 'Gate Entry Advisory ' + Math.floor(Math.random() * 1000);
     await page.fill('input[placeholder*="URGENT"]', alertTitle);
-    await page.fill('textarea[placeholder*="Enter detailed notice"]', 'Gates will open at 5:00 PM. Please have your QR passes ready.');
 
-    // Submit form
-    const sendBtn = page.getByRole('button', { name: /Dispatch Broadcast/i });
+    // Submit broadcast dispatch
+    const sendBtn = page.getByRole('button', { name: /Dispatch Broadcast Now/i });
     await sendBtn.click();
 
-    // 6. Verify newly created announcement renders in timeline feed
+    // 7. Verify Broadcast Delivery Audit Report Modal appears
+    await expect(page.locator('text=Broadcast Delivery Audit Report').first()).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('text=100% DISPATCH SUCCESS').first()).toBeVisible({ timeout: 10000 });
+
+    // Close Audit Report Modal
+    const closeAuditBtn = page.getByRole('button', { name: /Close Audit Report/i });
+    await closeAuditBtn.click();
+
+    // 8. Verify newly dispatched announcement renders in timeline feed
     await expect(page.locator(`text=${alertTitle}`).first()).toBeVisible({ timeout: 10000 });
   });
 

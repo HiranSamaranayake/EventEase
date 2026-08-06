@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { FaTicketAlt, FaFilePdf, FaArrowLeft, FaCalendarAlt, FaMapMarkerAlt, FaCouch, FaPrint, FaQrcode, FaShieldAlt } from "react-icons/fa";
+import { FaTicketAlt, FaFilePdf, FaArrowLeft, FaCalendarAlt, FaMapMarkerAlt, FaCouch, FaPrint, FaQrcode, FaShieldAlt, FaBullhorn, FaInfoCircle } from "react-icons/fa";
 
 const API = "http://localhost/EventEase/backend/api/";
 const IMAGE_URL = "http://localhost/EventEase/backend/";
@@ -9,6 +9,7 @@ const TicketDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [ticket, setTicket] = useState(null);
+  const [announcements, setAnnouncements] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -35,6 +36,16 @@ const TicketDetails = () => {
             setError("❌ Access Denied: You are only authorized to view your own booked tickets.");
           } else {
             setTicket(data.ticket);
+            // Fetch broadcast announcements for this event
+            const eventId = data.ticket.event_id || id;
+            fetch(API + "get_event_announcements.php?event_id=" + eventId)
+              .then((aRes) => aRes.json())
+              .then((aData) => {
+                if (aData.status === "success") {
+                  setAnnouncements(aData.data || []);
+                }
+              })
+              .catch((err) => console.error("Error loading broadcast announcements", err));
           }
         } else {
           setError(data.message || "Unable to find ticket");
@@ -96,14 +107,14 @@ const TicketDetails = () => {
         <div className="flex items-center justify-between">
           <button
             onClick={() => navigate("/my-bookings")}
-            className="inline-flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-white transition bg-white/5 hover:bg-white/10 px-4 py-2 rounded-xl border border-white/10"
+            className="inline-flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-white transition bg-white/5 hover:bg-white/10 px-4 py-2 rounded-xl border border-white/10 cursor-pointer"
           >
             <FaArrowLeft /> Back to My Bookings
           </button>
 
           <button
             onClick={handlePrint}
-            className="inline-flex items-center gap-2 text-xs font-bold text-purple-300 hover:text-white transition bg-purple-950/60 hover:bg-purple-900 px-4 py-2 rounded-xl border border-purple-500/30 shadow"
+            className="inline-flex items-center gap-2 text-xs font-bold text-purple-300 hover:text-white transition bg-purple-950/60 hover:bg-purple-900 px-4 py-2 rounded-xl border border-purple-500/30 shadow cursor-pointer"
           >
             <FaPrint /> Print Ticket Pass
           </button>
@@ -218,6 +229,45 @@ const TicketDetails = () => {
               <FaFilePdf className="text-lg inline" /> Download Official PDF Ticket Pass
             </a>
           </div>
+
+          {/* Organizer Broadcast Announcements Advisories */}
+          {announcements.length > 0 && (
+            <div className="pt-6 border-t border-purple-800/40 space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-base font-extrabold text-white flex items-center gap-2">
+                  <FaBullhorn className="text-amber-400" /> Organizer Broadcast Advisories ({announcements.length})
+                </h3>
+                <span className="bg-amber-400 text-amber-950 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase">
+                  Live Notices
+                </span>
+              </div>
+
+              <div className="space-y-3">
+                {announcements.map((item) => (
+                  <div key={item.id} className="bg-slate-950/80 border border-purple-500/30 p-4 rounded-2xl space-y-2">
+                    <div className="flex justify-between items-center text-xs">
+                      <div className="flex items-center gap-2">
+                        <span className={`text-[10px] font-black px-2 py-0.5 rounded-full uppercase ${
+                          item.priority === 'emergency' ? 'bg-rose-500 text-white' :
+                          item.priority === 'urgent' ? 'bg-amber-400 text-amber-950' : 'bg-purple-600 text-white'
+                        }`}>
+                          {item.priority || 'Notice'}
+                        </span>
+                        <strong className="text-white font-bold">{item.title}</strong>
+                      </div>
+                      <span className="text-[10px] text-slate-400 font-mono">
+                        ⏰ {new Date(item.created_at).toLocaleString()}
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-slate-200 leading-relaxed font-medium">
+                      {item.message}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
         </div>
       </div>

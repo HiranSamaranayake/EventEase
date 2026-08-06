@@ -10,6 +10,7 @@ const EventDetails = () => {
     const [isWaiting, setIsWaiting] = useState(false);
     const [waitingPos, setWaitingPos] = useState(null);
     const [schedules, setSchedules] = useState([]);
+    const [announcements, setAnnouncements] = useState([]);
 
     // Promo Code state
     const [promoInput, setPromoInput] = useState("");
@@ -70,6 +71,15 @@ const EventDetails = () => {
                 }
             })
             .catch(err => console.error("Failed to load schedules", err));
+
+        fetch(`http://localhost/EventEase/backend/api/get_event_announcements.php?event_id=${id}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success' && data.data) {
+                    setAnnouncements(data.data);
+                }
+            })
+            .catch(err => console.error("Failed to load broadcast announcements", err));
 
         if (currentUser && currentUser.id) {
             fetch(`http://localhost/EventEase/backend/api/my_favorites.php?user_id=${currentUser.id}`)
@@ -301,57 +311,60 @@ const EventDetails = () => {
                                     <p className="text-gray-700 leading-8 text-base">{event.description}</p>
                                 </div>
 
-                                {/* MULTI-SESSION EVENT SCHEDULE TIMETABLE */}
-                                {schedules.length > 0 && (
-                                    <div className="bg-white border border-purple-100 rounded-3xl p-8 shadow-xl space-y-6">
-                                        <div className="flex justify-between items-center border-b border-gray-100 pb-4">
+                                {/* ORGANIZER BROADCAST ANNOUNCEMENTS & URGENT ALERTS */}
+                                {announcements.length > 0 && (
+                                    <div className="bg-gradient-to-br from-purple-900 via-indigo-900 to-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-2xl space-y-4 border border-purple-700/50">
+                                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-purple-700/50 pb-4">
                                             <div>
-                                                <h2 className="text-2xl font-extrabold text-gray-900 flex items-center gap-2">
-                                                    <FaClock className="text-purple-600" /> Event Schedule & Session Timetable
+                                                <h2 className="text-xl sm:text-2xl font-black flex items-center gap-2 text-white">
+                                                    <FaInfoCircle className="text-yellow-400" /> Organizer Announcements & Urgent Alerts
                                                 </h2>
-                                                <p className="text-xs text-gray-500 mt-1">
-                                                    Official multi-slot program lineup and stage schedules provided by the organizer.
+                                                <p className="text-xs text-purple-200 mt-1 font-medium">
+                                                    Live advisories, gate entry info, parking guidelines, and schedule updates from the event host.
                                                 </p>
                                             </div>
-                                            <span className="bg-purple-100 text-purple-800 text-xs font-bold px-3 py-1 rounded-full uppercase">
-                                                {schedules.length} Sessions
+                                            <span className="bg-amber-400 text-amber-950 text-xs font-black px-3 py-1 rounded-full uppercase shrink-0">
+                                                {announcements.length} Dispatched Alerts
                                             </span>
                                         </div>
 
-                                        <div className="space-y-4">
-                                            {schedules.map((session, idx) => (
-                                                <div key={session.id || idx} className="bg-purple-50/50 border border-purple-100 p-5 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:border-purple-200 transition">
-                                                    <div className="space-y-1">
-                                                        <div className="flex items-center gap-2">
-                                                            <span className="text-xs font-bold uppercase px-2.5 py-0.5 rounded-full bg-purple-600 text-white">
-                                                                {session.status || 'Scheduled'}
+                                        <div className="space-y-3">
+                                            {announcements.map((item, idx) => (
+                                                <div
+                                                    key={item.id || idx}
+                                                    className="bg-white/10 backdrop-blur-md border border-white/20 p-4 sm:p-5 rounded-2xl space-y-3 shadow-lg"
+                                                >
+                                                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                                                        <div className="flex items-center gap-2 flex-wrap">
+                                                            <span className={`text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase ${
+                                                                item.priority === 'emergency'
+                                                                    ? 'bg-rose-500 text-white'
+                                                                    : item.priority === 'urgent'
+                                                                    ? 'bg-amber-500 text-slate-950'
+                                                                    : 'bg-purple-500 text-white'
+                                                            }`}>
+                                                                {item.priority || 'Notice'}
                                                             </span>
-                                                            {session.hall_stage && (
-                                                                <span className="text-xs font-bold text-purple-700 bg-purple-100 px-2.5 py-0.5 rounded-full">
-                                                                    📍 {session.hall_stage}
-                                                                </span>
-                                                            )}
+                                                            <h3 className="font-extrabold text-sm sm:text-base text-white">
+                                                                {item.title}
+                                                            </h3>
                                                         </div>
-                                                        <h3 className="text-lg font-bold text-gray-900">{session.session_title}</h3>
-                                                        <p className="text-xs text-gray-500 font-mono">
-                                                            ⏰ {new Date(session.start_time).toLocaleString()} &rarr; {new Date(session.end_time).toLocaleTimeString()}
-                                                        </p>
-                                                        {session.speaker_performer && (
-                                                            <p className="text-xs font-semibold text-purple-900">
-                                                                🎤 Speaker / Performer: {session.speaker_performer}
-                                                            </p>
-                                                        )}
-                                                        {session.description && (
-                                                            <p className="text-xs text-gray-600 mt-2 bg-white p-3 rounded-xl border border-purple-100">
-                                                                {session.description}
-                                                            </p>
-                                                        )}
+
+                                                        <span className="text-[11px] text-purple-300 font-mono">
+                                                            ⏰ {new Date(item.created_at).toLocaleString()}
+                                                        </span>
                                                     </div>
+
+                                                    <p className="text-xs sm:text-sm leading-relaxed font-medium text-purple-100">
+                                                        {item.message}
+                                                    </p>
                                                 </div>
                                             ))}
                                         </div>
                                     </div>
                                 )}
+
+
                             </div>
 
                             {/* Right Side Sticky Booking/Waiting Card */}

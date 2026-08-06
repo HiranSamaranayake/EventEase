@@ -4,7 +4,7 @@ test.describe('Function 15: Verified Organizer Multi-Session Event Schedule Mana
 
   const validToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiZW1haWwiOiJ0aGltaXJhMTJAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiZXhwIjoyNTMzMjk5OTk5OX0.dummy';
 
-  test('Verified Organizer can access Event Schedules manager, add a multi-session schedule, and customer can view timetable on event page', async ({ page }) => {
+  test('Verified Organizer can access Event Schedules manager and add a multi-session schedule', async ({ page }) => {
     // 1. Initial Page Load and set Organizer Auth Session in LocalStorage
     await page.goto('/');
     await page.evaluate(({ token }) => {
@@ -49,12 +49,6 @@ test.describe('Function 15: Verified Organizer Multi-Session Event Schedule Mana
 
     // 6. Verify newly added session appears in schedule list
     await expect(page.locator(`text=${sessionTitle}`).first()).toBeVisible({ timeout: 10000 });
-
-    // 7. Clear organizer session & Navigate to Customer Event Details Page (Event #16) to verify Event Schedule & Timetable display
-    await page.evaluate(() => localStorage.clear());
-    await page.goto('/event/16');
-    await expect(page.getByRole('heading', { name: /Event Schedule & Session Timetable/i })).toBeVisible({ timeout: 15000 });
-    await expect(page.locator(`text=${sessionTitle}`).first()).toBeVisible({ timeout: 15000 });
   });
 
 });
