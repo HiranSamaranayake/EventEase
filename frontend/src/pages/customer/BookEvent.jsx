@@ -51,6 +51,12 @@ const BookEvent = () => {
       return;
     }
 
+    const eventDateTime = new Date(event.event_date).getTime();
+    if (!isNaN(eventDateTime) && eventDateTime < new Date().getTime()) {
+      alert("Booking Closed: This event date has already passed. Ticket reservation is no longer available.");
+      return;
+    }
+
     setBookingLoading(true);
 
     fetch("http://localhost/EventEase/backend/api/create_booking.php", {
@@ -279,19 +285,33 @@ const BookEvent = () => {
             </div>
           </div>
 
-          <button
-            onClick={handleBooking}
-            disabled={bookingLoading}
-            className="w-full py-4 bg-gradient-to-r from-purple-600 via-indigo-600 to-emerald-600 hover:from-purple-500 hover:to-emerald-500 disabled:opacity-50 text-white font-black text-base rounded-2xl shadow-xl shadow-purple-600/30 transition flex items-center justify-center gap-2 group cursor-pointer"
-          >
-            {bookingLoading ? (
-              "Processing Reservation..."
-            ) : (
-              <>
-                <FaCreditCard className="group-hover:scale-110 transition" /> Confirm Booking & Pay (LKR {calculatedTotal.toLocaleString()})
-              </>
-            )}
-          </button>
+          {event && (!isNaN(new Date(event.event_date).getTime()) && new Date(event.event_date).getTime() < new Date().getTime()) ? (
+            <div className="space-y-3 text-center">
+              <div className="bg-rose-500/20 border border-rose-500/40 p-4 rounded-2xl text-xs text-rose-200 font-bold">
+                ⌛ Booking Closed: This event date ({event.event_date}) has already passed.
+              </div>
+              <button
+                disabled
+                className="w-full py-4 bg-slate-800 text-slate-500 font-black text-base rounded-2xl cursor-not-allowed uppercase border border-slate-700 shadow-inner"
+              >
+                🚫 Booking Closed (Event Ended)
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={handleBooking}
+              disabled={bookingLoading}
+              className="w-full py-4 bg-gradient-to-r from-purple-600 via-indigo-600 to-emerald-600 hover:from-purple-500 hover:to-emerald-500 disabled:opacity-50 text-white font-black text-base rounded-2xl shadow-xl shadow-purple-600/30 transition flex items-center justify-center gap-2 group cursor-pointer"
+            >
+              {bookingLoading ? (
+                "Processing Reservation..."
+              ) : (
+                <>
+                  <FaCreditCard className="group-hover:scale-110 transition" /> Confirm Booking & Pay (LKR {calculatedTotal.toLocaleString()})
+                </>
+              )}
+            </button>
+          )}
         </div>
       </div>
 

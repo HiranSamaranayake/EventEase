@@ -58,6 +58,17 @@ $normOpenDate = !empty($event["normal_booking_open_date"])
     : date('Y-m-d H:i:s', strtotime('-6 days', strtotime($eventDateStr)));
 
 $now = date('Y-m-d H:i:s');
+$nowTimestamp = time();
+$eventTimestamp = strtotime($eventDateStr);
+
+// PAST EVENT CHECK: If event date/time has already passed, reject booking
+if ($eventTimestamp < $nowTimestamp) {
+    echo json_encode([
+        "success" => false,
+        "message" => "Booking Closed: This event date has already passed. Ticket reservation is no longer available."
+    ]);
+    exit();
+}
 
 // PHASE 1: Before Premium Booking Opens (today < premium_booking_open_date)
 if ($now < $premOpenDate) {

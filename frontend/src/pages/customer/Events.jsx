@@ -188,6 +188,8 @@ const Events = () => {
                         const targetId = parseInt(event.id);
                         const isFav = favoriteIds.includes(targetId);
                         const isSoldOut = event.is_sold_out || (event.capacity > 0 && event.available_seats <= 0);
+                        const eventDateTime = new Date(event.event_date).getTime();
+                        const isPastEvent = !isNaN(eventDateTime) && eventDateTime < new Date().getTime();
 
                         return (
                             <div
@@ -211,6 +213,12 @@ const Events = () => {
                                     <span className="absolute top-4 left-4 bg-white/90 backdrop-blur-md text-purple-700 font-bold text-xs px-3 py-1 rounded-full shadow-md flex items-center gap-1">
                                         <FaTags className="text-purple-500" /> {event.category || "General"}
                                     </span>
+
+                                    {isPastEvent && (
+                                        <span className="absolute bottom-4 left-4 bg-rose-900/90 text-white font-extrabold text-[11px] px-3 py-1 rounded-full uppercase shadow-md border border-rose-700">
+                                            ⌛ Event Ended
+                                        </span>
+                                    )}
 
                                     <button
                                         onClick={(e) => toggleFavorite(e, event.id)}
@@ -244,8 +252,8 @@ const Events = () => {
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <FaChair className="text-emerald-500" />
-                                            <span className={isSoldOut ? "text-rose-600 font-bold" : "text-emerald-700 font-medium"}>
-                                                {isSoldOut ? "Sold Out" : `${event.available_seats || event.capacity || 'Seats available'}`}
+                                            <span className={isPastEvent ? "text-rose-700 font-extrabold" : isSoldOut ? "text-rose-600 font-bold" : "text-emerald-700 font-medium"}>
+                                                {isPastEvent ? "Booking Closed (Event Ended)" : isSoldOut ? "Sold Out" : `${event.available_seats || event.capacity || 'Seats available'}`}
                                             </span>
                                         </div>
 
@@ -268,15 +276,24 @@ const Events = () => {
                                                 </span>
                                             </div>
 
-                                            <button
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    navigate(`/event/${event.id}`);
-                                                }}
-                                                className="bg-purple-700 hover:bg-purple-800 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-md transition"
-                                            >
-                                                View Details
-                                            </button>
+                                            {isPastEvent ? (
+                                                <button
+                                                    disabled
+                                                    className="bg-slate-200 text-slate-500 text-xs font-extrabold px-4 py-2.5 rounded-xl cursor-not-allowed uppercase"
+                                                >
+                                                    Booking Closed
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        navigate(`/event/${event.id}`);
+                                                    }}
+                                                    className="bg-purple-700 hover:bg-purple-800 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-md transition"
+                                                >
+                                                    View Details
+                                                </button>
+                                            )}
                                         </div>
 
                                         <button

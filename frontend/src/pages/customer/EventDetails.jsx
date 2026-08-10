@@ -165,6 +165,8 @@ const EventDetails = () => {
 
     const isSoldOut = event.is_sold_out || (event.capacity > 0 && event.available_seats <= 0);
     const isRestricted = event.audience_restriction_type && event.audience_restriction_type !== 'public';
+    const eventDateTime = new Date(event.event_date).getTime();
+    const isPastEvent = !isNaN(eventDateTime) && eventDateTime < new Date().getTime();
 
     // Parse ONLY the categories added by the organizer for this event
     let categoriesList = [];
@@ -477,7 +479,7 @@ const EventDetails = () => {
                                     {promoApplied && (
                                         <div className="bg-emerald-100 border border-emerald-300 text-emerald-950 p-3 rounded-xl text-xs space-y-1">
                                             <div className="flex justify-between items-center font-bold">
-                                                <span>🎟️ Code '{promoApplied.code}' Applied!</span>
+                                                <span>🎟️ Code "{promoApplied.code}" Applied!</span>
                                                 <button
                                                     onClick={() => { setPromoApplied(null); setPromoInput(''); }}
                                                     className="text-emerald-700 hover:text-emerald-950 text-xs underline cursor-pointer"
@@ -492,7 +494,20 @@ const EventDetails = () => {
                                     )}
                                 </div>
 
-                                {isSoldOut ? (
+                                {isPastEvent ? (
+                                    <div className="space-y-4">
+                                        <div className="bg-rose-50 border-2 border-rose-200 rounded-2xl p-5 text-center text-xs text-rose-900 font-bold space-y-1">
+                                            <p className="text-sm font-black uppercase text-rose-700">⌛ Event Ended / Booking Closed</p>
+                                            <p className="text-slate-600 font-medium">This event took place on {event.event_date} and ticket reservation is no longer available.</p>
+                                        </div>
+                                        <button
+                                            disabled
+                                            className="w-full py-4 bg-slate-200 text-slate-500 font-black text-sm rounded-2xl cursor-not-allowed uppercase shadow-inner border border-slate-300"
+                                        >
+                                            🚫 Booking Closed (Event Ended)
+                                        </button>
+                                    </div>
+                                ) : isSoldOut ? (
                                     <div className="space-y-4">
                                         <div className="bg-rose-50 border border-rose-200 rounded-2xl p-4 text-center text-xs text-rose-700 font-bold">
                                             ⚠️ All seats for this event are fully booked!
@@ -538,7 +553,7 @@ const EventDetails = () => {
                         <div>
                             <h3 className="text-2xl font-black text-gray-900">Verified Customer Required</h3>
                             <p className="text-gray-600 text-xs mt-2 leading-relaxed">
-                                You are currently browsing as a <strong>Guest Customer</strong>. Accessing <strong>"{guestModal.featureName}"</strong> requires a registered customer account!
+                                You are currently browsing as a <strong>Guest Customer</strong>. Accessing <strong>&quot;{guestModal.featureName}&quot;</strong> requires a registered customer account!
                             </p>
                         </div>
 
