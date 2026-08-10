@@ -42,17 +42,16 @@ $result = mysqli_query($conn,$sql);
 
 
 if($result){
-
+    require_once __DIR__ . "/../utils/email_helper.php";
+    sendBookingConfirmationEmail($conn, $id);
 
     echo json_encode([
 
         "success"=>true,
 
-        "message"=>"Booking updated"
+        "message"=>"Booking updated and confirmation email sent"
 
     ]);
-
-
 }
 else{
 

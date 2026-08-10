@@ -94,9 +94,37 @@ const MyBookings = () => {
         alert(data.message || "Failed to cancel booking");
       }
     } catch (err) {
-      console.error("Cancel booking error", err);
+      console.error(err);
+      alert("Error cancelling booking");
     } finally {
       setCancelLoading(false);
+    }
+  };
+
+  const handleDownloadPdfBlob = async (bookingId) => {
+    const downloadUrl = `http://localhost/EventEase/backend/api/download_ticket_pdf.php?booking_id=${bookingId}`;
+    try {
+      const res = await fetch(downloadUrl);
+      if (!res.ok) {
+        const errJson = await res.json().catch(() => ({}));
+        throw new Error(errJson.message || "PDF generation failed");
+      }
+      const contentType = res.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        const errJson = await res.json().catch(() => ({}));
+        throw new Error(errJson.message || "PDF generation failed");
+      }
+      const blob = await res.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = `Ticket-EVT-${bookingId}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => window.URL.revokeObjectURL(blobUrl), 2000);
+    } catch (e) {
+      window.open(downloadUrl, "_blank");
     }
   };
 
@@ -234,14 +262,13 @@ const MyBookings = () => {
                                 <FaTicketAlt /> Ticket
                               </button>
 
-                              <a
-                                href={`http://localhost/EventEase/backend/api/download_ticket_pdf.php?booking_id=${booking.id}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow transition flex items-center gap-1"
+                              <button
+                                onClick={() => handleDownloadPdfBlob(booking.id)}
+                                className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow transition flex items-center gap-1 cursor-pointer"
+                                title="Download Official PDF Ticket Pass"
                               >
                                 <FaFilePdf /> PDF
-                              </a>
+                              </button>
 
                               <button
                                 onClick={() => setSelectedBookingForCancel(booking)}

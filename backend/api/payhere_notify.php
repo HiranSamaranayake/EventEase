@@ -114,6 +114,9 @@ if ($status_code == "2") {
 
     }
 
+    require_once __DIR__ . "/../utils/email_helper.php";
+    sendBookingConfirmationEmail($conn, $bookingId);
+
     echo "Payment updated successfully";
 
 }

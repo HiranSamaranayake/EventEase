@@ -149,13 +149,21 @@ if (mysqli_num_rows($check) == 0) {
 
 /*
 ---------------------------------------------------
+Send Automated Email Confirmation & Ticket Log
+---------------------------------------------------
+*/
+require_once __DIR__ . "/../utils/email_helper.php";
+sendBookingConfirmationEmail($conn, $booking_id);
+
+/*
+---------------------------------------------------
 Success
 ---------------------------------------------------
 */
 
 echo json_encode([
     "success" => true,
-    "message" => "Payment confirmed and ticket generated."
+    "message" => "Payment confirmed, ticket generated, and email sent successfully."
 ]);
 
 ?>

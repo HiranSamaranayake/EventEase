@@ -27,15 +27,46 @@ const AdminSettings = () => {
     max_login_attempts: '5',
     session_timeout_mins: '60',
     enforce_tls: 'true',
-    auto_backup_frequency: 'daily'
+    auto_backup_frequency: 'daily',
+    smtp_host: 'smtp.gmail.com',
+    smtp_port: '587',
+    smtp_user: '',
+    smtp_pass: '',
+    smtp_from_email: 'noreply@eventease.com',
+    smtp_from_name: 'EventEase Ticketing'
   });
   const [savingSettings, setSavingSettings] = useState(false);
+  const [testingSmtp, setTestingSmtp] = useState(false);
   const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
 
   useEffect(() => {
     fetchBackups();
     fetchSystemSettings();
   }, []);
+
+  const handleTestSmtp = async () => {
+    setTestingSmtp(true);
+    try {
+      const res = await fetch('http://localhost/EventEase/backend/api/admin_test_smtp.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          test_email: admin.email || 'admin@eventease.com',
+          ...settings
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        triggerToast(`SMTP Test Success! ${data.message}`);
+      } else {
+        triggerToast(data.message || 'SMTP test failed.', 'error');
+      }
+    } catch (err) {
+      triggerToast('Error connecting to SMTP test endpoint.', 'error');
+    } finally {
+      setTestingSmtp(false);
+    }
+  };
 
   const triggerToast = (message, type = 'success') => {
     setToast({ show: true, message, type });
@@ -328,11 +359,97 @@ const AdminSettings = () => {
             </div>
           </div>
 
-          <div className="flex justify-end pt-2">
+          {/* SMTP SERVER CONFIGURATION FOR AUTOMATED EMAIL TICKETS */}
+          <div className="pt-6 border-t border-gray-200 space-y-4">
+            <h3 className="text-sm font-extrabold text-gray-900 flex items-center gap-2">
+              ✉️ SMTP Automated Email Server Settings
+            </h3>
+            <p className="text-xs text-gray-500">
+              Configure custom SMTP credentials (e.g. Gmail SMTP, Outlook, Brevo, Mailtrap) to dispatch automated PDF ticket emails to customer inboxes.
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-gray-700">SMTP Host</label>
+                <input
+                  type="text"
+                  placeholder="e.g. smtp.gmail.com or smtp.mailtrap.io"
+                  value={settings.smtp_host || ''}
+                  onChange={(e) => setSettings({ ...settings, smtp_host: e.target.value })}
+                  className="w-full mt-1 bg-gray-50 border border-gray-300 rounded-xl px-3 py-2 text-xs font-semibold text-gray-800 focus:bg-white focus:outline-none focus:border-purple-600"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-700">SMTP Port</label>
+                <input
+                  type="text"
+                  placeholder="587 or 465"
+                  value={settings.smtp_port || ''}
+                  onChange={(e) => setSettings({ ...settings, smtp_port: e.target.value })}
+                  className="w-full mt-1 bg-gray-50 border border-gray-300 rounded-xl px-3 py-2 text-xs font-semibold text-gray-800 focus:bg-white focus:outline-none focus:border-purple-600"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-700">SMTP Username / Email</label>
+                <input
+                  type="text"
+                  placeholder="your-email@gmail.com"
+                  value={settings.smtp_user || ''}
+                  onChange={(e) => setSettings({ ...settings, smtp_user: e.target.value })}
+                  className="w-full mt-1 bg-gray-50 border border-gray-300 rounded-xl px-3 py-2 text-xs font-semibold text-gray-800 focus:bg-white focus:outline-none focus:border-purple-600"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-700">SMTP Password / App Password</label>
+                <input
+                  type="password"
+                  placeholder="••••••••••••••••"
+                  value={settings.smtp_pass || ''}
+                  onChange={(e) => setSettings({ ...settings, smtp_pass: e.target.value })}
+                  className="w-full mt-1 bg-gray-50 border border-gray-300 rounded-xl px-3 py-2 text-xs font-semibold text-gray-800 focus:bg-white focus:outline-none focus:border-purple-600"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-700">From Email Address</label>
+                <input
+                  type="email"
+                  placeholder="noreply@eventease.com"
+                  value={settings.smtp_from_email || ''}
+                  onChange={(e) => setSettings({ ...settings, smtp_from_email: e.target.value })}
+                  className="w-full mt-1 bg-gray-50 border border-gray-300 rounded-xl px-3 py-2 text-xs font-semibold text-gray-800 focus:bg-white focus:outline-none focus:border-purple-600"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-700">Sender Display Name</label>
+                <input
+                  type="text"
+                  placeholder="EventEase Ticketing"
+                  value={settings.smtp_from_name || ''}
+                  onChange={(e) => setSettings({ ...settings, smtp_from_name: e.target.value })}
+                  className="w-full mt-1 bg-gray-50 border border-gray-300 rounded-xl px-3 py-2 text-xs font-semibold text-gray-800 focus:bg-white focus:outline-none focus:border-purple-600"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row justify-end items-center gap-3 pt-2">
+            <button
+              type="button"
+              onClick={handleTestSmtp}
+              disabled={testingSmtp}
+              className="w-full sm:w-auto px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs rounded-xl shadow-lg shadow-emerald-600/20 transition flex items-center justify-center gap-2"
+            >
+              <FaServer /> {testingSmtp ? 'Testing Connection...' : 'Test Live SMTP Connection'}
+            </button>
             <button
               type="submit"
               disabled={savingSettings}
-              className="px-6 py-3 bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-xs rounded-xl shadow-lg shadow-purple-700/20 transition flex items-center gap-2"
+              className="w-full sm:w-auto px-6 py-3 bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-xs rounded-xl shadow-lg shadow-purple-700/20 transition flex items-center justify-center gap-2"
             >
               <FaSync className={savingSettings ? 'animate-spin' : ''} /> {savingSettings ? 'Saving Policies...' : 'Save Security Policies'}
             </button>

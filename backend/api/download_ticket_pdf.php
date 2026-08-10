@@ -1,29 +1,65 @@
 <?php
 
 ini_set('display_errors', 0);
-error_reporting(E_ALL);
+error_reporting(0);
 
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
 require_once __DIR__ . "/../config/database.php";
 require_once __DIR__ . "/../vendor/autoload.php";
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Writer\PngWriter;
 
-$booking_id = $_GET["booking_id"] ?? $_GET["id"] ?? 0;
-$booking_id = intval($booking_id);
+// Parse parameter flexible format (booking_id, id, order_id)
+$raw_id = $_GET["booking_id"] ?? $_GET["id"] ?? $_GET["order_id"] ?? 0;
+$raw_id = trim($raw_id);
 
-if (!$booking_id) {
-    die("Booking ID missing");
+$booking_id = 0;
+$ticket_code_search = "";
+
+if (is_numeric($raw_id)) {
+    $booking_id = intval($raw_id);
+} else if (!empty($raw_id)) {
+    $ticket_code_search = mysqli_real_escape_string($conn, $raw_id);
+    if (preg_match('/(\d+)/', $raw_id, $matches)) {
+        $booking_id = intval($matches[1]);
+    }
 }
 
-// Query ticket and booking details
+if (!$booking_id && empty($ticket_code_search)) {
+    http_response_code(400);
+    header("Content-Type: application/json");
+    echo json_encode([
+        "success" => false,
+        "message" => "Booking ID or Ticket Reference Code is missing"
+    ]);
+    exit;
+}
+
+$whereClause = [];
+if ($booking_id > 0) {
+    $whereClause[] = "bookings.id = '$booking_id'";
+    $whereClause[] = "tickets.id = '$booking_id'";
+    $whereClause[] = "tickets.booking_id = '$booking_id'";
+}
+if (!empty($ticket_code_search)) {
+    $whereClause[] = "tickets.ticket_code = '$ticket_code_search'";
+}
+
 $sql = "
 SELECT
     bookings.id AS booking_id,
+    bookings.user_id,
     bookings.event_id,
     bookings.ticket_quantity,
     bookings.total_amount,
@@ -42,7 +78,7 @@ FROM bookings
 LEFT JOIN tickets ON bookings.id = tickets.booking_id
 LEFT JOIN events ON bookings.event_id = events.id
 LEFT JOIN users ON bookings.user_id = users.id
-WHERE bookings.id = '$booking_id' OR tickets.id = '$booking_id'
+WHERE " . implode(" OR ", $whereClause) . "
 ORDER BY tickets.id DESC
 LIMIT 1
 ";
@@ -50,13 +86,36 @@ LIMIT 1
 $result = mysqli_query($conn, $sql);
 
 if (!$result || mysqli_num_rows($result) == 0) {
-    die("Ticket not found for Booking ID #$booking_id");
+    http_response_code(404);
+    header("Content-Type: application/json");
+    echo json_encode([
+        "success" => false,
+        "message" => "Ticket details not found for the specified booking."
+    ]);
+    exit;
 }
 
 $ticket = mysqli_fetch_assoc($result);
+$bId = $ticket['booking_id'];
+
+// If ticket code is empty, generate and persist it
+if (empty($ticket["ticket_code"])) {
+    $ticketCode = "EVT-" . $bId . "-" . rand(1000, 9999);
+    $ticket["ticket_code"] = $ticketCode;
+    
+    if (empty($ticket['ticket_id'])) {
+        $ins = "INSERT INTO tickets (booking_id, ticket_code, status) VALUES ('$bId', '$ticketCode', 'paid')";
+        mysqli_query($conn, $ins);
+    } else {
+        $upd = "UPDATE tickets SET ticket_code = '$ticketCode' WHERE id = '{$ticket['ticket_id']}'";
+        mysqli_query($conn, $upd);
+    }
+} else {
+    $ticketCode = $ticket["ticket_code"];
+}
 
 // Fetch reserved seat codes from event_booked_seats if present
-$seatSql = "SELECT GROUP_CONCAT(seat_code SEPARATOR ', ') AS reserved_seats FROM event_booked_seats WHERE booking_id = '$booking_id' OR booking_id = '{$ticket['booking_id']}'";
+$seatSql = "SELECT GROUP_CONCAT(seat_code SEPARATOR ', ') AS reserved_seats FROM event_booked_seats WHERE booking_id = '$bId'";
 $seatRes = mysqli_query($conn, $seatSql);
 $reservedSeats = "";
 
@@ -68,28 +127,43 @@ $seatNumberDisplay = !empty($reservedSeats)
     ? $reservedSeats 
     : (!empty($ticket['seat_number']) ? $ticket['seat_number'] : "General Admission");
 
-$ticketCode = !empty($ticket["ticket_code"]) ? $ticket["ticket_code"] : "EVT-" . $ticket["booking_id"] . "-" . rand(1000, 9999);
-
-// Handle Real Scannable QR Code Image
+// Generate scannable QR Code as base64 Data URI using Endroid QR Code
 $qrImage = "";
-if (!empty($ticket["qr_code"])) {
-    $file = __DIR__ . "/../" . $ticket["qr_code"];
-    if (file_exists($file)) {
-        $type = pathinfo($file, PATHINFO_EXTENSION);
-        $data = file_get_contents($file);
-        $qrImage = "data:image/" . $type . ";base64," . base64_encode($data);
+try {
+    $qrCodeObj = QrCode::create($ticketCode)
+        ->setSize(200)
+        ->setMargin(5);
+    $writer = new PngWriter();
+    $qrResult = $writer->write($qrCodeObj);
+    $qrImage = $qrResult->getDataUri();
+} catch (Throwable $e) {
+    // Fallback: Check local uploaded QR image or external API
+    if (!empty($ticket["qr_code"])) {
+        $file = __DIR__ . "/../" . $ticket["qr_code"];
+        if (file_exists($file)) {
+            $type = pathinfo($file, PATHINFO_EXTENSION);
+            $data = file_get_contents($file);
+            $qrImage = "data:image/" . $type . ";base64," . base64_encode($data);
+        }
+    }
+    if (empty($qrImage)) {
+        $qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" . urlencode($ticketCode);
+        $ctx = stream_context_create(['http' => ['timeout' => 3]]);
+        $qrData = @file_get_contents($qrUrl, false, $ctx);
+        if ($qrData) {
+            $qrImage = "data:image/png;base64," . base64_encode($qrData);
+        }
     }
 }
 
-// Fallback: Fetch QR Code from QR Code Generator API if local file missing
-if (empty($qrImage)) {
-    $qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" . urlencode($ticketCode);
-    $ctx = stream_context_create(['http' => ['timeout' => 3]]);
-    $qrData = @file_get_contents($qrUrl, false, $ctx);
-    if ($qrData) {
-        $qrImage = "data:image/png;base64," . base64_encode($qrData);
-    }
-}
+$eventTitle = htmlspecialchars($ticket["title"] ?? "Event Pass");
+$eventDate = htmlspecialchars($ticket["event_date"] ?? "N/A");
+$eventLocation = htmlspecialchars($ticket["location"] ?? "Main Venue");
+$fullName = htmlspecialchars($ticket["full_name"] ?? "Valued Customer");
+$email = htmlspecialchars($ticket["email"] ?? "N/A");
+$ticketQty = intval($ticket["ticket_quantity"] ?? 1);
+$totalAmount = number_format(floatval($ticket["total_amount"] ?? 0), 2);
+$ticketStatus = strtoupper($ticket["status"] ?? 'VALID');
 
 $html = '
 <!DOCTYPE html>
@@ -101,7 +175,7 @@ $html = '
     margin: 20px;
 }
 body {
-    font-family: DejaVu Sans, Helvetica, Arial, sans-serif;
+    font-family: Helvetica, Arial, sans-serif;
     color: #1e293b;
     background-color: #f8fafc;
     margin: 0;
@@ -117,7 +191,7 @@ body {
     border: 1px solid #e2e8f0;
 }
 .ticket-header {
-    background: linear-gradient(135deg, #2e1065 0%, #581c87 50%, #7e22ce 100%);
+    background: #2e1065;
     color: #ffffff;
     padding: 24px 30px;
     position: relative;
@@ -144,7 +218,7 @@ body {
     text-align: right;
 }
 .vip-badge {
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    background: #d97706;
     color: #ffffff;
     font-size: 11px;
     font-weight: 800;
@@ -153,7 +227,6 @@ body {
     text-transform: uppercase;
     letter-spacing: 1px;
     display: inline-block;
-    box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);
 }
 .ticket-body {
     padding: 25px 30px;
@@ -272,8 +345,8 @@ body {
     <div class="ticket-body">
         <!-- Event Name Banner -->
         <div class="event-banner">
-            <h2 class="event-title">'.$ticket["title"].'</h2>
-            <p class="event-meta">📅 '.$ticket["event_date"].' &bull; 📍 '.$ticket["location"].'</p>
+            <h2 class="event-title">'.$eventTitle.'</h2>
+            <p class="event-meta"><strong>Date:</strong> '.$eventDate.' &nbsp;&bull;&nbsp; <strong>Location:</strong> '.$eventLocation.'</p>
         </div>
 
         <table class="details-table">
@@ -281,10 +354,10 @@ body {
                 <!-- Left Details Column -->
                 <td class="col-left">
                     <div class="field-label">Attendee Name</div>
-                    <div class="field-value">'.$ticket["full_name"].'</div>
+                    <div class="field-value">'.$fullName.'</div>
 
                     <div class="field-label">Attendee Email</div>
-                    <div class="field-value">'.$ticket["email"].'</div>
+                    <div class="field-value">'.$email.'</div>
 
                     <div class="field-label">Reserved Seat Number(s)</div>
                     <div class="field-value">
@@ -295,21 +368,21 @@ body {
                         <tr>
                             <td style="padding:0;">
                                 <div class="field-label">Booking Reference</div>
-                                <div class="field-value">#'.$ticket["booking_id"].'</div>
+                                <div class="field-value">#'.$bId.'</div>
                             </td>
                             <td style="padding:0;">
                                 <div class="field-label">Ticket Quantity</div>
-                                <div class="field-value">'.$ticket["ticket_quantity"].' Ticket(s)</div>
+                                <div class="field-value">'.$ticketQty.' Ticket(s)</div>
                             </td>
                         </tr>
                         <tr>
                             <td style="padding:0;">
                                 <div class="field-label">Total Amount Paid</div>
-                                <div class="field-value" style="color: #059669; font-size: 15px;">LKR '.number_format(floatval($ticket["total_amount"]), 2).'</div>
+                                <div class="field-value" style="color: #059669; font-size: 15px;">LKR '.$totalAmount.'</div>
                             </td>
                             <td style="padding:0;">
                                 <div class="field-label">Status</div>
-                                <div class="field-value" style="color: #0284c7;">'.strtoupper($ticket["status"] ?? 'VALID').'</div>
+                                <div class="field-value" style="color: #0284c7;">'.$ticketStatus.'</div>
                             </td>
                         </tr>
                     </table>
@@ -320,7 +393,7 @@ body {
                     <div class="field-label" style="margin-bottom: 8px;">Scan at Entrance</div>
                     <div class="qr-container">';
 if (!empty($qrImage)) {
-    $html .= '<img src="'.$qrImage.'">';
+    $html .= '<img src="'.$qrImage.'" width="150" height="150">';
 }
 $html .= '
                     </div>
@@ -343,15 +416,25 @@ $html .= '
 
 $options = new Options();
 $options->set("isRemoteEnabled", true);
+$options->set("isHtml5ParserEnabled", true);
 
 $dompdf = new Dompdf($options);
 $dompdf->loadHtml($html);
 $dompdf->setPaper("A4", "portrait");
 $dompdf->render();
 
-$dompdf->stream(
-    "Ticket-" . $ticketCode . ".pdf",
-    ["Attachment" => true]
-);
+$pdfStream = $dompdf->output();
 
+// Clear any existing output buffers to prevent corruption of PDF binary stream
+while (ob_get_level() > 0) {
+    ob_end_clean();
+}
+
+header("Content-Type: application/pdf");
+header("Content-Disposition: attachment; filename=\"Ticket-" . $ticketCode . ".pdf\"");
+header("Content-Length: " . strlen($pdfStream));
+header("Cache-Control: private, max-age=0, must-revalidate");
+header("Pragma: public");
+
+echo $pdfStream;
 exit;

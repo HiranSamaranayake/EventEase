@@ -58,7 +58,16 @@ const PaymentSuccess = () => {
 
     try {
       const response = await fetch(pdfEndpoint);
-      if (!response.ok) throw new Error("PDF fetch failed");
+      if (!response.ok) {
+        const errJson = await response.json().catch(() => ({}));
+        throw new Error(errJson.message || "PDF generation failed");
+      }
+
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        const errJson = await response.json().catch(() => ({}));
+        throw new Error(errJson.message || "PDF generation failed");
+      }
 
       const blob = await response.blob();
       const blobUrl = window.URL.createObjectURL(blob);
@@ -74,7 +83,7 @@ const PaymentSuccess = () => {
         window.URL.revokeObjectURL(blobUrl);
       }, 2000);
     } catch (err) {
-      console.warn("Direct blob download failed, falling back to window location", err);
+      console.warn("Blob PDF download failed, fallback to direct location", err);
       window.location.href = pdfEndpoint;
     } finally {
       setDownloading(false);

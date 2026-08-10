@@ -10,8 +10,40 @@ const TicketDetails = () => {
   const navigate = useNavigate();
   const [ticket, setTicket] = useState(null);
   const [announcements, setAnnouncements] = useState([]);
+  const [emailLogs, setEmailLogs] = useState([]);
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [resendingEmail, setResendingEmail] = useState(false);
+  const [resendStatus, setResendStatus] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const handleResendEmail = async () => {
+    setResendingEmail(true);
+    setResendStatus("");
+    try {
+      const res = await fetch(API + "resend_ticket_email.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ booking_id: ticket?.booking_id || id })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setResendStatus("✅ Ticket email dispatched successfully!");
+        // Refresh email logs
+        fetch(API + "get_email_logs.php?booking_id=" + (ticket?.booking_id || id))
+          .then((eRes) => eRes.json())
+          .then((eData) => {
+            if (eData.success) setEmailLogs(eData.email_logs || []);
+          });
+      } else {
+        setResendStatus("❌ " + (data.message || "Failed to resend email"));
+      }
+    } catch (err) {
+      setResendStatus("❌ Connection error while resending email.");
+    } finally {
+      setResendingEmail(false);
+    }
+  };
 
   const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
 
@@ -46,6 +78,16 @@ const TicketDetails = () => {
                 }
               })
               .catch((err) => console.error("Error loading broadcast announcements", err));
+
+            // Fetch automated email logs for this booking
+            fetch(API + "get_email_logs.php?booking_id=" + id)
+              .then((eRes) => eRes.json())
+              .then((eData) => {
+                if (eData.success) {
+                  setEmailLogs(eData.email_logs || []);
+                }
+              })
+              .catch((err) => console.error("Error loading email logs", err));
           }
         } else {
           setError(data.message || "Unable to find ticket");
@@ -61,6 +103,35 @@ const TicketDetails = () => {
 
   const handlePrint = () => {
     window.print();
+  };
+
+  const handlePdfDownload = async () => {
+    const bookingId = ticket?.booking_id || id;
+    const downloadUrl = `${API}download_ticket_pdf.php?booking_id=${bookingId}`;
+    try {
+      const res = await fetch(downloadUrl);
+      if (!res.ok) {
+        const errJson = await res.json().catch(() => ({}));
+        throw new Error(errJson.message || "PDF generation failed");
+      }
+      const contentType = res.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        const errJson = await res.json().catch(() => ({}));
+        throw new Error(errJson.message || "PDF generation failed");
+      }
+      const blob = await res.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = `Ticket-${ticket?.ticket_code || bookingId}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => window.URL.revokeObjectURL(blobUrl), 2000);
+    } catch (e) {
+      console.warn("Direct blob download fallback", e);
+      window.open(downloadUrl, "_blank");
+    }
   };
 
   if (loading) {
@@ -217,18 +288,38 @@ const TicketDetails = () => {
 
           </div>
 
-          {/* Action Download Link */}
-          <div className="pt-4 border-t border-white/10">
-            <a
-              href={pdfDownloadUrl}
-              download={`Ticket-${ticket.ticket_code || id}.pdf`}
-              target="_blank"
-              rel="noreferrer"
-              className="w-full py-4 bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-600 hover:from-emerald-500 hover:to-indigo-500 text-white font-black text-sm rounded-2xl shadow-xl transition flex items-center justify-center gap-2 group cursor-pointer text-center block"
+          {/* Action Action Buttons: PDF Download & Automated Email Ticket Preview */}
+          <div className="pt-4 border-t border-white/10 flex flex-col sm:flex-row gap-3">
+            <button
+              onClick={handlePdfDownload}
+              className="flex-1 py-3.5 bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-600 hover:from-emerald-500 hover:to-indigo-500 text-white font-black text-xs sm:text-sm rounded-2xl shadow-xl transition flex items-center justify-center gap-2 group cursor-pointer text-center"
             >
               <FaFilePdf className="text-lg inline" /> Download Official PDF Ticket Pass
-            </a>
+            </button>
+
+            <button
+              onClick={() => setShowEmailModal(true)}
+              className="py-3.5 px-4 bg-purple-900/60 hover:bg-purple-800 text-purple-200 border border-purple-500/40 font-bold text-xs sm:text-sm rounded-2xl shadow-lg transition flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <FaInfoCircle className="text-lg text-purple-300" /> View Sent Confirmation Email
+            </button>
+
+            <button
+              onClick={handleResendEmail}
+              disabled={resendingEmail}
+              className="py-3.5 px-4 bg-indigo-900/60 hover:bg-indigo-800 text-indigo-200 border border-indigo-500/40 font-bold text-xs sm:text-sm rounded-2xl shadow-lg transition flex items-center justify-center gap-2 cursor-pointer"
+            >
+              📧 {resendingEmail ? 'Resending Email...' : 'Resend Email'}
+            </button>
           </div>
+
+          {resendStatus && (
+            <div className={`p-3 rounded-xl text-xs font-bold text-center ${
+              resendStatus.includes('✅') ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
+            }`}>
+              {resendStatus}
+            </div>
+          )}
 
           {/* Organizer Broadcast Announcements Advisories */}
           {announcements.length > 0 && (
@@ -271,6 +362,67 @@ const TicketDetails = () => {
 
         </div>
       </div>
+
+      {/* Automated Email Confirmation Modal */}
+      {showEmailModal && (
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+          <div className="bg-slate-900 border border-purple-500/40 rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-6 shadow-2xl relative max-h-[90vh] flex flex-col">
+            <div className="flex justify-between items-center border-b border-white/10 pb-4 shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-300 flex items-center justify-center font-bold text-xl">
+                  📧
+                </div>
+                <div>
+                  <h2 className="text-lg sm:text-xl font-black text-white">Automated Confirmation Email</h2>
+                  <p className="text-xs text-slate-400">Sent to {ticket.email || currentUser.email}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowEmailModal(false)}
+                className="w-8 h-8 rounded-xl bg-white/10 text-slate-300 hover:text-white hover:bg-white/20 flex items-center justify-center font-bold text-sm cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="overflow-y-auto flex-1 space-y-4 pr-1">
+              {emailLogs.length > 0 ? (
+                emailLogs.map((log) => (
+                  <div key={log.id} className="bg-white rounded-2xl p-4 text-slate-900 shadow-lg text-xs space-y-3">
+                    <div className="border-b pb-2 flex justify-between items-center font-mono text-[11px] text-slate-600">
+                      <span><strong>To:</strong> {log.recipient_email}</span>
+                      <span><strong>Sent:</strong> {new Date(log.created_at).toLocaleString()}</span>
+                    </div>
+                    <div className="font-bold text-sm text-purple-900 border-b pb-2">
+                      Subject: {log.subject}
+                    </div>
+                    <div 
+                      className="email-body-container pt-2 overflow-x-auto max-w-full"
+                      dangerouslySetInnerHTML={{ __html: log.body_html }}
+                    />
+                  </div>
+                ))
+              ) : (
+                <div className="bg-slate-950 p-6 rounded-2xl text-center space-y-3 border border-white/10">
+                  <p className="text-sm font-bold text-purple-300">✅ Ticket Dispatch Logged</p>
+                  <p className="text-xs text-slate-400 leading-relaxed">
+                    The system automatically dispatches booking confirmation emails with QR codes to <strong>{ticket.email || currentUser.email}</strong> upon payment confirmation.
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <div className="pt-4 border-t border-white/10 shrink-0 text-right">
+              <button
+                onClick={() => setShowEmailModal(false)}
+                className="px-6 py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-xl shadow cursor-pointer transition"
+              >
+                Close Preview
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
