@@ -209,12 +209,12 @@ export default function AdminComplaints() {
                       <div className="text-xs text-purple-600 font-semibold uppercase">{item.category.replace('_', ' ')}</div>
                     </td>
                     <td className="p-4">
-                      <span className={`text-xs px-2.5 py-1 rounded-md font-bold uppercase ${
-                        item.priority === 'urgent' ? 'bg-rose-100 text-rose-700 border border-rose-200' :
+                      <span className={`text-xs px-2.5 py-1 rounded-md font-extrabold uppercase ${
+                        item.is_priority == 1 || item.priority === 'urgent' ? 'bg-amber-500 text-white font-black shadow-md border border-amber-400' :
                         item.priority === 'high' ? 'bg-orange-100 text-orange-700 border border-orange-200' :
                         item.priority === 'medium' ? 'bg-amber-100 text-amber-700 border border-amber-200' : 'bg-gray-100 text-gray-600'
                       }`}>
-                        {item.priority}
+                        {item.is_priority == 1 ? '⭐ PREMIUM PRIORITY' : item.priority}
                       </span>
                     </td>
                     <td className="p-4">

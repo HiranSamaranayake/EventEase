@@ -80,6 +80,7 @@ const MyEvents = () => {
 
           body: JSON.stringify({
             event_id: id,
+            user_id: user?.id,
           }),
         },
       );

@@ -37,6 +37,7 @@ if (!$tableCheck || mysqli_num_rows($tableCheck) == 0) {
         id INT(11) NOT NULL AUTO_INCREMENT,
         user_id INT(11) NOT NULL,
         event_id INT(11) NOT NULL,
+        priority_level INT(11) DEFAULT 0,
         status ENUM('waiting', 'notified', 'cancelled') DEFAULT 'waiting',
         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY (id),
@@ -46,6 +47,18 @@ if (!$tableCheck || mysqli_num_rows($tableCheck) == 0) {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
     mysqli_query($conn, $createTable);
 }
+
+// Ensure priority_level column exists
+$pCheck = mysqli_query($conn, "SHOW COLUMNS FROM waiting_list LIKE 'priority_level'");
+if (!$pCheck || mysqli_num_rows($pCheck) == 0) {
+    @mysqli_query($conn, "ALTER TABLE waiting_list ADD COLUMN priority_level INT(11) DEFAULT 0 AFTER event_id");
+}
+
+require_once __DIR__ . "/../utils/user_subscription_helper.php";
+
+// Fetch customer active subscription status
+$isPremiumActive = isUserPremiumActive($conn, $userId);
+$priorityLevel = $isPremiumActive ? 10 : 0;
 
 if ($action === 'leave') {
     $deleteSql = "DELETE FROM waiting_list WHERE user_id = $userId AND event_id = $eventId";
@@ -64,36 +77,45 @@ $checkSql = "SELECT id, status FROM waiting_list WHERE user_id = $userId AND eve
 $checkRes = mysqli_query($conn, $checkSql);
 
 if ($checkRes && mysqli_num_rows($checkRes) > 0) {
-    // Already in queue -> calculate position
-    $posSql = "SELECT COUNT(*) AS pos FROM waiting_list WHERE event_id = $eventId AND status = 'waiting' AND id <= (SELECT id FROM waiting_list WHERE user_id = $userId AND event_id = $eventId LIMIT 1)";
+    // Calculate priority position (ordered by priority_level DESC, id ASC)
+    $posSql = "SELECT COUNT(*) AS pos FROM waiting_list 
+               WHERE event_id = $eventId AND status = 'waiting' 
+               AND (priority_level > $priorityLevel OR (priority_level = $priorityLevel AND id <= (SELECT id FROM waiting_list WHERE user_id = $userId AND event_id = $eventId LIMIT 1)))";
     $posRes = mysqli_query($conn, $posSql);
     $posData = mysqli_fetch_assoc($posRes);
-    $position = $posData['pos'] ?? 1;
+    $position = max(1, intval($posData['pos'] ?? 1));
 
     echo json_encode([
         "success" => true,
         "is_waiting" => true,
-        "position" => intval($position),
-        "message" => "You are already in line at Position #$position for this event!"
+        "position" => $position,
+        "priority_pass" => ($userTier === 'premium'),
+        "message" => ($userTier === 'premium') 
+            ? "⭐ Premium Priority Pass Active! You hold Priority Rank #$position in line." 
+            : "You are in line at Position #$position for this event."
     ]);
     exit;
 }
 
-// Add user to waiting list
-$insertSql = "INSERT INTO waiting_list (user_id, event_id, status) VALUES ($userId, $eventId, 'waiting')";
+// Add user to waiting list with priority_level
+$insertSql = "INSERT INTO waiting_list (user_id, event_id, priority_level, status) VALUES ($userId, $eventId, $priorityLevel, 'waiting')";
 
 if (mysqli_query($conn, $insertSql)) {
-    // Calculate new position
-    $posSql = "SELECT COUNT(*) AS pos FROM waiting_list WHERE event_id = $eventId AND status = 'waiting'";
+    $posSql = "SELECT COUNT(*) AS pos FROM waiting_list 
+               WHERE event_id = $eventId AND status = 'waiting' 
+               AND (priority_level > $priorityLevel OR (priority_level = $priorityLevel AND id <= (SELECT id FROM waiting_list WHERE user_id = $userId AND event_id = $eventId LIMIT 1)))";
     $posRes = mysqli_query($conn, $posSql);
     $posData = mysqli_fetch_assoc($posRes);
-    $position = $posData['pos'] ?? 1;
+    $position = max(1, intval($posData['pos'] ?? 1));
 
     echo json_encode([
         "success" => true,
         "is_waiting" => true,
-        "position" => intval($position),
-        "message" => "Successfully joined waiting list! You are Position #$position in line."
+        "position" => $position,
+        "priority_pass" => ($userTier === 'premium'),
+        "message" => ($userTier === 'premium')
+            ? "⭐ Joined waiting list with Premium Priority Pass! You are Priority Rank #$position."
+            : "Successfully joined waiting list! You are Position #$position in line."
     ]);
 } else {
     echo json_encode([

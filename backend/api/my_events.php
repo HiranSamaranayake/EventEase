@@ -1,47 +1,51 @@
 <?php
-
 header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: *");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Content-Type: application/json");
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit(0);
+}
 
 require_once "../config/database.php";
 
-$user_id = $_GET["user_id"] ?? 0;
+$user_id = intval($_GET["user_id"] ?? $_POST["user_id"] ?? 0);
 
 if (!$user_id) {
-
     echo json_encode([
-        "success" => false,
-        "message" => "User ID missing"
+        "success" => true,
+        "events" => []
     ]);
-
     exit;
 }
 
-/*
------------------------------------------
-Find Organizer ID
------------------------------------------
-*/
-
-$orgQuery = mysqli_query(
-    $conn,
-    "SELECT id FROM organizers WHERE user_id='$user_id' OR id='$user_id'"
-);
-
-if (mysqli_num_rows($orgQuery) == 0) {
-    // If no row in organizers table, fallback organizer_id to user_id
-    $organizer_id = $user_id;
+// Find exact Organizer record for the authenticated user_id
+$orgQuery = mysqli_query($conn, "SELECT id FROM organizers WHERE user_id='$user_id'");
+if (!$orgQuery || mysqli_num_rows($orgQuery) == 0) {
+    // Check if user_id is directly the organizer table id
+    $orgQuery2 = mysqli_query($conn, "SELECT id FROM organizers WHERE id='$user_id'");
+    if (!$orgQuery2 || mysqli_num_rows($orgQuery2) == 0) {
+        echo json_encode([
+            "success" => true,
+            "events" => []
+        ]);
+        exit;
+    }
+    $organizer = mysqli_fetch_assoc($orgQuery2);
 } else {
     $organizer = mysqli_fetch_assoc($orgQuery);
-    $organizer_id = $organizer["id"];
 }
 
+$organizer_id = intval($organizer["id"]);
+
+// Strictly select ONLY events matching this organizer_id
 $query = mysqli_query(
     $conn,
     "
     SELECT
         events.*,
-
         COALESCE(
             (
                 SELECT SUM(ticket_quantity)
@@ -50,7 +54,6 @@ $query = mysqli_query(
             ),
             0
         ) AS tickets_sold,
-
         COALESCE(
             (
                 SELECT SUM(total_amount)
@@ -60,37 +63,29 @@ $query = mysqli_query(
             ),
             0
         ) AS revenue
-
     FROM events
-
-    WHERE organizer_id='$organizer_id' OR organizer_id='$user_id'
-
-    ORDER BY id DESC
+    WHERE (events.organizer_id = '$organizer_id' OR events.organizer_id = '$user_id')
+    ORDER BY events.id DESC
     "
 );
 
 $events = [];
 
-while ($row = mysqli_fetch_assoc($query)) {
+if ($query) {
+    while ($row = mysqli_fetch_assoc($query)) {
+        $capacity = (int)$row["capacity"];
+        $sold = (int)$row["tickets_sold"];
 
-    $capacity = (int)$row["capacity"];
-    $sold = (int)$row["tickets_sold"];
+        $row["occupancy"] = $capacity > 0
+            ? round(($sold / $capacity) * 100)
+            : 0;
 
-    $row["occupancy"] = $capacity > 0
-        ? round(($sold / $capacity) * 100)
-        : 0;
-
-    $row["status"] =
-        strtotime($row["event_date"]) >= time()
-        ? "Upcoming"
-        : "Completed";
-
-    $events[] = $row;
+        $events[] = $row;
+    }
 }
 
 echo json_encode([
     "success" => true,
     "events" => $events
 ]);
-
 ?>

@@ -33,12 +33,27 @@ $conn->query("CREATE TABLE IF NOT EXISTS `complaints` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
 
-$stmt = $conn->prepare("INSERT INTO complaints (user_id, event_id, subject, category, description, priority, status) VALUES (?, ?, ?, ?, ?, ?, 'open')");
-$stmt->bind_param("iissss", $user_id, $event_id, $subject, $category, $description, $priority);
+// Auto-create is_priority column if missing
+$conn->query("ALTER TABLE `complaints` ADD COLUMN IF NOT EXISTS `is_priority` TINYINT(1) DEFAULT 0 AFTER `priority`");
+
+require_once __DIR__ . "/../utils/user_subscription_helper.php";
+
+// Fetch customer active subscription status
+$isPremiumUser = isUserPremiumActive($conn, $user_id);
+if ($isPremiumUser) {
+    $priority = 'urgent';
+}
+$is_priority = $isPremiumUser ? 1 : 0;
+
+$stmt = $conn->prepare("INSERT INTO complaints (user_id, event_id, subject, category, description, priority, is_priority, status) VALUES (?, ?, ?, ?, ?, ?, ?, 'open')");
+$stmt->bind_param("iissssi", $user_id, $event_id, $subject, $category, $description, $priority, $is_priority);
 
 if ($stmt->execute()) {
     $complaint_id = $conn->insert_id;
-    echo json_encode(["status" => "success", "message" => "Support ticket submitted successfully.", "complaint_id" => $complaint_id]);
+    $msg = $isPremiumUser 
+        ? "⭐ Premium VIP Support Ticket submitted with Urgent Priority Status!" 
+        : "Support ticket submitted successfully.";
+    echo json_encode(["status" => "success", "message" => $msg, "complaint_id" => $complaint_id, "is_priority" => $is_priority]);
 } else {
     echo json_encode(["status" => "error", "message" => "Failed to submit ticket: " . $conn->error]);
 }

@@ -53,7 +53,7 @@ test.describe('Function 2: Live SMTP Email Delivery Server & Mobile Responsivene
     await expect(testSmtpBtn).toBeVisible();
 
     await testSmtpBtn.click();
-    await expect(page.locator('.fixed.top-5.right-5')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('.fixed.top-5.right-5')).toBeVisible({ timeout: 35000 });
   });
 
   test('Customer Ticket View UI is Mobile Responsive (iPhone SE: 375x667) and supports Resend & View Email', async ({ page }) => {

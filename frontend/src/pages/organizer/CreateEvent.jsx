@@ -8,6 +8,8 @@ const CreateEvent = () => {
   const [description, setDescription] = useState("");
   const [eventDate, setEventDate] = useState("");
   const [eventTime, setEventTime] = useState("18:00");
+  const [premiumBookingOpenDate, setPremiumBookingOpenDate] = useState("");
+  const [normalBookingOpenDate, setNormalBookingOpenDate] = useState("");
   const [location, setLocation] = useState("");
   const [message, setMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
@@ -51,6 +53,52 @@ const CreateEvent = () => {
     }
   };
 
+  const getMinNormalBookingDate = (premDateStr) => {
+    if (!premDateStr) return "";
+    const premDate = new Date(premDateStr);
+    if (isNaN(premDate.getTime())) return "";
+    const minNormDate = new Date(premDate.getTime() + 86400000); // Exactly +24 hours
+    const pad = (n) => (n < 10 ? "0" + n : n);
+    const y = minNormDate.getFullYear();
+    const m = pad(minNormDate.getMonth() + 1);
+    const d = pad(minNormDate.getDate());
+    const h = pad(minNormDate.getHours());
+    const min = pad(minNormDate.getMinutes());
+    return `${y}-${m}-${d}T${h}:${min}`;
+  };
+
+  const handlePremiumDateChange = (val) => {
+    setPremiumBookingOpenDate(val);
+    if (val && normalBookingOpenDate) {
+      const premTime = new Date(val).getTime();
+      const normTime = new Date(normalBookingOpenDate).getTime();
+      if (normTime - premTime < 86400000) {
+        setMessage("Normal booking must open at least 24 hours after Premium booking.");
+        setIsSuccess(false);
+      } else {
+        if (message === "Normal booking must open at least 24 hours after Premium booking.") {
+          setMessage("");
+        }
+      }
+    }
+  };
+
+  const handleNormalDateChange = (val) => {
+    setNormalBookingOpenDate(val);
+    if (premiumBookingOpenDate && val) {
+      const premTime = new Date(premiumBookingOpenDate).getTime();
+      const normTime = new Date(val).getTime();
+      if (normTime - premTime < 86400000) {
+        setMessage("Normal booking must open at least 24 hours after Premium booking.");
+        setIsSuccess(false);
+      } else {
+        if (message === "Normal booking must open at least 24 hours after Premium booking.") {
+          setMessage("");
+        }
+      }
+    }
+  };
+
   const handleAddCategory = () => {
     setCustomCategories([
       ...customCategories,
@@ -85,6 +133,16 @@ const CreateEvent = () => {
       return;
     }
 
+    if (premiumBookingOpenDate && normalBookingOpenDate) {
+      const premTime = new Date(premiumBookingOpenDate).getTime();
+      const normTime = new Date(normalBookingOpenDate).getTime();
+      if (normTime - premTime < 86400000) {
+        setMessage("Normal booking must open at least 24 hours after Premium booking.");
+        setIsSuccess(false);
+        return;
+      }
+    }
+
     setLoading(true);
     setMessage("");
 
@@ -93,6 +151,8 @@ const CreateEvent = () => {
     formData.append("description", description);
     formData.append("event_date", eventDate);
     formData.append("event_time", eventTime);
+    formData.append("premium_booking_open_date", premiumBookingOpenDate);
+    formData.append("normal_booking_open_date", normalBookingOpenDate);
     formData.append("location", location);
     formData.append("capacity", capacity);
     formData.append("category", category);
@@ -231,6 +291,45 @@ const CreateEvent = () => {
                 onChange={(e) => setLocation(e.target.value)}
                 className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition"
               />
+            </div>
+          </div>
+
+          {/* TWO BOOKING OPENING DATES SECTION */}
+          <div className="bg-amber-50/70 border border-amber-200 rounded-2xl p-5 space-y-3">
+            <div className="border-b border-amber-200 pb-2">
+              <h3 className="text-sm font-extrabold text-amber-900 flex items-center gap-1.5">
+                ⭐ Staggered Ticket Booking Opening Schedule
+              </h3>
+              <p className="text-[11px] text-amber-800 mt-0.5">
+                Rule: General booking opening date must be at least <strong>1 full day (24 hours)</strong> after the Premium member booking opening date.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-amber-950 uppercase mb-1 flex items-center gap-1">
+                  ⭐ Premium Booking Opening Date *
+                </label>
+                <input
+                  type="datetime-local"
+                  value={premiumBookingOpenDate}
+                  onChange={(e) => handlePremiumDateChange(e.target.value)}
+                  className="w-full bg-white border border-amber-300 rounded-xl p-3 text-xs font-bold text-amber-950 focus:ring-2 focus:ring-amber-500 outline-none transition"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-700 uppercase mb-1 flex items-center gap-1">
+                  🌐 General Customer Booking Opening Date *
+                </label>
+                <input
+                  type="datetime-local"
+                  value={normalBookingOpenDate}
+                  min={getMinNormalBookingDate(premiumBookingOpenDate)}
+                  onChange={(e) => handleNormalDateChange(e.target.value)}
+                  className="w-full bg-white border border-gray-300 rounded-xl p-3 text-xs font-bold text-gray-900 focus:ring-2 focus:ring-purple-500 outline-none transition"
+                />
+              </div>
             </div>
           </div>
 

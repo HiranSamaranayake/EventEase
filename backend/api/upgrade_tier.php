@@ -41,6 +41,9 @@ $query = "UPDATE users SET user_tier = '$tier' WHERE id = '$userId'";
 $result = mysqli_query($conn, $query);
 
 if ($result) {
+    if ($tier === 'verified') {
+        @mysqli_query($conn, "UPDATE premium_subscriptions SET status = 'cancelled' WHERE user_id = '$userId'");
+    }
     echo json_encode([
         "success" => true,
         "message" => "User membership successfully upgraded to " . ucfirst($tier) . " Customer!",

@@ -258,6 +258,12 @@ const EventDetails = () => {
                                 </span>
                             )}
 
+                            {(event.is_exclusive == 1 || (event.early_access_hours && Number(event.early_access_hours) > 0)) && (
+                                <span className="bg-amber-500 text-white px-4 py-2 rounded-full font-black text-xs uppercase shadow-lg flex items-center gap-1.5">
+                                    ⭐ Premium Early Access Pass
+                                </span>
+                            )}
+
                             {isSoldOut && (
                                 <span className="bg-rose-600 text-white px-4 py-2 rounded-full font-extrabold uppercase animate-pulse shadow-lg flex items-center gap-1">
                                     <FaExclamationTriangle /> SOLD OUT
@@ -295,6 +301,22 @@ const EventDetails = () => {
                                     </div>
                                 </div>
 
+                                {/* TWO BOOKING OPENING DATES DISPLAY */}
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div className="bg-amber-500/10 border border-amber-400/40 rounded-2xl p-4">
+                                        <p className="text-[11px] font-bold text-amber-900 uppercase">⭐ Premium Booking Opens</p>
+                                        <h4 className="text-sm font-black text-amber-950 mt-1">
+                                            {event.premium_booking_open_date ? new Date(event.premium_booking_open_date).toLocaleString() : "Opened"}
+                                        </h4>
+                                    </div>
+                                    <div className="bg-slate-100 border border-slate-200 rounded-2xl p-4">
+                                        <p className="text-[11px] font-bold text-slate-600 uppercase">🌐 General Booking Opens</p>
+                                        <h4 className="text-sm font-extrabold text-slate-900 mt-1">
+                                            {event.normal_booking_open_date ? new Date(event.normal_booking_open_date).toLocaleString() : "Opened"}
+                                        </h4>
+                                    </div>
+                                </div>
+
                                 {isRestricted && (
                                     <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 space-y-2">
                                         <h4 className="font-extrabold text-amber-900 text-sm flex items-center gap-2">
@@ -303,6 +325,32 @@ const EventDetails = () => {
                                         <p className="text-xs text-amber-800 leading-relaxed">
                                             This event is restricted. Outside attendees without an authorized email domain or student/company passcode are not permitted to reserve tickets.
                                         </p>
+                                    </div>
+                                )}
+
+                                {(event.is_exclusive == 1 || (event.early_access_hours && Number(event.early_access_hours) > 0)) && (
+                                    <div className="bg-gradient-to-r from-amber-500/10 via-purple-500/10 to-indigo-500/10 border border-amber-400/40 rounded-2xl p-5 space-y-2">
+                                        <div className="flex items-center justify-between flex-wrap gap-2">
+                                            <h4 className="font-black text-amber-900 text-sm flex items-center gap-2">
+                                                ⭐ Exclusive Early Access Window Active
+                                            </h4>
+                                            <span className="bg-amber-500 text-white font-extrabold text-[10px] uppercase px-3 py-1 rounded-full">
+                                                Premium VIP Perk
+                                            </span>
+                                        </div>
+                                        <p className="text-xs text-slate-700 leading-relaxed font-medium">
+                                            Booking is currently open for Premium members only. General booking opens on {event.normal_booking_open_date ? new Date(event.normal_booking_open_date).toLocaleDateString() : 'scheduled date'}.
+                                        </p>
+                                        {currentUser?.user_tier !== 'premium' && (
+                                            <div className="pt-2">
+                                                <button
+                                                    onClick={() => navigate('/premium-subscription')}
+                                                    className="px-4 py-2 bg-gradient-to-r from-amber-500 to-purple-600 hover:from-amber-600 hover:to-purple-700 text-white font-black text-xs rounded-xl shadow-lg transition cursor-pointer"
+                                                >
+                                                    Become a Premium Member to Book Now
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
                                 )}
 

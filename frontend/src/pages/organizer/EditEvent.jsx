@@ -22,12 +22,14 @@ const EditEvent = () => {
   const [audiencePasscode, setAudiencePasscode] = useState("");
   const [restrictionLabel, setRestrictionLabel] = useState("");
 
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
+  const [isUnauthorized, setIsUnauthorized] = useState(false);
 
   useEffect(() => {
-    fetch(`http://localhost/EventEase/backend/api/get_event.php?id=${id}`)
+    fetch(`http://localhost/EventEase/backend/api/get_event.php?id=${id}&user_id=${user.id || 0}`)
       .then((res) => res.json())
       .then((data) => {
         if (data.success && data.event) {
@@ -54,6 +56,9 @@ const EditEvent = () => {
           setAllowedEmailDomain(ev.allowed_email_domain || "");
           setAudiencePasscode(ev.audience_passcode || "");
           setRestrictionLabel(ev.restriction_label || "");
+        } else {
+          setIsUnauthorized(true);
+          setMessage(data.message || "Unauthorized access: You do not have permission to view or edit this event.");
         }
         setLoading(false);
       })
@@ -75,6 +80,7 @@ const EditEvent = () => {
       },
       body: JSON.stringify({
         event_id: id,
+        user_id: user?.id,
         title,
         description,
         event_date: eventDate,
@@ -111,6 +117,22 @@ const EditEvent = () => {
     return (
       <div className="flex justify-center py-20">
         <div className="w-12 h-12 border-4 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (isUnauthorized) {
+    return (
+      <div className="max-w-xl mx-auto my-12 p-8 bg-rose-50 border-2 border-rose-300 rounded-3xl text-center space-y-4 shadow-xl">
+        <div className="text-5xl">🚫</div>
+        <h2 className="text-xl font-extrabold text-rose-900">Access Denied</h2>
+        <p className="text-xs text-rose-800 font-semibold">{message}</p>
+        <button
+          onClick={() => navigate("/organizer/my-events")}
+          className="px-6 py-3 bg-purple-700 hover:bg-purple-800 text-white font-bold text-xs rounded-xl shadow transition"
+        >
+          Return to My Events
+        </button>
       </div>
     );
   }

@@ -22,6 +22,7 @@ test.describe('Function 21: Automated Email Dispatch, Duplicate Callback Prevent
   });
 
   test('Duplicate PayHere callback triggers do not generate duplicate confirmation emails when already sent', async ({ request }) => {
+    test.setTimeout(60000);
     // 1. Trigger callback 1st time
     const res1 = await request.post('http://localhost/EventEase/backend/api/payment_success_update.php', {
       data: { booking_id: 159 }

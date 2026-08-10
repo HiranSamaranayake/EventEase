@@ -47,6 +47,9 @@ if (isset($_FILES["image"])) {
 
 }
 
+$premiumBookingOpenDate = $_POST["premium_booking_open_date"] ?? "";
+$normalBookingOpenDate = $_POST["normal_booking_open_date"] ?? "";
+
 if (
     empty($title) ||
     empty($description) ||
@@ -54,18 +57,34 @@ if (
     empty($location) ||
     !$organizerId
 ) {
-
     echo json_encode([
         "success" => false,
         "message" => "Missing required fields"
     ]);
-
     exit;
+}
 
+// Default booking dates if not provided
+if (empty($premiumBookingOpenDate)) {
+    $premiumBookingOpenDate = date('Y-m-d H:i:s', strtotime('-7 days', strtotime($eventDate)));
+}
+if (empty($normalBookingOpenDate)) {
+    $normalBookingOpenDate = date('Y-m-d H:i:s', strtotime('-6 days', strtotime($eventDate)));
+}
+
+// 1-Day Gap Validation: Normal booking date must be at least 1 full day (24 hours) after Premium booking date
+$premTimestamp = strtotime($premiumBookingOpenDate);
+$normTimestamp = strtotime($normalBookingOpenDate);
+
+if ($normTimestamp - $premTimestamp < 86400) {
+    echo json_encode([
+        "success" => false,
+        "message" => "Normal booking must open at least 24 hours after Premium booking."
+    ]);
+    exit;
 }
 
 $query = "
-
 INSERT INTO events
 (
     title,
@@ -73,13 +92,14 @@ INSERT INTO events
     image,
     category,
     event_date,
+    premium_booking_open_date,
+    normal_booking_open_date,
     location,
     capacity,
     price,
     organizer_id,
     `status`
 )
-
 VALUES
 (
     '$title',
@@ -87,13 +107,14 @@ VALUES
     '$imageName',
     '$category',
     '$eventDate',
+    '$premiumBookingOpenDate',
+    '$normalBookingOpenDate',
     '$location',
     '$capacity',
     '$price',
     '$organizerId',
     'pending'
 )
-
 ";
 
 $result = mysqli_query($conn, $query);

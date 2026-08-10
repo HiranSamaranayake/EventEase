@@ -52,7 +52,9 @@ const Events = () => {
             );
         }
 
-        if (selectedCategory !== "All") {
+        if (selectedCategory === "⭐ Premium Early Access") {
+            result = result.filter(e => e.is_exclusive == 1 || (e.early_access_hours && Number(e.early_access_hours) > 0));
+        } else if (selectedCategory !== "All") {
             result = result.filter(e => (e.category || "General").toLowerCase() === selectedCategory.toLowerCase());
         }
 
@@ -65,7 +67,7 @@ const Events = () => {
         setFilteredEvents(result);
     }, [searchQuery, selectedCategory, priceFilter, events]);
 
-    const categories = ["All", "Concert", "Sports", "Theater", "Workshop", "Seminar", "Cultural", "General"];
+    const categories = ["All", "⭐ Premium Early Access", "Concert", "Sports", "Theater", "Workshop", "Seminar", "Cultural", "General"];
 
     const toggleFavorite = async (e, eventId) => {
         e.stopPropagation();
@@ -245,6 +247,15 @@ const Events = () => {
                                             <span className={isSoldOut ? "text-rose-600 font-bold" : "text-emerald-700 font-medium"}>
                                                 {isSoldOut ? "Sold Out" : `${event.available_seats || event.capacity || 'Seats available'}`}
                                             </span>
+                                        </div>
+
+                                        <div className="space-y-1 bg-amber-50/80 p-2.5 rounded-xl border border-amber-200 text-[11px]">
+                                            <div className="text-amber-950 font-extrabold flex items-center gap-1">
+                                                ⭐ Premium Booking Opens: {event.premium_booking_open_date ? new Date(event.premium_booking_open_date).toLocaleDateString() : "Open Now"}
+                                            </div>
+                                            <div className="text-slate-600 font-semibold">
+                                                General Booking Opens: {event.normal_booking_open_date ? new Date(event.normal_booking_open_date).toLocaleDateString() : "Open Now"}
+                                            </div>
                                         </div>
                                     </div>
 

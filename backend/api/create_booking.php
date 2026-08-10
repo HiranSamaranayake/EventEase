@@ -28,8 +28,14 @@ if (!$user_id || !$event_id) {
     exit();
 }
 
-// Get Event details
-$eventQuery = mysqli_query($conn, "SELECT price, title FROM events WHERE id='$event_id' LIMIT 1");
+require_once __DIR__ . "/../utils/user_subscription_helper.php";
+
+// Verify active non-expired Premium subscription status for user
+$isPremiumActive = isUserPremiumActive($conn, $user_id);
+$userTier = $isPremiumActive ? 'premium' : 'verified';
+
+// Get Event details including booking opening dates
+$eventQuery = mysqli_query($conn, "SELECT price, title, event_date, is_exclusive, early_access_hours, premium_booking_open_date, normal_booking_open_date, created_at FROM events WHERE id='$event_id' LIMIT 1");
 if (!$eventQuery || mysqli_num_rows($eventQuery) == 0) {
     echo json_encode([
         "success" => false,
@@ -40,8 +46,42 @@ if (!$eventQuery || mysqli_num_rows($eventQuery) == 0) {
 
 $event = mysqli_fetch_assoc($eventQuery);
 $basePrice = floatval($event["price"]);
+$isExclusive = intval($event["is_exclusive"] ?? 0);
+$eventDateStr = $event["event_date"] ?? date('Y-m-d H:i:s');
 
-// Calculate total amount
+$premOpenDate = !empty($event["premium_booking_open_date"]) 
+    ? $event["premium_booking_open_date"] 
+    : date('Y-m-d H:i:s', strtotime('-7 days', strtotime($eventDateStr)));
+
+$normOpenDate = !empty($event["normal_booking_open_date"]) 
+    ? $event["normal_booking_open_date"] 
+    : date('Y-m-d H:i:s', strtotime('-6 days', strtotime($eventDateStr)));
+
+$now = date('Y-m-d H:i:s');
+
+// PHASE 1: Before Premium Booking Opens (today < premium_booking_open_date)
+if ($now < $premOpenDate) {
+    echo json_encode([
+        "success" => false,
+        "message" => "⭐ Booking Not Open Yet: Ticket reservation for this event opens on " . date("F j, Y g:i A", strtotime($premOpenDate)) . "."
+    ]);
+    exit();
+}
+
+// PHASE 2: Premium-Only Booking Window (premium_booking_open_date <= today < normal_booking_open_date)
+if (($now >= $premOpenDate && $now < $normOpenDate) || $isExclusive == 1) {
+    if (!$isPremiumActive) {
+        echo json_encode([
+            "success" => false,
+            "message" => "⭐ Exclusive Early Access Window Active: Booking is currently open for Premium members only. General booking opens on " . date("F j, Y g:i A", strtotime($normOpenDate)) . "."
+        ]);
+        exit();
+    }
+}
+
+// PHASE 3: General Booking Window (today >= normal_booking_open_date) -> Both Premium and Normal users can book
+
+// Calculate total amount with 10% Premium VIP Discount
 $total_amount = 0;
 if (!empty($selected_seats) && is_array($selected_seats)) {
     $ticket_quantity = count($selected_seats);
@@ -50,6 +90,10 @@ if (!empty($selected_seats) && is_array($selected_seats)) {
     }
 } else {
     $total_amount = $basePrice * $ticket_quantity;
+}
+
+if ($userTier === 'premium') {
+    $total_amount = round($total_amount * 0.90, 2); // 10% Exclusive Premium Offer
 }
 
 // Auto-create event_booked_seats table if missing
