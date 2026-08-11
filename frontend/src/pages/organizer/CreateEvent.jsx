@@ -120,6 +120,34 @@ const CreateEvent = () => {
     setCustomCategories(updated);
   };
 
+  const handleEventDateChange = (val) => {
+    setEventDate(val);
+    if (val) {
+      const eDate = new Date(val + "T" + (eventTime || "18:00"));
+      if (!isNaN(eDate.getTime())) {
+        const nowMs = Date.now();
+        let premMs = eDate.getTime() - (7 * 86400000);
+        if (premMs < nowMs) {
+          premMs = nowMs + 3600000;
+        }
+        const normMs = premMs + 86400000;
+
+        const toIsoLocal = (ms) => {
+          const d = new Date(ms);
+          const pad = (n) => (n < 10 ? "0" + n : n);
+          return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+        };
+
+        if (!premiumBookingOpenDate) {
+          setPremiumBookingOpenDate(toIsoLocal(premMs));
+        }
+        if (!normalBookingOpenDate) {
+          setNormalBookingOpenDate(toIsoLocal(normMs));
+        }
+      }
+    }
+  };
+
   const createEvent = () => {
     if (!user || !user.id) {
       setMessage("Please log in as an organizer to create events.");
@@ -133,14 +161,34 @@ const CreateEvent = () => {
       return;
     }
 
-    if (premiumBookingOpenDate && normalBookingOpenDate) {
-      const premTime = new Date(premiumBookingOpenDate).getTime();
-      const normTime = new Date(normalBookingOpenDate).getTime();
-      if (normTime - premTime < 86400000) {
-        setMessage("Normal booking must open at least 24 hours after Premium booking.");
-        setIsSuccess(false);
-        return;
-      }
+    let finalPremDate = premiumBookingOpenDate;
+    let finalNormDate = normalBookingOpenDate;
+
+    if (!finalPremDate || !finalNormDate) {
+      const eDate = new Date(eventDate + "T" + (eventTime || "18:00"));
+      const nowMs = Date.now();
+      let premMs = !isNaN(eDate.getTime()) ? eDate.getTime() - (7 * 86400000) : nowMs + 3600000;
+      if (premMs < nowMs) premMs = nowMs + 3600000;
+      let normMs = premMs + 86400000;
+
+      const toIsoLocal = (ms) => {
+        const d = new Date(ms);
+        const pad = (n) => (n < 10 ? "0" + n : n);
+        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+      };
+
+      if (!finalPremDate) finalPremDate = toIsoLocal(premMs);
+      if (!finalNormDate) finalNormDate = toIsoLocal(normMs);
+      setPremiumBookingOpenDate(finalPremDate);
+      setNormalBookingOpenDate(finalNormDate);
+    }
+
+    const premTime = new Date(finalPremDate).getTime();
+    const normTime = new Date(finalNormDate).getTime();
+    if (isNaN(premTime) || isNaN(normTime) || normTime - premTime < 86400000) {
+      setMessage("❌ Normal booking must open at least 24 hours after Premium booking.");
+      setIsSuccess(false);
+      return;
     }
 
     setLoading(true);
@@ -263,7 +311,7 @@ const CreateEvent = () => {
               <input
                 type="date"
                 value={eventDate}
-                onChange={(e) => setEventDate(e.target.value)}
+                onChange={(e) => handleEventDateChange(e.target.value)}
                 className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition"
               />
             </div>

@@ -2,6 +2,10 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Past Event Booking Prevention & Verification', () => {
 
+  test.beforeAll(async ({ request }) => {
+    await request.get('http://localhost/EventEase/backend/setup_past_events_test.php');
+  });
+
   test('1. Future event allows ticket reservation (Book Ticket enabled)', async ({ page }) => {
     await page.goto('http://localhost:5173/event/889');
     await expect(page.locator('h1')).toContainText('Future Tech Summit 2026', { timeout: 15000 });

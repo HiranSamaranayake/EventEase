@@ -168,6 +168,14 @@ const EventDetails = () => {
     const eventDateTime = new Date(event.event_date).getTime();
     const isPastEvent = !isNaN(eventDateTime) && eventDateTime < new Date().getTime();
 
+    const nowTime = new Date().getTime();
+    const premOpenTime = event.premium_booking_open_date ? new Date(event.premium_booking_open_date).getTime() : 0;
+    const normOpenTime = event.normal_booking_open_date ? new Date(event.normal_booking_open_date).getTime() : 0;
+
+    const isBeforePremium = premOpenTime > 0 && nowTime < premOpenTime;
+    const isPremiumOnlyPeriod = (premOpenTime > 0 && normOpenTime > 0 && nowTime >= premOpenTime && nowTime < normOpenTime) || (event.is_exclusive == 1);
+    const isUserPremium = currentUser?.user_tier === 'premium';
+
     // Parse ONLY the categories added by the organizer for this event
     let categoriesList = [];
     if (event.custom_categories) {
@@ -505,6 +513,45 @@ const EventDetails = () => {
                                             className="w-full py-4 bg-slate-200 text-slate-500 font-black text-sm rounded-2xl cursor-not-allowed uppercase shadow-inner border border-slate-300"
                                         >
                                             🚫 Booking Closed (Event Ended)
+                                        </button>
+                                    </div>
+                                ) : isBeforePremium ? (
+                                    <div className="space-y-4">
+                                        <div className="bg-amber-50 border-2 border-amber-200 rounded-2xl p-5 text-center text-xs text-amber-950 font-bold space-y-1">
+                                            <p className="text-sm font-black uppercase text-amber-800">⏳ Booking Opens Soon</p>
+                                            <p className="text-slate-700 font-medium">
+                                                ⭐ Premium Booking Opens: <strong>{event.premium_booking_open_date ? new Date(event.premium_booking_open_date).toLocaleString() : 'Soon'}</strong><br />
+                                                🌐 General Booking Opens: <strong>{event.normal_booking_open_date ? new Date(event.normal_booking_open_date).toLocaleString() : 'Soon'}</strong>
+                                            </p>
+                                        </div>
+                                        <button
+                                            disabled
+                                            className="w-full py-4 bg-slate-200 text-slate-500 font-black text-sm rounded-2xl cursor-not-allowed uppercase shadow-inner border border-slate-300"
+                                        >
+                                            🔒 Booking Not Open Yet
+                                        </button>
+                                    </div>
+                                ) : isPremiumOnlyPeriod && !isUserPremium ? (
+                                    <div className="space-y-4">
+                                        <div className="bg-amber-50 border-2 border-amber-300 rounded-2xl p-5 text-center text-xs text-amber-950 font-bold space-y-2">
+                                            <p className="text-sm font-black uppercase text-amber-800 flex items-center justify-center gap-1.5">
+                                                ⭐ Premium VIP Early Access Only
+                                            </p>
+                                            <p className="text-slate-700 font-medium leading-relaxed">
+                                                Ticket booking is currently open exclusively for <strong>Premium VIP Customers</strong>. General customer booking opens on <strong>{event.normal_booking_open_date ? new Date(event.normal_booking_open_date).toLocaleString() : 'scheduled date'}</strong>.
+                                            </p>
+                                        </div>
+                                        <button
+                                            disabled
+                                            className="w-full py-4 bg-slate-200 text-slate-500 font-black text-sm rounded-2xl cursor-not-allowed uppercase shadow-inner border border-slate-300"
+                                        >
+                                            ⭐ Premium Early Access Only
+                                        </button>
+                                        <button
+                                            onClick={() => navigate('/profile')}
+                                            className="w-full py-3.5 bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-black text-xs uppercase tracking-wider rounded-2xl shadow-lg transition cursor-pointer"
+                                        >
+                                            👑 Become a Premium Customer to Book Now
                                         </button>
                                     </div>
                                 ) : isSoldOut ? (
