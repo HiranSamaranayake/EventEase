@@ -8,18 +8,22 @@ import {
   FaTimesCircle,
   FaClock,
   FaQrcode,
+  FaTimes,
+  FaDownload,
 } from "react-icons/fa";
 
 const OrganizerTickets = () => {
   const [tickets, setTickets] = useState([]);
+  const [selectedTicket, setSelectedTicket] = useState(null);
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(localStorage.getItem("user")) || {};
   const [search, setSearch] = useState("");
 
 const [filter, setFilter] = useState("All");
 
 
 useEffect(() => {
+  if (!user.id) return;
 
   fetch(
     `http://localhost/EventEase/backend/api/organizer_tickets.php?organizer_id=${user.id}`
@@ -33,17 +37,23 @@ useEffect(() => {
         console.log(data.message);
       }
 
-    });
+    })
+    .catch((err) => console.error("Error fetching tickets:", err));
 
-}, []);
+}, [user.id]);
+
 const filteredTickets = tickets.filter((ticket) => {
 
   const matchesSearch =
-    ticket.full_name
+    (ticket.full_name || "")
       .toLowerCase()
       .includes(search.toLowerCase()) ||
 
-    ticket.event_title
+    (ticket.event_title || "")
+      .toLowerCase()
+      .includes(search.toLowerCase()) ||
+
+    (ticket.ticket_code || "")
       .toLowerCase()
       .includes(search.toLowerCase());
 
@@ -118,7 +128,7 @@ const cancelledTickets =
 
     <input
       className="w-full p-3 outline-none"
-      placeholder="Search customer or event..."
+      placeholder="Search customer, event, or ticket code..."
       value={search}
       onChange={(e) => setSearch(e.target.value)}
     />
@@ -128,13 +138,13 @@ const cancelledTickets =
   <select
     value={filter}
     onChange={(e) => setFilter(e.target.value)}
-    className="border rounded-xl px-4"
+    className="border rounded-xl px-4 font-semibold text-gray-700 outline-none"
   >
 
-    <option>All</option>
-  <option>unused</option>
-    <option>used</option>
-    <option>cancelled</option>
+    <option value="All">All Statuses</option>
+    <option value="unused">Unused</option>
+    <option value="used">Used</option>
+    <option value="cancelled">Cancelled</option>
 
   </select>
 
@@ -177,7 +187,7 @@ Ticket Code
 <tr>
 
 <td
-colSpan="6"
+colSpan="8"
 className="text-center p-16"
 >
 
@@ -214,13 +224,16 @@ duration-300
 
 <img
  src={`http://localhost/EventEase/backend/${ticket.qr_code}`}
-  className="w-16 h-16 mx-auto rounded-lg border"
+  alt={`QR code for ${ticket.ticket_code}`}
+  className="w-16 h-16 mx-auto rounded-lg border cursor-pointer hover:scale-105 hover:shadow-md transition duration-200"
+  onClick={() => setSelectedTicket(ticket)}
+  title="Click to view QR code"
 />
 
 </td>
 <td className="p-4">
 
-<div className="font-semibold">
+<div className="font-semibold text-gray-800">
 {ticket.full_name}
 </div>
 
@@ -232,7 +245,7 @@ duration-300
 
 <td className="p-4">
 
-<div className="font-semibold">
+<div className="font-semibold text-gray-800">
 {ticket.event_title}
 </div>
 
@@ -242,7 +255,7 @@ duration-300
 
 </td>
 
-<td className="p-4 text-center">
+<td className="p-4 text-center font-medium">
 
 {ticket.ticket_quantity}
 
@@ -254,10 +267,14 @@ duration-300
 className="
 font-mono
 text-sm
-bg-gray-100
+bg-purple-50
+text-purple-700
+border
+border-purple-200
 px-3
-py-2
+py-1.5
 rounded-lg
+font-semibold
 "
 >
 
@@ -271,7 +288,7 @@ rounded-lg
 <td className="p-4 text-center">
 
 <span
-className={`px-3 py-1 rounded-full text-xs font-semibold ${
+className={`px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider ${
 ticket.status === "unused"
 ? "bg-green-100 text-green-700"
 : ticket.status === "used"
@@ -286,15 +303,16 @@ ticket.status === "unused"
 
 </td>
 
-<td className="p-4 text-center">
+<td className="p-4 text-center text-sm text-gray-600">
 
-{new Date(ticket.booking_date).toLocaleDateString()}
+{ticket.booking_date ? new Date(ticket.booking_date).toLocaleDateString() : 'N/A'}
 
 </td>
 
 <td className="p-4 text-center">
 
 <button
+onClick={() => setSelectedTicket(ticket)}
 className="
 bg-purple-600
 hover:bg-purple-700
@@ -302,11 +320,17 @@ text-white
 px-4
 py-2
 rounded-xl
+font-semibold
+shadow-sm
+hover:shadow-purple-200
+transition
+flex
+items-center
+gap-1.5
+mx-auto
 "
 >
-
-View
-
+<FaQrcode /> View
 </button>
 
 </td>
@@ -322,6 +346,110 @@ View
 </table>
 
 </div>
+
+      {/* QR Code Detail Modal */}
+      {selectedTicket && (
+        <div
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fadeIn"
+          onClick={() => setSelectedTicket(null)}
+        >
+          <div
+            className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative border border-purple-100 transform transition-all"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setSelectedTicket(null)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 bg-gray-100 hover:bg-gray-200 p-2 rounded-full transition"
+              title="Close"
+            >
+              <FaTimes className="text-lg" />
+            </button>
+
+            <div className="text-center mb-6">
+              <span className="inline-block p-3 bg-purple-100 text-purple-600 rounded-2xl mb-3">
+                <FaQrcode className="text-2xl" />
+              </span>
+              <h3 className="text-2xl font-bold text-gray-800">Digital Ticket QR</h3>
+              <p className="text-sm text-gray-500 mt-1">Official Event Pass Verification</p>
+            </div>
+
+            <div className="bg-gradient-to-b from-purple-50 to-indigo-50/50 p-6 rounded-2xl border border-purple-100 mb-6 flex flex-col items-center">
+              {selectedTicket.qr_code ? (
+                <img
+                  src={`http://localhost/EventEase/backend/${selectedTicket.qr_code}`}
+                  alt={`QR Code ${selectedTicket.ticket_code}`}
+                  className="w-56 h-56 object-contain bg-white p-3 rounded-2xl shadow-md border border-purple-200 mb-4"
+                />
+              ) : (
+                <div className="w-56 h-56 bg-gray-100 rounded-2xl flex items-center justify-center text-gray-400 mb-4">
+                  No QR Code Available
+                </div>
+              )}
+
+              <div className="bg-purple-900 text-purple-100 font-mono text-lg px-4 py-2 rounded-xl font-semibold tracking-wider">
+                {selectedTicket.ticket_code}
+              </div>
+            </div>
+
+            <div className="space-y-3 text-sm text-gray-600 bg-gray-50 p-4 rounded-2xl border border-gray-100 mb-6">
+              <div className="flex justify-between border-b border-gray-200 pb-2">
+                <span className="font-semibold text-gray-500">Attendee</span>
+                <span className="font-bold text-gray-800 text-right">{selectedTicket.full_name} ({selectedTicket.email})</span>
+              </div>
+              <div className="flex justify-between border-b border-gray-200 pb-2">
+                <span className="font-semibold text-gray-500">Event</span>
+                <span className="font-bold text-gray-800 text-right">{selectedTicket.event_title}</span>
+              </div>
+              <div className="flex justify-between border-b border-gray-200 pb-2">
+                <span className="font-semibold text-gray-500">Event Date</span>
+                <span className="font-medium text-gray-700">{selectedTicket.event_date}</span>
+              </div>
+              <div className="flex justify-between border-b border-gray-200 pb-2">
+                <span className="font-semibold text-gray-500">Quantity</span>
+                <span className="font-medium text-gray-700">{selectedTicket.ticket_quantity} ticket(s)</span>
+              </div>
+              <div className="flex justify-between border-b border-gray-200 pb-2">
+                <span className="font-semibold text-gray-500">Booking Date</span>
+                <span className="font-medium text-gray-700">{selectedTicket.booking_date ? new Date(selectedTicket.booking_date).toLocaleString() : 'N/A'}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-semibold text-gray-500">Status</span>
+                <span
+                  className={`px-3 py-0.5 rounded-full text-xs font-semibold uppercase ${
+                    selectedTicket.status === "unused"
+                      ? "bg-green-100 text-green-700"
+                      : selectedTicket.status === "used"
+                      ? "bg-blue-100 text-blue-700"
+                      : "bg-red-100 text-red-700"
+                  }`}
+                >
+                  {selectedTicket.status}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              {selectedTicket.qr_code && (
+                <a
+                  href={`http://localhost/EventEase/backend/${selectedTicket.qr_code}`}
+                  download={`QR-${selectedTicket.ticket_code}.png`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold py-3 px-4 rounded-xl shadow transition flex items-center justify-center gap-2"
+                >
+                  <FaDownload /> Download QR
+                </a>
+              )}
+              <button
+                onClick={() => setSelectedTicket(null)}
+                className="px-5 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-3 rounded-xl transition"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
