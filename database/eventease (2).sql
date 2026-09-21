@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 24, 2026 at 08:03 PM
+-- Generation Time: Sep 21, 2026 at 06:40 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,8 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `eventease`
 --
-CREATE DATABASE IF NOT EXISTS `eventease` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `eventease`;
 
 -- --------------------------------------------------------
 
@@ -100,7 +98,7 @@ INSERT INTO `bookings` (`id`, `user_id`, `event_id`, `ticket_quantity`, `total_a
 (155, 9, 21, 1, 300.00, '', 'Cancelled', NULL, '2026-07-13 06:36:01'),
 (156, 9, 22, 1, 1000.00, 'Paid', 'Confirmed', NULL, '2026-07-13 06:47:17'),
 (157, 9, 23, 1, 5000.00, 'Paid', 'Confirmed', NULL, '2026-07-13 07:49:18'),
-(158, 9, 17, 1, 5000.00, 'Pending', 'Pending', NULL, '2026-07-30 09:50:18'),
+(158, 9, 17, 1, 5000.00, '', 'Cancelled', NULL, '2026-07-30 09:50:18'),
 (159, 9, 16, 1, 7500.00, 'Paid', 'Confirmed', NULL, '2026-07-30 17:05:20'),
 (160, 14, 17, 1, 5000.00, 'Paid', 'Confirmed', NULL, '2026-08-09 17:03:12'),
 (161, 14, 24, 1, 4000.00, 'Paid', 'Confirmed', NULL, '2026-08-09 17:44:17'),
@@ -139,7 +137,10 @@ INSERT INTO `bookings` (`id`, `user_id`, `event_id`, `ticket_quantity`, `total_a
 (194, 17, 1, 1, 2250.00, 'Paid', 'Confirmed', NULL, '2026-08-10 19:03:46'),
 (195, 17, 1, 1, 2250.00, 'Paid', 'Confirmed', NULL, '2026-08-10 19:06:37'),
 (196, 17, 1, 1, 2250.00, 'Paid', 'Confirmed', NULL, '2026-08-10 19:12:02'),
-(197, 17, 1, 1, 2250.00, 'Paid', 'Confirmed', NULL, '2026-08-11 09:52:19');
+(197, 17, 1, 1, 2250.00, 'Paid', 'Confirmed', NULL, '2026-08-11 09:52:19'),
+(198, 9, 1040, 1, 200.00, 'Paid', 'Confirmed', NULL, '2026-08-26 17:16:38'),
+(199, 106, 1043, 4, 7695.00, '', 'Cancelled', NULL, '2026-09-21 09:13:45'),
+(200, 106, 1043, 1, 2700.00, 'Paid', 'Confirmed', NULL, '2026-09-21 16:11:10');
 
 -- --------------------------------------------------------
 
@@ -392,7 +393,18 @@ INSERT INTO `email_logs` (`id`, `user_id`, `booking_id`, `recipient_email`, `sub
 (152, 9, 159, 'hirananjana12@gmail.com', '🎟️ Booking Confirmation & E-Ticket - Mariens Live in concert [EVT-159-2149]', '\n        <!DOCTYPE html>\n        <html>\n        <head>\n          <meta charset=\"utf-8\">\n          <style>\n            body { font-family: \'Segoe UI\', Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }\n            .ticket-card { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }\n            .header { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: #ffffff; padding: 28px 24px; text-align: center; }\n            .header h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: 0.5px; }\n            .header p { margin: 6px 0 0 0; opacity: 0.9; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }\n            .content { padding: 28px 24px; }\n            .detail-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin: 20px 0; }\n            .detail-row { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px; }\n            .detail-label { color: #64748b; font-size: 13px; font-weight: 600; }\n            .detail-val { color: #0f172a; font-size: 13px; font-weight: 700; }\n            .qr-section { text-align: center; margin: 24px 0; background: #faf5ff; padding: 20px; border-radius: 12px; border: 1px solid #e9d5ff; }\n            .qr-code-box { display: inline-block; padding: 10px; background: #ffffff; border-radius: 12px; border: 1px solid #d8b4fe; }\n            .badge-attachment { background: #ecfdf5; border: 1px solid #a7f3d0; color: #047857; padding: 12px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; margin-top: 20px; }\n            .footer { background: #f1f5f9; padding: 18px; text-align: center; font-size: 12px; color: #64748b; border-top: 1px solid #e2e8f0; }\n            </style>\n        </head>\n        <body>\n          <div class=\"ticket-card\">\n            <div class=\"header\">\n              <h1>🎉 Booking Confirmed!</h1>\n              <p>EventEase Ticket Reservation Platform</p>\n            </div>\n            <div class=\"content\">\n              <p style=\"font-size:15px; margin-top:0;\">Dear <strong>Hiran Anajana</strong>,</p>\n              <p style=\"font-size:14px; color:#475569; line-height:1.5;\">Thank you for your reservation! Your payment has been successfully processed and confirmed. Your official entry pass and QR ticket are ready below.</p>\n              \n              <div class=\"detail-box\">\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Event Name:</span>\n                  <span class=\"detail-val\" style=\"color:#4f46e5;\">Mariens Live in concert</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Ticket Code:</span>\n                  <span class=\"detail-val\" style=\"font-family:monospace;\">EVT-159-2149</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Date & Location:</span>\n                  <span class=\"detail-val\">2026-07-25 | Negombo</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Reserved Seat(s):</span>\n                  <span class=\"detail-val\" style=\"color:#7c3aed;\">General Admission</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Ticket Quantity:</span>\n                  <span class=\"detail-val\">1 Ticket(s)</span>\n                </div>\n                <div class=\"detail-row\" style=\"border-bottom:none; margin-bottom:0; padding-bottom:0;\">\n                  <span class=\"detail-label\">Total Amount Paid:</span>\n                  <span class=\"detail-val\" style=\"color:#16a34a; font-size:15px;\">LKR 7,500.00</span>\n                </div>\n              </div>\n\n              <div class=\"qr-section\">\n                <h3 style=\"margin-top:0; color:#1e293b; font-size:16px;\">Gate Entrance QR Pass</h3>\n                <p style=\"font-size:12px; color:#64748b; margin-bottom:14px;\">Present this scannable QR code at the venue gate for entry validation.</p>\n                <div class=\"qr-code-box\">\n                  <img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAL4AAAC+CAIAAAAEFiLKAAAACXBIWXMAAA7EAAAOxAGVKw4bAAADG0lEQVR4nO3dQW7bMBRAwbrI/a/s7LwoKgh6IU3KmVkHsWI8cPFDkY/n8/kHrvu7+gG4K+kQSYdIOkTSIZIOkXSIpEMkHSLpEH2d/sTj8XjDc/zc0X9Ujp7/6s/Pfp7dnP6HyqpDJB0i6RBJh0g6RNIhkg7R+VznyKqdqVfnIrOfc9Tvv8v3+WLVIZIOkXSIpEMkHSLpEEmHqM91jsze73LVqDnQqn02u32fL1YdIukQSYdIOkTSIZIOkXSIxs91PtWo97w+hlWHSDpE0iGSDpF0iKRDJB2i3zvXuTp3+bXzmyNWHSLpEEmHSDpE0iGSDpF0iMbPdXabc8x+r2r2vGe37/PFqkMkHSLpEEmHSDpE0iGSDlGf69zlXqdR92Gtmg9ty6pDJB0i6RBJh0g6RNIhkg7RY9vtILvZ7R6u5aw6RNIhkg6RdIikQyQdIukQnc91Zu8jmX3OzW77YEb9vaM+N79HZtUhkg6RdIikQyQdIukQSYeo79cZda7MbvtgdptjjTL8HCCrDpF0iKRDJB0i6RBJh0g6ROfn6+x2D9Rd9t/Mfs7l5z5bdYikQyQdIukQSYdIOkTSITqf66ya3+x2Ps2q85GPvofh71VdZdUhkg6RdIikQyQdIukQSYdo/D3no+YWu70Pter+rNlzGvt1eDfpEEmHSDpE0iGSDpF0iD7/PqzZ5wDd/TyhzKpDJB0i6RBJh0g6RNIhkg7R+vuwRll1z9RVo/bxrJpLvVh1iKRDJB0i6RBJh0g6RNIh6u9h3f3c5G33wfxj1T3w3sNiFukQSYdIOkTSIZIOkXSI1p+vc2TVfebbzlEmfW5m1SGSDpF0iKRDJB0i6RBJh2j8XGc3u52vM/v3v+38HqsOkXSIpEMkHSLpEEmHSDpEnz/XGWX2/pvZ922555xdSIdIOkTSIZIOkXSIpEM0fq5zl3NrRlk1j1l+nrVVh0g6RNIhkg6RdIikQyQdoj7XWT5X+KG37WuZZPl7ZFYdIukQSYdIOkTSIZIOkXSIzu85h/+y6hBJh0g6RNIhkg6RdIikQyQdIukQSYfoG5aEAH4YEz/mAAAAAElFTkSuQmCC\" alt=\"QR Code\" width=\"180\" height=\"180\" style=\"display:block;\" />\n                </div>\n                <p style=\"font-size:13px; font-weight:bold; color:#6b21a8; margin-top:10px; font-family:monospace;\">EVT-159-2149</p>\n              </div>\n\n              <div class=\"badge-attachment\">\n                📎 <span><strong>E-Ticket PDF Attached:</strong> Your official printable E-Ticket PDF pass is attached to this email. You can also view or download it anytime from your EventEase Account under \"My Bookings\".</span>\n              </div>\n            </div>\n            <div class=\"footer\">\n              EventEase Digital Ticketing System &bull; Keep ticket QR code confidential &bull; Support: support@eventease.com\n            </div>\n          </div>\n        </body>\n        </html>\n        ', 'failed', 'SMTP Error: Could not authenticate.', '2026-08-11 09:52:50'),
 (153, 9, 159, 'hirananjana12@gmail.com', '🎟️ Booking Confirmation & E-Ticket - Mariens Live in concert [EVT-159-2149]', '\n        <!DOCTYPE html>\n        <html>\n        <head>\n          <meta charset=\"utf-8\">\n          <style>\n            body { font-family: \'Segoe UI\', Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }\n            .ticket-card { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }\n            .header { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: #ffffff; padding: 28px 24px; text-align: center; }\n            .header h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: 0.5px; }\n            .header p { margin: 6px 0 0 0; opacity: 0.9; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }\n            .content { padding: 28px 24px; }\n            .detail-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin: 20px 0; }\n            .detail-row { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px; }\n            .detail-label { color: #64748b; font-size: 13px; font-weight: 600; }\n            .detail-val { color: #0f172a; font-size: 13px; font-weight: 700; }\n            .qr-section { text-align: center; margin: 24px 0; background: #faf5ff; padding: 20px; border-radius: 12px; border: 1px solid #e9d5ff; }\n            .qr-code-box { display: inline-block; padding: 10px; background: #ffffff; border-radius: 12px; border: 1px solid #d8b4fe; }\n            .badge-attachment { background: #ecfdf5; border: 1px solid #a7f3d0; color: #047857; padding: 12px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; margin-top: 20px; }\n            .footer { background: #f1f5f9; padding: 18px; text-align: center; font-size: 12px; color: #64748b; border-top: 1px solid #e2e8f0; }\n            </style>\n        </head>\n        <body>\n          <div class=\"ticket-card\">\n            <div class=\"header\">\n              <h1>🎉 Booking Confirmed!</h1>\n              <p>EventEase Ticket Reservation Platform</p>\n            </div>\n            <div class=\"content\">\n              <p style=\"font-size:15px; margin-top:0;\">Dear <strong>Hiran Anajana</strong>,</p>\n              <p style=\"font-size:14px; color:#475569; line-height:1.5;\">Thank you for your reservation! Your payment has been successfully processed and confirmed. Your official entry pass and QR ticket are ready below.</p>\n              \n              <div class=\"detail-box\">\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Event Name:</span>\n                  <span class=\"detail-val\" style=\"color:#4f46e5;\">Mariens Live in concert</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Ticket Code:</span>\n                  <span class=\"detail-val\" style=\"font-family:monospace;\">EVT-159-2149</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Date & Location:</span>\n                  <span class=\"detail-val\">2026-07-25 | Negombo</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Reserved Seat(s):</span>\n                  <span class=\"detail-val\" style=\"color:#7c3aed;\">General Admission</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Ticket Quantity:</span>\n                  <span class=\"detail-val\">1 Ticket(s)</span>\n                </div>\n                <div class=\"detail-row\" style=\"border-bottom:none; margin-bottom:0; padding-bottom:0;\">\n                  <span class=\"detail-label\">Total Amount Paid:</span>\n                  <span class=\"detail-val\" style=\"color:#16a34a; font-size:15px;\">LKR 7,500.00</span>\n                </div>\n              </div>\n\n              <div class=\"qr-section\">\n                <h3 style=\"margin-top:0; color:#1e293b; font-size:16px;\">Gate Entrance QR Pass</h3>\n                <p style=\"font-size:12px; color:#64748b; margin-bottom:14px;\">Present this scannable QR code at the venue gate for entry validation.</p>\n                <div class=\"qr-code-box\">\n                  <img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAL4AAAC+CAIAAAAEFiLKAAAACXBIWXMAAA7EAAAOxAGVKw4bAAADG0lEQVR4nO3dQW7bMBRAwbrI/a/s7LwoKgh6IU3KmVkHsWI8cPFDkY/n8/kHrvu7+gG4K+kQSYdIOkTSIZIOkXSIpEMkHSLpEH2d/sTj8XjDc/zc0X9Ujp7/6s/Pfp7dnP6HyqpDJB0i6RBJh0g6RNIhkg7R+VznyKqdqVfnIrOfc9Tvv8v3+WLVIZIOkXSIpEMkHSLpEEmHqM91jsze73LVqDnQqn02u32fL1YdIukQSYdIOkTSIZIOkXSIxs91PtWo97w+hlWHSDpE0iGSDpF0iKRDJB2i3zvXuTp3+bXzmyNWHSLpEEmHSDpE0iGSDpF0iMbPdXabc8x+r2r2vGe37/PFqkMkHSLpEEmHSDpE0iGSDlGf69zlXqdR92Gtmg9ty6pDJB0i6RBJh0g6RNIhkg7RY9vtILvZ7R6u5aw6RNIhkg6RdIikQyQdIukQnc91Zu8jmX3OzW77YEb9vaM+N79HZtUhkg6RdIikQyQdIukQSYeo79cZda7MbvtgdptjjTL8HCCrDpF0iKRDJB0i6RBJh0g6ROfn6+x2D9Rd9t/Mfs7l5z5bdYikQyQdIukQSYdIOkTSITqf66ya3+x2Ps2q85GPvofh71VdZdUhkg6RdIikQyQdIukQSYdo/D3no+YWu70Pter+rNlzGvt1eDfpEEmHSDpE0iGSDpF0iD7/PqzZ5wDd/TyhzKpDJB0i6RBJh0g6RNIhkg7R+vuwRll1z9RVo/bxrJpLvVh1iKRDJB0i6RBJh0g6RNIh6u9h3f3c5G33wfxj1T3w3sNiFukQSYdIOkTSIZIOkXSI1p+vc2TVfebbzlEmfW5m1SGSDpF0iKRDJB0i6RBJh2j8XGc3u52vM/v3v+38HqsOkXSIpEMkHSLpEEmHSDpEnz/XGWX2/pvZ922555xdSIdIOkTSIZIOkXSIpEM0fq5zl3NrRlk1j1l+nrVVh0g6RNIhkg6RdIikQyQdoj7XWT5X+KG37WuZZPl7ZFYdIukQSYdIOkTSIZIOkXSIzu85h/+y6hBJh0g6RNIhkg6RdIikQyQdIukQSYfoG5aEAH4YEz/mAAAAAElFTkSuQmCC\" alt=\"QR Code\" width=\"180\" height=\"180\" style=\"display:block;\" />\n                </div>\n                <p style=\"font-size:13px; font-weight:bold; color:#6b21a8; margin-top:10px; font-family:monospace;\">EVT-159-2149</p>\n              </div>\n\n              <div class=\"badge-attachment\">\n                📎 <span><strong>E-Ticket PDF Attached:</strong> Your official printable E-Ticket PDF pass is attached to this email. You can also view or download it anytime from your EventEase Account under \"My Bookings\".</span>\n              </div>\n            </div>\n            <div class=\"footer\">\n              EventEase Digital Ticketing System &bull; Keep ticket QR code confidential &bull; Support: support@eventease.com\n            </div>\n          </div>\n        </body>\n        </html>\n        ', 'failed', 'SMTP Error: Could not authenticate.', '2026-08-11 09:52:54'),
 (154, 9, 159, 'hirananjana12@gmail.com', '🎟️ Booking Confirmation & E-Ticket - Mariens Live in concert [EVT-159-2149]', '\n        <!DOCTYPE html>\n        <html>\n        <head>\n          <meta charset=\"utf-8\">\n          <style>\n            body { font-family: \'Segoe UI\', Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }\n            .ticket-card { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }\n            .header { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: #ffffff; padding: 28px 24px; text-align: center; }\n            .header h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: 0.5px; }\n            .header p { margin: 6px 0 0 0; opacity: 0.9; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }\n            .content { padding: 28px 24px; }\n            .detail-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin: 20px 0; }\n            .detail-row { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px; }\n            .detail-label { color: #64748b; font-size: 13px; font-weight: 600; }\n            .detail-val { color: #0f172a; font-size: 13px; font-weight: 700; }\n            .qr-section { text-align: center; margin: 24px 0; background: #faf5ff; padding: 20px; border-radius: 12px; border: 1px solid #e9d5ff; }\n            .qr-code-box { display: inline-block; padding: 10px; background: #ffffff; border-radius: 12px; border: 1px solid #d8b4fe; }\n            .badge-attachment { background: #ecfdf5; border: 1px solid #a7f3d0; color: #047857; padding: 12px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; margin-top: 20px; }\n            .footer { background: #f1f5f9; padding: 18px; text-align: center; font-size: 12px; color: #64748b; border-top: 1px solid #e2e8f0; }\n            </style>\n        </head>\n        <body>\n          <div class=\"ticket-card\">\n            <div class=\"header\">\n              <h1>🎉 Booking Confirmed!</h1>\n              <p>EventEase Ticket Reservation Platform</p>\n            </div>\n            <div class=\"content\">\n              <p style=\"font-size:15px; margin-top:0;\">Dear <strong>Hiran Anajana</strong>,</p>\n              <p style=\"font-size:14px; color:#475569; line-height:1.5;\">Thank you for your reservation! Your payment has been successfully processed and confirmed. Your official entry pass and QR ticket are ready below.</p>\n              \n              <div class=\"detail-box\">\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Event Name:</span>\n                  <span class=\"detail-val\" style=\"color:#4f46e5;\">Mariens Live in concert</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Ticket Code:</span>\n                  <span class=\"detail-val\" style=\"font-family:monospace;\">EVT-159-2149</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Date & Location:</span>\n                  <span class=\"detail-val\">2026-07-25 | Negombo</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Reserved Seat(s):</span>\n                  <span class=\"detail-val\" style=\"color:#7c3aed;\">General Admission</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Ticket Quantity:</span>\n                  <span class=\"detail-val\">1 Ticket(s)</span>\n                </div>\n                <div class=\"detail-row\" style=\"border-bottom:none; margin-bottom:0; padding-bottom:0;\">\n                  <span class=\"detail-label\">Total Amount Paid:</span>\n                  <span class=\"detail-val\" style=\"color:#16a34a; font-size:15px;\">LKR 7,500.00</span>\n                </div>\n              </div>\n\n              <div class=\"qr-section\">\n                <h3 style=\"margin-top:0; color:#1e293b; font-size:16px;\">Gate Entrance QR Pass</h3>\n                <p style=\"font-size:12px; color:#64748b; margin-bottom:14px;\">Present this scannable QR code at the venue gate for entry validation.</p>\n                <div class=\"qr-code-box\">\n                  <img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAL4AAAC+CAIAAAAEFiLKAAAACXBIWXMAAA7EAAAOxAGVKw4bAAADG0lEQVR4nO3dQW7bMBRAwbrI/a/s7LwoKgh6IU3KmVkHsWI8cPFDkY/n8/kHrvu7+gG4K+kQSYdIOkTSIZIOkXSIpEMkHSLpEH2d/sTj8XjDc/zc0X9Ujp7/6s/Pfp7dnP6HyqpDJB0i6RBJh0g6RNIhkg7R+VznyKqdqVfnIrOfc9Tvv8v3+WLVIZIOkXSIpEMkHSLpEEmHqM91jsze73LVqDnQqn02u32fL1YdIukQSYdIOkTSIZIOkXSIxs91PtWo97w+hlWHSDpE0iGSDpF0iKRDJB2i3zvXuTp3+bXzmyNWHSLpEEmHSDpE0iGSDpF0iMbPdXabc8x+r2r2vGe37/PFqkMkHSLpEEmHSDpE0iGSDlGf69zlXqdR92Gtmg9ty6pDJB0i6RBJh0g6RNIhkg7RY9vtILvZ7R6u5aw6RNIhkg6RdIikQyQdIukQnc91Zu8jmX3OzW77YEb9vaM+N79HZtUhkg6RdIikQyQdIukQSYeo79cZda7MbvtgdptjjTL8HCCrDpF0iKRDJB0i6RBJh0g6ROfn6+x2D9Rd9t/Mfs7l5z5bdYikQyQdIukQSYdIOkTSITqf66ya3+x2Ps2q85GPvofh71VdZdUhkg6RdIikQyQdIukQSYdo/D3no+YWu70Pter+rNlzGvt1eDfpEEmHSDpE0iGSDpF0iD7/PqzZ5wDd/TyhzKpDJB0i6RBJh0g6RNIhkg7R+vuwRll1z9RVo/bxrJpLvVh1iKRDJB0i6RBJh0g6RNIh6u9h3f3c5G33wfxj1T3w3sNiFukQSYdIOkTSIZIOkXSI1p+vc2TVfebbzlEmfW5m1SGSDpF0iKRDJB0i6RBJh2j8XGc3u52vM/v3v+38HqsOkXSIpEMkHSLpEEmHSDpEnz/XGWX2/pvZ922555xdSIdIOkTSIZIOkXSIpEM0fq5zl3NrRlk1j1l+nrVVh0g6RNIhkg6RdIikQyQdoj7XWT5X+KG37WuZZPl7ZFYdIukQSYdIOkTSIZIOkXSIzu85h/+y6hBJh0g6RNIhkg6RdIikQyQdIukQSYfoG5aEAH4YEz/mAAAAAElFTkSuQmCC\" alt=\"QR Code\" width=\"180\" height=\"180\" style=\"display:block;\" />\n                </div>\n                <p style=\"font-size:13px; font-weight:bold; color:#6b21a8; margin-top:10px; font-family:monospace;\">EVT-159-2149</p>\n              </div>\n\n              <div class=\"badge-attachment\">\n                📎 <span><strong>E-Ticket PDF Attached:</strong> Your official printable E-Ticket PDF pass is attached to this email. You can also view or download it anytime from your EventEase Account under \"My Bookings\".</span>\n              </div>\n            </div>\n            <div class=\"footer\">\n              EventEase Digital Ticketing System &bull; Keep ticket QR code confidential &bull; Support: support@eventease.com\n            </div>\n          </div>\n        </body>\n        </html>\n        ', 'failed', 'SMTP Error: Could not authenticate.', '2026-08-11 09:52:57'),
-(155, 9, 159, 'hirananjana12@gmail.com', '🎟️ Booking Confirmation & E-Ticket - Mariens Live in concert [EVT-159-2149]', '\n        <!DOCTYPE html>\n        <html>\n        <head>\n          <meta charset=\"utf-8\">\n          <style>\n            body { font-family: \'Segoe UI\', Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }\n            .ticket-card { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }\n            .header { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: #ffffff; padding: 28px 24px; text-align: center; }\n            .header h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: 0.5px; }\n            .header p { margin: 6px 0 0 0; opacity: 0.9; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }\n            .content { padding: 28px 24px; }\n            .detail-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin: 20px 0; }\n            .detail-row { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px; }\n            .detail-label { color: #64748b; font-size: 13px; font-weight: 600; }\n            .detail-val { color: #0f172a; font-size: 13px; font-weight: 700; }\n            .qr-section { text-align: center; margin: 24px 0; background: #faf5ff; padding: 20px; border-radius: 12px; border: 1px solid #e9d5ff; }\n            .qr-code-box { display: inline-block; padding: 10px; background: #ffffff; border-radius: 12px; border: 1px solid #d8b4fe; }\n            .badge-attachment { background: #ecfdf5; border: 1px solid #a7f3d0; color: #047857; padding: 12px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; margin-top: 20px; }\n            .footer { background: #f1f5f9; padding: 18px; text-align: center; font-size: 12px; color: #64748b; border-top: 1px solid #e2e8f0; }\n            </style>\n        </head>\n        <body>\n          <div class=\"ticket-card\">\n            <div class=\"header\">\n              <h1>🎉 Booking Confirmed!</h1>\n              <p>EventEase Ticket Reservation Platform</p>\n            </div>\n            <div class=\"content\">\n              <p style=\"font-size:15px; margin-top:0;\">Dear <strong>Hiran Anajana</strong>,</p>\n              <p style=\"font-size:14px; color:#475569; line-height:1.5;\">Thank you for your reservation! Your payment has been successfully processed and confirmed. Your official entry pass and QR ticket are ready below.</p>\n              \n              <div class=\"detail-box\">\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Event Name:</span>\n                  <span class=\"detail-val\" style=\"color:#4f46e5;\">Mariens Live in concert</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Ticket Code:</span>\n                  <span class=\"detail-val\" style=\"font-family:monospace;\">EVT-159-2149</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Date & Location:</span>\n                  <span class=\"detail-val\">2026-07-25 | Negombo</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Reserved Seat(s):</span>\n                  <span class=\"detail-val\" style=\"color:#7c3aed;\">General Admission</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Ticket Quantity:</span>\n                  <span class=\"detail-val\">1 Ticket(s)</span>\n                </div>\n                <div class=\"detail-row\" style=\"border-bottom:none; margin-bottom:0; padding-bottom:0;\">\n                  <span class=\"detail-label\">Total Amount Paid:</span>\n                  <span class=\"detail-val\" style=\"color:#16a34a; font-size:15px;\">LKR 7,500.00</span>\n                </div>\n              </div>\n\n              <div class=\"qr-section\">\n                <h3 style=\"margin-top:0; color:#1e293b; font-size:16px;\">Gate Entrance QR Pass</h3>\n                <p style=\"font-size:12px; color:#64748b; margin-bottom:14px;\">Present this scannable QR code at the venue gate for entry validation.</p>\n                <div class=\"qr-code-box\">\n                  <img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAL4AAAC+CAIAAAAEFiLKAAAACXBIWXMAAA7EAAAOxAGVKw4bAAADG0lEQVR4nO3dQW7bMBRAwbrI/a/s7LwoKgh6IU3KmVkHsWI8cPFDkY/n8/kHrvu7+gG4K+kQSYdIOkTSIZIOkXSIpEMkHSLpEH2d/sTj8XjDc/zc0X9Ujp7/6s/Pfp7dnP6HyqpDJB0i6RBJh0g6RNIhkg7R+VznyKqdqVfnIrOfc9Tvv8v3+WLVIZIOkXSIpEMkHSLpEEmHqM91jsze73LVqDnQqn02u32fL1YdIukQSYdIOkTSIZIOkXSIxs91PtWo97w+hlWHSDpE0iGSDpF0iKRDJB2i3zvXuTp3+bXzmyNWHSLpEEmHSDpE0iGSDpF0iMbPdXabc8x+r2r2vGe37/PFqkMkHSLpEEmHSDpE0iGSDlGf69zlXqdR92Gtmg9ty6pDJB0i6RBJh0g6RNIhkg7RY9vtILvZ7R6u5aw6RNIhkg6RdIikQyQdIukQnc91Zu8jmX3OzW77YEb9vaM+N79HZtUhkg6RdIikQyQdIukQSYeo79cZda7MbvtgdptjjTL8HCCrDpF0iKRDJB0i6RBJh0g6ROfn6+x2D9Rd9t/Mfs7l5z5bdYikQyQdIukQSYdIOkTSITqf66ya3+x2Ps2q85GPvofh71VdZdUhkg6RdIikQyQdIukQSYdo/D3no+YWu70Pter+rNlzGvt1eDfpEEmHSDpE0iGSDpF0iD7/PqzZ5wDd/TyhzKpDJB0i6RBJh0g6RNIhkg7R+vuwRll1z9RVo/bxrJpLvVh1iKRDJB0i6RBJh0g6RNIh6u9h3f3c5G33wfxj1T3w3sNiFukQSYdIOkTSIZIOkXSI1p+vc2TVfebbzlEmfW5m1SGSDpF0iKRDJB0i6RBJh2j8XGc3u52vM/v3v+38HqsOkXSIpEMkHSLpEEmHSDpEnz/XGWX2/pvZ922555xdSIdIOkTSIZIOkXSIpEM0fq5zl3NrRlk1j1l+nrVVh0g6RNIhkg6RdIikQyQdoj7XWT5X+KG37WuZZPl7ZFYdIukQSYdIOkTSIZIOkXSIzu85h/+y6hBJh0g6RNIhkg6RdIikQyQdIukQSYfoG5aEAH4YEz/mAAAAAElFTkSuQmCC\" alt=\"QR Code\" width=\"180\" height=\"180\" style=\"display:block;\" />\n                </div>\n                <p style=\"font-size:13px; font-weight:bold; color:#6b21a8; margin-top:10px; font-family:monospace;\">EVT-159-2149</p>\n              </div>\n\n              <div class=\"badge-attachment\">\n                📎 <span><strong>E-Ticket PDF Attached:</strong> Your official printable E-Ticket PDF pass is attached to this email. You can also view or download it anytime from your EventEase Account under \"My Bookings\".</span>\n              </div>\n            </div>\n            <div class=\"footer\">\n              EventEase Digital Ticketing System &bull; Keep ticket QR code confidential &bull; Support: support@eventease.com\n            </div>\n          </div>\n        </body>\n        </html>\n        ', 'failed', 'SMTP Error: Could not authenticate.', '2026-08-11 09:53:00');
+(155, 9, 159, 'hirananjana12@gmail.com', '🎟️ Booking Confirmation & E-Ticket - Mariens Live in concert [EVT-159-2149]', '\n        <!DOCTYPE html>\n        <html>\n        <head>\n          <meta charset=\"utf-8\">\n          <style>\n            body { font-family: \'Segoe UI\', Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }\n            .ticket-card { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }\n            .header { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: #ffffff; padding: 28px 24px; text-align: center; }\n            .header h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: 0.5px; }\n            .header p { margin: 6px 0 0 0; opacity: 0.9; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }\n            .content { padding: 28px 24px; }\n            .detail-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin: 20px 0; }\n            .detail-row { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px; }\n            .detail-label { color: #64748b; font-size: 13px; font-weight: 600; }\n            .detail-val { color: #0f172a; font-size: 13px; font-weight: 700; }\n            .qr-section { text-align: center; margin: 24px 0; background: #faf5ff; padding: 20px; border-radius: 12px; border: 1px solid #e9d5ff; }\n            .qr-code-box { display: inline-block; padding: 10px; background: #ffffff; border-radius: 12px; border: 1px solid #d8b4fe; }\n            .badge-attachment { background: #ecfdf5; border: 1px solid #a7f3d0; color: #047857; padding: 12px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; margin-top: 20px; }\n            .footer { background: #f1f5f9; padding: 18px; text-align: center; font-size: 12px; color: #64748b; border-top: 1px solid #e2e8f0; }\n            </style>\n        </head>\n        <body>\n          <div class=\"ticket-card\">\n            <div class=\"header\">\n              <h1>🎉 Booking Confirmed!</h1>\n              <p>EventEase Ticket Reservation Platform</p>\n            </div>\n            <div class=\"content\">\n              <p style=\"font-size:15px; margin-top:0;\">Dear <strong>Hiran Anajana</strong>,</p>\n              <p style=\"font-size:14px; color:#475569; line-height:1.5;\">Thank you for your reservation! Your payment has been successfully processed and confirmed. Your official entry pass and QR ticket are ready below.</p>\n              \n              <div class=\"detail-box\">\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Event Name:</span>\n                  <span class=\"detail-val\" style=\"color:#4f46e5;\">Mariens Live in concert</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Ticket Code:</span>\n                  <span class=\"detail-val\" style=\"font-family:monospace;\">EVT-159-2149</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Date & Location:</span>\n                  <span class=\"detail-val\">2026-07-25 | Negombo</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Reserved Seat(s):</span>\n                  <span class=\"detail-val\" style=\"color:#7c3aed;\">General Admission</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Ticket Quantity:</span>\n                  <span class=\"detail-val\">1 Ticket(s)</span>\n                </div>\n                <div class=\"detail-row\" style=\"border-bottom:none; margin-bottom:0; padding-bottom:0;\">\n                  <span class=\"detail-label\">Total Amount Paid:</span>\n                  <span class=\"detail-val\" style=\"color:#16a34a; font-size:15px;\">LKR 7,500.00</span>\n                </div>\n              </div>\n\n              <div class=\"qr-section\">\n                <h3 style=\"margin-top:0; color:#1e293b; font-size:16px;\">Gate Entrance QR Pass</h3>\n                <p style=\"font-size:12px; color:#64748b; margin-bottom:14px;\">Present this scannable QR code at the venue gate for entry validation.</p>\n                <div class=\"qr-code-box\">\n                  <img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAL4AAAC+CAIAAAAEFiLKAAAACXBIWXMAAA7EAAAOxAGVKw4bAAADG0lEQVR4nO3dQW7bMBRAwbrI/a/s7LwoKgh6IU3KmVkHsWI8cPFDkY/n8/kHrvu7+gG4K+kQSYdIOkTSIZIOkXSIpEMkHSLpEH2d/sTj8XjDc/zc0X9Ujp7/6s/Pfp7dnP6HyqpDJB0i6RBJh0g6RNIhkg7R+VznyKqdqVfnIrOfc9Tvv8v3+WLVIZIOkXSIpEMkHSLpEEmHqM91jsze73LVqDnQqn02u32fL1YdIukQSYdIOkTSIZIOkXSIxs91PtWo97w+hlWHSDpE0iGSDpF0iKRDJB2i3zvXuTp3+bXzmyNWHSLpEEmHSDpE0iGSDpF0iMbPdXabc8x+r2r2vGe37/PFqkMkHSLpEEmHSDpE0iGSDlGf69zlXqdR92Gtmg9ty6pDJB0i6RBJh0g6RNIhkg7RY9vtILvZ7R6u5aw6RNIhkg6RdIikQyQdIukQnc91Zu8jmX3OzW77YEb9vaM+N79HZtUhkg6RdIikQyQdIukQSYeo79cZda7MbvtgdptjjTL8HCCrDpF0iKRDJB0i6RBJh0g6ROfn6+x2D9Rd9t/Mfs7l5z5bdYikQyQdIukQSYdIOkTSITqf66ya3+x2Ps2q85GPvofh71VdZdUhkg6RdIikQyQdIukQSYdo/D3no+YWu70Pter+rNlzGvt1eDfpEEmHSDpE0iGSDpF0iD7/PqzZ5wDd/TyhzKpDJB0i6RBJh0g6RNIhkg7R+vuwRll1z9RVo/bxrJpLvVh1iKRDJB0i6RBJh0g6RNIh6u9h3f3c5G33wfxj1T3w3sNiFukQSYdIOkTSIZIOkXSI1p+vc2TVfebbzlEmfW5m1SGSDpF0iKRDJB0i6RBJh2j8XGc3u52vM/v3v+38HqsOkXSIpEMkHSLpEEmHSDpEnz/XGWX2/pvZ922555xdSIdIOkTSIZIOkXSIpEM0fq5zl3NrRlk1j1l+nrVVh0g6RNIhkg6RdIikQyQdoj7XWT5X+KG37WuZZPl7ZFYdIukQSYdIOkTSIZIOkXSIzu85h/+y6hBJh0g6RNIhkg6RdIikQyQdIukQSYfoG5aEAH4YEz/mAAAAAElFTkSuQmCC\" alt=\"QR Code\" width=\"180\" height=\"180\" style=\"display:block;\" />\n                </div>\n                <p style=\"font-size:13px; font-weight:bold; color:#6b21a8; margin-top:10px; font-family:monospace;\">EVT-159-2149</p>\n              </div>\n\n              <div class=\"badge-attachment\">\n                📎 <span><strong>E-Ticket PDF Attached:</strong> Your official printable E-Ticket PDF pass is attached to this email. You can also view or download it anytime from your EventEase Account under \"My Bookings\".</span>\n              </div>\n            </div>\n            <div class=\"footer\">\n              EventEase Digital Ticketing System &bull; Keep ticket QR code confidential &bull; Support: support@eventease.com\n            </div>\n          </div>\n        </body>\n        </html>\n        ', 'failed', 'SMTP Error: Could not authenticate.', '2026-08-11 09:53:00'),
+(156, 9, 198, 'hirananjana12@gmail.com', '🎟️ Booking Confirmation & E-Ticket - rrrrrrr [EVT-1040-8214]', '\n        <!DOCTYPE html>\n        <html>\n        <head>\n          <meta charset=\"utf-8\">\n          <style>\n            body { font-family: \'Segoe UI\', Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }\n            .ticket-card { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }\n            .header { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: #ffffff; padding: 28px 24px; text-align: center; }\n            .header h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: 0.5px; }\n            .header p { margin: 6px 0 0 0; opacity: 0.9; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }\n            .content { padding: 28px 24px; }\n            .detail-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin: 20px 0; }\n            .detail-row { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px; }\n            .detail-label { color: #64748b; font-size: 13px; font-weight: 600; }\n            .detail-val { color: #0f172a; font-size: 13px; font-weight: 700; }\n            .qr-section { text-align: center; margin: 24px 0; background: #faf5ff; padding: 20px; border-radius: 12px; border: 1px solid #e9d5ff; }\n            .qr-code-box { display: inline-block; padding: 10px; background: #ffffff; border-radius: 12px; border: 1px solid #d8b4fe; }\n            .badge-attachment { background: #ecfdf5; border: 1px solid #a7f3d0; color: #047857; padding: 12px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; margin-top: 20px; }\n            .footer { background: #f1f5f9; padding: 18px; text-align: center; font-size: 12px; color: #64748b; border-top: 1px solid #e2e8f0; }\n            </style>\n        </head>\n        <body>\n          <div class=\"ticket-card\">\n            <div class=\"header\">\n              <h1>🎉 Booking Confirmed!</h1>\n              <p>EventEase Ticket Reservation Platform</p>\n            </div>\n            <div class=\"content\">\n              <p style=\"font-size:15px; margin-top:0;\">Dear <strong>Hiran Anajana</strong>,</p>\n              <p style=\"font-size:14px; color:#475569; line-height:1.5;\">Thank you for your reservation! Your payment has been successfully processed and confirmed. Your official entry pass and QR ticket are ready below.</p>\n              \n              <div class=\"detail-box\">\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Event Name:</span>\n                  <span class=\"detail-val\" style=\"color:#4f46e5;\">rrrrrrr</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Ticket Code:</span>\n                  <span class=\"detail-val\" style=\"font-family:monospace;\">EVT-1040-8214</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Date & Location:</span>\n                  <span class=\"detail-val\">2026-09-10 | rrrrrr</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Reserved Seat(s):</span>\n                  <span class=\"detail-val\" style=\"color:#7c3aed;\">G1</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Ticket Quantity:</span>\n                  <span class=\"detail-val\">1 Ticket(s)</span>\n                </div>\n                <div class=\"detail-row\" style=\"border-bottom:none; margin-bottom:0; padding-bottom:0;\">\n                  <span class=\"detail-label\">Total Amount Paid:</span>\n                  <span class=\"detail-val\" style=\"color:#16a34a; font-size:15px;\">LKR 200.00</span>\n                </div>\n              </div>\n\n              <div class=\"qr-section\">\n                <h3 style=\"margin-top:0; color:#1e293b; font-size:16px;\">Gate Entrance QR Pass</h3>\n                <p style=\"font-size:12px; color:#64748b; margin-bottom:14px;\">Present this scannable QR code at the venue gate for entry validation.</p>\n                <div class=\"qr-code-box\">\n                  <img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAL4AAAC+CAIAAAAEFiLKAAAACXBIWXMAAA7EAAAOxAGVKw4bAAADFUlEQVR4nO3dzWobMRhA0brk/V853WURGMzcSiPJnLM2TWIuWnzVz+v7+/sP3Pd39S/AqaRDJB0i6RBJh0g6RNIhkg6RdIikQ/T19hOv1+uB3+P/jfoflau/9+rfH/X53bz9Pq06RNIhkg6RdIikQyQdIukQvZ/rXFm1M3X2XGTV33Xc92nVIZIOkXSIpEMkHSLpEEmHqM91royau5yy/2b2PGa37/OHVYdIOkTSIZIOkXSIpEMkHaLxc53d3J1n3P383TnQx7DqEEmHSDpE0iGSDpF0iKRD9PlznSufei/OY6w6RNIhkg6RdIikQyQdIukQjZ/rnL5P5e78Zvbfu+33adUhkg6RdIikQyQdIukQSYeoz3VO2b+y6n2rUee5tmXVIZIOkXSIpEMkHSLpEEmH6P1cZ9v9IpuYfX/Ptqw6RNIhkg6RdIikQyQdIukQvZ/rzH6P6bh9Kr/s9l7VY/c4W3WIpEMkHSLpEEmHSDpE0iF67t7kVeebRpl9z/Jx9zhbdYikQyQdIukQSYdIOkTSIepzndnzjFGfv7JqPrTqHfXh90FbdYikQyQdIukQSYdIOkTSIXrl8caq/SKz5yKnzI2Wv9tl1SGSDpF0iKRDJB0i6RBJh2j8fp0ro+Yly88f/bLqXpzl57OsOkTSIZIOkXSIpEMkHSLpEPX9OqdYta9l9vkp57A4lXSIpEMkHSLpEEmHSDpEz72HNduq98ZPv985s+oQSYdIOkTSIZIOkXSIpEP03DmsUVad5xp1HmrVPMl+HXYhHSLpEEmHSDpE0iGSDtH4d85PuXd41M/d7V5m9+uwO+kQSYdIOkTSIZIOkXSIxs91drPqHprZ857l8zOrDpF0iKRDJB0i6RBJh0g6RJ8/19ntPfZT7lN2DotZpEMkHSLpEEmHSDpE0iEaP9c5/YGtu/OYVe9trXpn/odVh0g6RNIhkg6RdIikQyQdoj7XOeWdrLtmz2lW3a8z/D4eqw6RdIikQyQdIukQSYdIOkSv07fXsIpVh0g6RNIhkg6RdIikQyQdIukQSYdIOkT/AJoM94e4sF3ZAAAAAElFTkSuQmCC\" alt=\"QR Code\" width=\"180\" height=\"180\" style=\"display:block;\" />\n                </div>\n                <p style=\"font-size:13px; font-weight:bold; color:#6b21a8; margin-top:10px; font-family:monospace;\">EVT-1040-8214</p>\n              </div>\n\n              <div class=\"badge-attachment\">\n                📎 <span><strong>E-Ticket PDF Attached:</strong> Your official printable E-Ticket PDF pass is attached to this email. You can also view or download it anytime from your EventEase Account under \"My Bookings\".</span>\n              </div>\n            </div>\n            <div class=\"footer\">\n              EventEase Digital Ticketing System &bull; Keep ticket QR code confidential &bull; Support: support@eventease.com\n            </div>\n          </div>\n        </body>\n        </html>\n        ', 'failed', 'SMTP Error: Could not authenticate.', '2026-08-26 17:18:35'),
+(157, 9, 198, 'hirananjana12@gmail.com', '🎟️ Booking Confirmation & E-Ticket - rrrrrrr [EVT-1040-8214]', '\n        <!DOCTYPE html>\n        <html>\n        <head>\n          <meta charset=\"utf-8\">\n          <style>\n            body { font-family: \'Segoe UI\', Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }\n            .ticket-card { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }\n            .header { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: #ffffff; padding: 28px 24px; text-align: center; }\n            .header h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: 0.5px; }\n            .header p { margin: 6px 0 0 0; opacity: 0.9; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }\n            .content { padding: 28px 24px; }\n            .detail-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin: 20px 0; }\n            .detail-row { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px; }\n            .detail-label { color: #64748b; font-size: 13px; font-weight: 600; }\n            .detail-val { color: #0f172a; font-size: 13px; font-weight: 700; }\n            .qr-section { text-align: center; margin: 24px 0; background: #faf5ff; padding: 20px; border-radius: 12px; border: 1px solid #e9d5ff; }\n            .qr-code-box { display: inline-block; padding: 10px; background: #ffffff; border-radius: 12px; border: 1px solid #d8b4fe; }\n            .badge-attachment { background: #ecfdf5; border: 1px solid #a7f3d0; color: #047857; padding: 12px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; margin-top: 20px; }\n            .footer { background: #f1f5f9; padding: 18px; text-align: center; font-size: 12px; color: #64748b; border-top: 1px solid #e2e8f0; }\n            </style>\n        </head>\n        <body>\n          <div class=\"ticket-card\">\n            <div class=\"header\">\n              <h1>🎉 Booking Confirmed!</h1>\n              <p>EventEase Ticket Reservation Platform</p>\n            </div>\n            <div class=\"content\">\n              <p style=\"font-size:15px; margin-top:0;\">Dear <strong>Hiran Anajana</strong>,</p>\n              <p style=\"font-size:14px; color:#475569; line-height:1.5;\">Thank you for your reservation! Your payment has been successfully processed and confirmed. Your official entry pass and QR ticket are ready below.</p>\n              \n              <div class=\"detail-box\">\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Event Name:</span>\n                  <span class=\"detail-val\" style=\"color:#4f46e5;\">rrrrrrr</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Ticket Code:</span>\n                  <span class=\"detail-val\" style=\"font-family:monospace;\">EVT-1040-8214</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Date & Location:</span>\n                  <span class=\"detail-val\">2026-09-10 | rrrrrr</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Reserved Seat(s):</span>\n                  <span class=\"detail-val\" style=\"color:#7c3aed;\">G1</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Ticket Quantity:</span>\n                  <span class=\"detail-val\">1 Ticket(s)</span>\n                </div>\n                <div class=\"detail-row\" style=\"border-bottom:none; margin-bottom:0; padding-bottom:0;\">\n                  <span class=\"detail-label\">Total Amount Paid:</span>\n                  <span class=\"detail-val\" style=\"color:#16a34a; font-size:15px;\">LKR 200.00</span>\n                </div>\n              </div>\n\n              <div class=\"qr-section\">\n                <h3 style=\"margin-top:0; color:#1e293b; font-size:16px;\">Gate Entrance QR Pass</h3>\n                <p style=\"font-size:12px; color:#64748b; margin-bottom:14px;\">Present this scannable QR code at the venue gate for entry validation.</p>\n                <div class=\"qr-code-box\">\n                  <img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAL4AAAC+CAIAAAAEFiLKAAAACXBIWXMAAA7EAAAOxAGVKw4bAAADFUlEQVR4nO3dzWobMRhA0brk/V853WURGMzcSiPJnLM2TWIuWnzVz+v7+/sP3Pd39S/AqaRDJB0i6RBJh0g6RNIhkg6RdIikQ/T19hOv1+uB3+P/jfoflau/9+rfH/X53bz9Pq06RNIhkg6RdIikQyQdIukQvZ/rXFm1M3X2XGTV33Xc92nVIZIOkXSIpEMkHSLpEEmHqM91royau5yy/2b2PGa37/OHVYdIOkTSIZIOkXSIpEMkHaLxc53d3J1n3P383TnQx7DqEEmHSDpE0iGSDpF0iKRD9PlznSufei/OY6w6RNIhkg6RdIikQyQdIukQjZ/rnL5P5e78Zvbfu+33adUhkg6RdIikQyQdIukQSYeoz3VO2b+y6n2rUee5tmXVIZIOkXSIpEMkHSLpEEmH6P1cZ9v9IpuYfX/Ptqw6RNIhkg6RdIikQyQdIukQvZ/rzH6P6bh9Kr/s9l7VY/c4W3WIpEMkHSLpEEmHSDpE0iF67t7kVeebRpl9z/Jx9zhbdYikQyQdIukQSYdIOkTSIepzndnzjFGfv7JqPrTqHfXh90FbdYikQyQdIukQSYdIOkTSIXrl8caq/SKz5yKnzI2Wv9tl1SGSDpF0iKRDJB0i6RBJh2j8fp0ro+Yly88f/bLqXpzl57OsOkTSIZIOkXSIpEMkHSLpEPX9OqdYta9l9vkp57A4lXSIpEMkHSLpEEmHSDpEz72HNduq98ZPv985s+oQSYdIOkTSIZIOkXSIpEP03DmsUVad5xp1HmrVPMl+HXYhHSLpEEmHSDpE0iGSDtH4d85PuXd41M/d7V5m9+uwO+kQSYdIOkTSIZIOkXSIxs91drPqHprZ857l8zOrDpF0iKRDJB0i6RBJh0g6RJ8/19ntPfZT7lN2DotZpEMkHSLpEEmHSDpE0iEaP9c5/YGtu/OYVe9trXpn/odVh0g6RNIhkg6RdIikQyQdoj7XOeWdrLtmz2lW3a8z/D4eqw6RdIikQyQdIukQSYdIOkSv07fXsIpVh0g6RNIhkg6RdIikQyQdIukQSYdIOkT/AJoM94e4sF3ZAAAAAElFTkSuQmCC\" alt=\"QR Code\" width=\"180\" height=\"180\" style=\"display:block;\" />\n                </div>\n                <p style=\"font-size:13px; font-weight:bold; color:#6b21a8; margin-top:10px; font-family:monospace;\">EVT-1040-8214</p>\n              </div>\n\n              <div class=\"badge-attachment\">\n                📎 <span><strong>E-Ticket PDF Attached:</strong> Your official printable E-Ticket PDF pass is attached to this email. You can also view or download it anytime from your EventEase Account under \"My Bookings\".</span>\n              </div>\n            </div>\n            <div class=\"footer\">\n              EventEase Digital Ticketing System &bull; Keep ticket QR code confidential &bull; Support: support@eventease.com\n            </div>\n          </div>\n        </body>\n        </html>\n        ', 'failed', 'SMTP Error: Could not authenticate.', '2026-08-26 17:18:35'),
+(158, 106, 199, 'hashen12@gmail.com', '🎟️ Booking Confirmation & E-Ticket - prana [EVT-1043-5819]', '\n        <!DOCTYPE html>\n        <html>\n        <head>\n          <meta charset=\"utf-8\">\n          <style>\n            body { font-family: \'Segoe UI\', Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }\n            .ticket-card { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }\n            .header { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: #ffffff; padding: 28px 24px; text-align: center; }\n            .header h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: 0.5px; }\n            .header p { margin: 6px 0 0 0; opacity: 0.9; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }\n            .content { padding: 28px 24px; }\n            .detail-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin: 20px 0; }\n            .detail-row { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px; }\n            .detail-label { color: #64748b; font-size: 13px; font-weight: 600; }\n            .detail-val { color: #0f172a; font-size: 13px; font-weight: 700; }\n            .qr-section { text-align: center; margin: 24px 0; background: #faf5ff; padding: 20px; border-radius: 12px; border: 1px solid #e9d5ff; }\n            .qr-code-box { display: inline-block; padding: 10px; background: #ffffff; border-radius: 12px; border: 1px solid #d8b4fe; }\n            .badge-attachment { background: #ecfdf5; border: 1px solid #a7f3d0; color: #047857; padding: 12px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; margin-top: 20px; }\n            .footer { background: #f1f5f9; padding: 18px; text-align: center; font-size: 12px; color: #64748b; border-top: 1px solid #e2e8f0; }\n            </style>\n        </head>\n        <body>\n          <div class=\"ticket-card\">\n            <div class=\"header\">\n              <h1>🎉 Booking Confirmed!</h1>\n              <p>EventEase Ticket Reservation Platform</p>\n            </div>\n            <div class=\"content\">\n              <p style=\"font-size:15px; margin-top:0;\">Dear <strong>Hashen</strong>,</p>\n              <p style=\"font-size:14px; color:#475569; line-height:1.5;\">Thank you for your reservation! Your payment has been successfully processed and confirmed. Your official entry pass and QR ticket are ready below.</p>\n              \n              <div class=\"detail-box\">\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Event Name:</span>\n                  <span class=\"detail-val\" style=\"color:#4f46e5;\">prana</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Ticket Code:</span>\n                  <span class=\"detail-val\" style=\"font-family:monospace;\">EVT-1043-5819</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Date & Location:</span>\n                  <span class=\"detail-val\">2026-09-26 | uwa welassa university</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Reserved Seat(s):</span>\n                  <span class=\"detail-val\" style=\"color:#7c3aed;\">A1, C1, E1, G1</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Ticket Quantity:</span>\n                  <span class=\"detail-val\">4 Ticket(s)</span>\n                </div>\n                <div class=\"detail-row\" style=\"border-bottom:none; margin-bottom:0; padding-bottom:0;\">\n                  <span class=\"detail-label\">Total Amount Paid:</span>\n                  <span class=\"detail-val\" style=\"color:#16a34a; font-size:15px;\">LKR 7,695.00</span>\n                </div>\n              </div>\n\n              <div class=\"qr-section\">\n                <h3 style=\"margin-top:0; color:#1e293b; font-size:16px;\">Gate Entrance QR Pass</h3>\n                <p style=\"font-size:12px; color:#64748b; margin-bottom:14px;\">Present this scannable QR code at the venue gate for entry validation.</p>\n                <div class=\"qr-code-box\">\n                  <img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAL4AAAC+CAIAAAAEFiLKAAAACXBIWXMAAA7EAAAOxAGVKw4bAAADF0lEQVR4nO3dwY6bMBRA0abq///ydNdFVES5Y7CdnrOOMgRdefHG4NfX19cPuO7n7AtgV9Ihkg6RdIikQyQdIukQSYdIOkTSIfp1+onX6/XAdXzf0X9UZl3/atdz1el/qKw6RNIhkg6RdIikQyQdIukQnc91jszamXr3XGTWPGa7+2nVIZIOkXSIpEMkHSLpEEmHqM91joyaf4yac1yd01y9/rvnMavdzz+sOkTSIZIOkXSIpEMkHSLpEI2f6+xu1Bzo49+0Z9Uhkg6RdIikQyQdIukQSYfo8+c6o+Yuu78vZzirDpF0iKRDJB0i6RBJh0g6ROPnOrvvU7k6B7r79y57P606RNIhkg6RdIikQyQdIukQ9bnOf7tP5c2o/UDb3U+rDpF0iKRDJB0i6RBJh0g6RK9lt4OM8qnnWE1n1SGSDpF0iKRDJB0i6RBJh+h8v86s85hWO5fqyKx9NtPvp1WHSDpE0iGSDpF0iKRDJB2i8ft1Zs1jVjuXatR9uPq7Hrv/Vh0i6RBJh0g6RNIhkg6RdIjO5zqj5gqf+vmrVnsuLP9eqw6RdIikQyQdIukQSYdIOkTPnYd193njo9w9F7n7++3XYXXSIZIOkXSIpEMkHSLpEI2f61ydKyw7t/jm98/aV/QYqw6RdIikQyQdIukQSYdIOkTOw3q3+5zGc1isTjpE0iGSDpF0iKRDJB2i/n6d1dw9oNrlPlzlOSyeJh0i6RBJh0g6RNIhkg5Rfw5rl3OmVnvOa9a+nCP26/A06RBJh0g6RNIhkg6RdIjmv1/nyKi5xaj3Mh/9rtWenxr1/aesOkTSIZIOkXSIpEMkHSLpEI2f6+xi+lzkzd3vAbr6PaesOkTSIZIOkXSIpEMkHSLpEH3+XGfW/GbWPp7H5j1WHSLpEEmHSDpE0iGSDpF0iMbPdXY5YGv6+2n+8XtG/d3h53BZdYikQyQdIukQSYdIOkTSIepznd3Phxq1f+Xu/TGj5j3DWXWIpEMkHSLpEEmHSDpE0iE6P+cc/sqqQyQdIukQSYdIOkTSIZIOkXSIpEMkHaLfizAMgaJXdSkAAAAASUVORK5CYII=\" alt=\"QR Code\" width=\"180\" height=\"180\" style=\"display:block;\" />\n                </div>\n                <p style=\"font-size:13px; font-weight:bold; color:#6b21a8; margin-top:10px; font-family:monospace;\">EVT-1043-5819</p>\n              </div>\n\n              <div class=\"badge-attachment\">\n                📎 <span><strong>E-Ticket PDF Attached:</strong> Your official printable E-Ticket PDF pass is attached to this email. You can also view or download it anytime from your EventEase Account under \"My Bookings\".</span>\n              </div>\n            </div>\n            <div class=\"footer\">\n              EventEase Digital Ticketing System &bull; Keep ticket QR code confidential &bull; Support: support@eventease.com\n            </div>\n          </div>\n        </body>\n        </html>\n        ', 'failed', 'SMTP Error: Could not connect to SMTP host. Failed to connect to server SMTP server error: Failed to connect to server SMTP code: 10060 Additional SMTP info: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond', '2026-09-21 09:15:03');
+INSERT INTO `email_logs` (`id`, `user_id`, `booking_id`, `recipient_email`, `subject`, `body_html`, `status`, `error_message`, `created_at`) VALUES
+(159, 106, 199, 'hashen12@gmail.com', '🎟️ Booking Confirmation & E-Ticket - prana [EVT-1043-5819]', '\n        <!DOCTYPE html>\n        <html>\n        <head>\n          <meta charset=\"utf-8\">\n          <style>\n            body { font-family: \'Segoe UI\', Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }\n            .ticket-card { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }\n            .header { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: #ffffff; padding: 28px 24px; text-align: center; }\n            .header h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: 0.5px; }\n            .header p { margin: 6px 0 0 0; opacity: 0.9; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }\n            .content { padding: 28px 24px; }\n            .detail-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin: 20px 0; }\n            .detail-row { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px; }\n            .detail-label { color: #64748b; font-size: 13px; font-weight: 600; }\n            .detail-val { color: #0f172a; font-size: 13px; font-weight: 700; }\n            .qr-section { text-align: center; margin: 24px 0; background: #faf5ff; padding: 20px; border-radius: 12px; border: 1px solid #e9d5ff; }\n            .qr-code-box { display: inline-block; padding: 10px; background: #ffffff; border-radius: 12px; border: 1px solid #d8b4fe; }\n            .badge-attachment { background: #ecfdf5; border: 1px solid #a7f3d0; color: #047857; padding: 12px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; margin-top: 20px; }\n            .footer { background: #f1f5f9; padding: 18px; text-align: center; font-size: 12px; color: #64748b; border-top: 1px solid #e2e8f0; }\n            </style>\n        </head>\n        <body>\n          <div class=\"ticket-card\">\n            <div class=\"header\">\n              <h1>🎉 Booking Confirmed!</h1>\n              <p>EventEase Ticket Reservation Platform</p>\n            </div>\n            <div class=\"content\">\n              <p style=\"font-size:15px; margin-top:0;\">Dear <strong>Hashen</strong>,</p>\n              <p style=\"font-size:14px; color:#475569; line-height:1.5;\">Thank you for your reservation! Your payment has been successfully processed and confirmed. Your official entry pass and QR ticket are ready below.</p>\n              \n              <div class=\"detail-box\">\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Event Name:</span>\n                  <span class=\"detail-val\" style=\"color:#4f46e5;\">prana</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Ticket Code:</span>\n                  <span class=\"detail-val\" style=\"font-family:monospace;\">EVT-1043-5819</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Date & Location:</span>\n                  <span class=\"detail-val\">2026-09-26 | uwa welassa university</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Reserved Seat(s):</span>\n                  <span class=\"detail-val\" style=\"color:#7c3aed;\">A1, C1, E1, G1</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Ticket Quantity:</span>\n                  <span class=\"detail-val\">4 Ticket(s)</span>\n                </div>\n                <div class=\"detail-row\" style=\"border-bottom:none; margin-bottom:0; padding-bottom:0;\">\n                  <span class=\"detail-label\">Total Amount Paid:</span>\n                  <span class=\"detail-val\" style=\"color:#16a34a; font-size:15px;\">LKR 7,695.00</span>\n                </div>\n              </div>\n\n              <div class=\"qr-section\">\n                <h3 style=\"margin-top:0; color:#1e293b; font-size:16px;\">Gate Entrance QR Pass</h3>\n                <p style=\"font-size:12px; color:#64748b; margin-bottom:14px;\">Present this scannable QR code at the venue gate for entry validation.</p>\n                <div class=\"qr-code-box\">\n                  <img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAL4AAAC+CAIAAAAEFiLKAAAACXBIWXMAAA7EAAAOxAGVKw4bAAADF0lEQVR4nO3dwY6bMBRA0abq///ydNdFVES5Y7CdnrOOMgRdefHG4NfX19cPuO7n7AtgV9Ihkg6RdIikQyQdIukQSYdIOkTSIfp1+onX6/XAdXzf0X9UZl3/atdz1el/qKw6RNIhkg6RdIikQyQdIukQnc91jszamXr3XGTWPGa7+2nVIZIOkXSIpEMkHSLpEEmHqM91joyaf4yac1yd01y9/rvnMavdzz+sOkTSIZIOkXSIpEMkHSLpEI2f6+xu1Bzo49+0Z9Uhkg6RdIikQyQdIukQSYfo8+c6o+Yuu78vZzirDpF0iKRDJB0i6RBJh0g6ROPnOrvvU7k6B7r79y57P606RNIhkg6RdIikQyQdIukQ9bnOf7tP5c2o/UDb3U+rDpF0iKRDJB0i6RBJh0g6RK9lt4OM8qnnWE1n1SGSDpF0iKRDJB0i6RBJh+h8v86s85hWO5fqyKx9NtPvp1WHSDpE0iGSDpF0iKRDJB2i8ft1Zs1jVjuXatR9uPq7Hrv/Vh0i6RBJh0g6RNIhkg6RdIjO5zqj5gqf+vmrVnsuLP9eqw6RdIikQyQdIukQSYdIOkTPnYd193njo9w9F7n7++3XYXXSIZIOkXSIpEMkHSLpEI2f61ydKyw7t/jm98/aV/QYqw6RdIikQyQdIukQSYdIOkTOw3q3+5zGc1isTjpE0iGSDpF0iKRDJB2i/n6d1dw9oNrlPlzlOSyeJh0i6RBJh0g6RNIhkg5Rfw5rl3OmVnvOa9a+nCP26/A06RBJh0g6RNIhkg6RdIjmv1/nyKi5xaj3Mh/9rtWenxr1/aesOkTSIZIOkXSIpEMkHSLpEI2f6+xi+lzkzd3vAbr6PaesOkTSIZIOkXSIpEMkHSLpEH3+XGfW/GbWPp7H5j1WHSLpEEmHSDpE0iGSDpF0iMbPdXY5YGv6+2n+8XtG/d3h53BZdYikQyQdIukQSYdIOkTSIepznd3Phxq1f+Xu/TGj5j3DWXWIpEMkHSLpEEmHSDpE0iE6P+cc/sqqQyQdIukQSYdIOkTSIZIOkXSIpEMkHaLfizAMgaJXdSkAAAAASUVORK5CYII=\" alt=\"QR Code\" width=\"180\" height=\"180\" style=\"display:block;\" />\n                </div>\n                <p style=\"font-size:13px; font-weight:bold; color:#6b21a8; margin-top:10px; font-family:monospace;\">EVT-1043-5819</p>\n              </div>\n\n              <div class=\"badge-attachment\">\n                📎 <span><strong>E-Ticket PDF Attached:</strong> Your official printable E-Ticket PDF pass is attached to this email. You can also view or download it anytime from your EventEase Account under \"My Bookings\".</span>\n              </div>\n            </div>\n            <div class=\"footer\">\n              EventEase Digital Ticketing System &bull; Keep ticket QR code confidential &bull; Support: support@eventease.com\n            </div>\n          </div>\n        </body>\n        </html>\n        ', 'failed', 'SMTP Error: Could not connect to SMTP host. Failed to connect to server SMTP server error: Failed to connect to server SMTP code: 10060 Additional SMTP info: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond', '2026-09-21 09:15:03'),
+(160, 106, 199, 'hashen12@gmail.com', '🎟️ Booking Confirmation & E-Ticket - prana [EVT-1043-5819]', '\n        <!DOCTYPE html>\n        <html>\n        <head>\n          <meta charset=\"utf-8\">\n          <style>\n            body { font-family: \'Segoe UI\', Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }\n            .ticket-card { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }\n            .header { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: #ffffff; padding: 28px 24px; text-align: center; }\n            .header h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: 0.5px; }\n            .header p { margin: 6px 0 0 0; opacity: 0.9; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }\n            .content { padding: 28px 24px; }\n            .detail-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin: 20px 0; }\n            .detail-row { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px; }\n            .detail-label { color: #64748b; font-size: 13px; font-weight: 600; }\n            .detail-val { color: #0f172a; font-size: 13px; font-weight: 700; }\n            .qr-section { text-align: center; margin: 24px 0; background: #faf5ff; padding: 20px; border-radius: 12px; border: 1px solid #e9d5ff; }\n            .qr-code-box { display: inline-block; padding: 10px; background: #ffffff; border-radius: 12px; border: 1px solid #d8b4fe; }\n            .badge-attachment { background: #ecfdf5; border: 1px solid #a7f3d0; color: #047857; padding: 12px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; margin-top: 20px; }\n            .footer { background: #f1f5f9; padding: 18px; text-align: center; font-size: 12px; color: #64748b; border-top: 1px solid #e2e8f0; }\n            </style>\n        </head>\n        <body>\n          <div class=\"ticket-card\">\n            <div class=\"header\">\n              <h1>🎉 Booking Confirmed!</h1>\n              <p>EventEase Ticket Reservation Platform</p>\n            </div>\n            <div class=\"content\">\n              <p style=\"font-size:15px; margin-top:0;\">Dear <strong>Hashen</strong>,</p>\n              <p style=\"font-size:14px; color:#475569; line-height:1.5;\">Thank you for your reservation! Your payment has been successfully processed and confirmed. Your official entry pass and QR ticket are ready below.</p>\n              \n              <div class=\"detail-box\">\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Event Name:</span>\n                  <span class=\"detail-val\" style=\"color:#4f46e5;\">prana</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Ticket Code:</span>\n                  <span class=\"detail-val\" style=\"font-family:monospace;\">EVT-1043-5819</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Date & Location:</span>\n                  <span class=\"detail-val\">2026-09-26 | uwa welassa university</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Reserved Seat(s):</span>\n                  <span class=\"detail-val\" style=\"color:#7c3aed;\">A1, C1, E1, G1</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Ticket Quantity:</span>\n                  <span class=\"detail-val\">4 Ticket(s)</span>\n                </div>\n                <div class=\"detail-row\" style=\"border-bottom:none; margin-bottom:0; padding-bottom:0;\">\n                  <span class=\"detail-label\">Total Amount Paid:</span>\n                  <span class=\"detail-val\" style=\"color:#16a34a; font-size:15px;\">LKR 7,695.00</span>\n                </div>\n              </div>\n\n              <div class=\"qr-section\">\n                <h3 style=\"margin-top:0; color:#1e293b; font-size:16px;\">Gate Entrance QR Pass</h3>\n                <p style=\"font-size:12px; color:#64748b; margin-bottom:14px;\">Present this scannable QR code at the venue gate for entry validation.</p>\n                <div class=\"qr-code-box\">\n                  <img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAL4AAAC+CAIAAAAEFiLKAAAACXBIWXMAAA7EAAAOxAGVKw4bAAADF0lEQVR4nO3dwY6bMBRA0abq///ydNdFVES5Y7CdnrOOMgRdefHG4NfX19cPuO7n7AtgV9Ihkg6RdIikQyQdIukQSYdIOkTSIfp1+onX6/XAdXzf0X9UZl3/atdz1el/qKw6RNIhkg6RdIikQyQdIukQnc91jszamXr3XGTWPGa7+2nVIZIOkXSIpEMkHSLpEEmHqM91joyaf4yac1yd01y9/rvnMavdzz+sOkTSIZIOkXSIpEMkHSLpEI2f6+xu1Bzo49+0Z9Uhkg6RdIikQyQdIukQSYfo8+c6o+Yuu78vZzirDpF0iKRDJB0i6RBJh0g6ROPnOrvvU7k6B7r79y57P606RNIhkg6RdIikQyQdIukQ9bnOf7tP5c2o/UDb3U+rDpF0iKRDJB0i6RBJh0g6RK9lt4OM8qnnWE1n1SGSDpF0iKRDJB0i6RBJh+h8v86s85hWO5fqyKx9NtPvp1WHSDpE0iGSDpF0iKRDJB2i8ft1Zs1jVjuXatR9uPq7Hrv/Vh0i6RBJh0g6RNIhkg6RdIjO5zqj5gqf+vmrVnsuLP9eqw6RdIikQyQdIukQSYdIOkTPnYd193njo9w9F7n7++3XYXXSIZIOkXSIpEMkHSLpEI2f61ydKyw7t/jm98/aV/QYqw6RdIikQyQdIukQSYdIOkTOw3q3+5zGc1isTjpE0iGSDpF0iKRDJB2i/n6d1dw9oNrlPlzlOSyeJh0i6RBJh0g6RNIhkg5Rfw5rl3OmVnvOa9a+nCP26/A06RBJh0g6RNIhkg6RdIjmv1/nyKi5xaj3Mh/9rtWenxr1/aesOkTSIZIOkXSIpEMkHSLpEI2f6+xi+lzkzd3vAbr6PaesOkTSIZIOkXSIpEMkHSLpEH3+XGfW/GbWPp7H5j1WHSLpEEmHSDpE0iGSDpF0iMbPdXY5YGv6+2n+8XtG/d3h53BZdYikQyQdIukQSYdIOkTSIepznd3Phxq1f+Xu/TGj5j3DWXWIpEMkHSLpEEmHSDpE0iE6P+cc/sqqQyQdIukQSYdIOkTSIZIOkXSIpEMkHaLfizAMgaJXdSkAAAAASUVORK5CYII=\" alt=\"QR Code\" width=\"180\" height=\"180\" style=\"display:block;\" />\n                </div>\n                <p style=\"font-size:13px; font-weight:bold; color:#6b21a8; margin-top:10px; font-family:monospace;\">EVT-1043-5819</p>\n              </div>\n\n              <div class=\"badge-attachment\">\n                📎 <span><strong>E-Ticket PDF Attached:</strong> Your official printable E-Ticket PDF pass is attached to this email. You can also view or download it anytime from your EventEase Account under \"My Bookings\".</span>\n              </div>\n            </div>\n            <div class=\"footer\">\n              EventEase Digital Ticketing System &bull; Keep ticket QR code confidential &bull; Support: support@eventease.com\n            </div>\n          </div>\n        </body>\n        </html>\n        ', 'failed', 'SMTP Error: Could not connect to SMTP host. Failed to connect to server SMTP server error: Failed to connect to server SMTP code: 10060 Additional SMTP info: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond', '2026-09-21 09:15:33'),
+(161, 106, 199, 'hashen12@gmail.com', '🎟️ Booking Confirmation & E-Ticket - prana [EVT-1043-5819]', '\n        <!DOCTYPE html>\n        <html>\n        <head>\n          <meta charset=\"utf-8\">\n          <style>\n            body { font-family: \'Segoe UI\', Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }\n            .ticket-card { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }\n            .header { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: #ffffff; padding: 28px 24px; text-align: center; }\n            .header h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: 0.5px; }\n            .header p { margin: 6px 0 0 0; opacity: 0.9; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }\n            .content { padding: 28px 24px; }\n            .detail-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin: 20px 0; }\n            .detail-row { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px; }\n            .detail-label { color: #64748b; font-size: 13px; font-weight: 600; }\n            .detail-val { color: #0f172a; font-size: 13px; font-weight: 700; }\n            .qr-section { text-align: center; margin: 24px 0; background: #faf5ff; padding: 20px; border-radius: 12px; border: 1px solid #e9d5ff; }\n            .qr-code-box { display: inline-block; padding: 10px; background: #ffffff; border-radius: 12px; border: 1px solid #d8b4fe; }\n            .badge-attachment { background: #ecfdf5; border: 1px solid #a7f3d0; color: #047857; padding: 12px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; margin-top: 20px; }\n            .footer { background: #f1f5f9; padding: 18px; text-align: center; font-size: 12px; color: #64748b; border-top: 1px solid #e2e8f0; }\n            </style>\n        </head>\n        <body>\n          <div class=\"ticket-card\">\n            <div class=\"header\">\n              <h1>🎉 Booking Confirmed!</h1>\n              <p>EventEase Ticket Reservation Platform</p>\n            </div>\n            <div class=\"content\">\n              <p style=\"font-size:15px; margin-top:0;\">Dear <strong>Hashen</strong>,</p>\n              <p style=\"font-size:14px; color:#475569; line-height:1.5;\">Thank you for your reservation! Your payment has been successfully processed and confirmed. Your official entry pass and QR ticket are ready below.</p>\n              \n              <div class=\"detail-box\">\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Event Name:</span>\n                  <span class=\"detail-val\" style=\"color:#4f46e5;\">prana</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Ticket Code:</span>\n                  <span class=\"detail-val\" style=\"font-family:monospace;\">EVT-1043-5819</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Date & Location:</span>\n                  <span class=\"detail-val\">2026-09-26 | uwa welassa university</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Reserved Seat(s):</span>\n                  <span class=\"detail-val\" style=\"color:#7c3aed;\">A1, C1, E1, G1</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Ticket Quantity:</span>\n                  <span class=\"detail-val\">4 Ticket(s)</span>\n                </div>\n                <div class=\"detail-row\" style=\"border-bottom:none; margin-bottom:0; padding-bottom:0;\">\n                  <span class=\"detail-label\">Total Amount Paid:</span>\n                  <span class=\"detail-val\" style=\"color:#16a34a; font-size:15px;\">LKR 7,695.00</span>\n                </div>\n              </div>\n\n              <div class=\"qr-section\">\n                <h3 style=\"margin-top:0; color:#1e293b; font-size:16px;\">Gate Entrance QR Pass</h3>\n                <p style=\"font-size:12px; color:#64748b; margin-bottom:14px;\">Present this scannable QR code at the venue gate for entry validation.</p>\n                <div class=\"qr-code-box\">\n                  <img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAL4AAAC+CAIAAAAEFiLKAAAACXBIWXMAAA7EAAAOxAGVKw4bAAADF0lEQVR4nO3dwY6bMBRA0abq///ydNdFVES5Y7CdnrOOMgRdefHG4NfX19cPuO7n7AtgV9Ihkg6RdIikQyQdIukQSYdIOkTSIfp1+onX6/XAdXzf0X9UZl3/atdz1el/qKw6RNIhkg6RdIikQyQdIukQnc91jszamXr3XGTWPGa7+2nVIZIOkXSIpEMkHSLpEEmHqM91joyaf4yac1yd01y9/rvnMavdzz+sOkTSIZIOkXSIpEMkHSLpEI2f6+xu1Bzo49+0Z9Uhkg6RdIikQyQdIukQSYfo8+c6o+Yuu78vZzirDpF0iKRDJB0i6RBJh0g6ROPnOrvvU7k6B7r79y57P606RNIhkg6RdIikQyQdIukQ9bnOf7tP5c2o/UDb3U+rDpF0iKRDJB0i6RBJh0g6RK9lt4OM8qnnWE1n1SGSDpF0iKRDJB0i6RBJh+h8v86s85hWO5fqyKx9NtPvp1WHSDpE0iGSDpF0iKRDJB2i8ft1Zs1jVjuXatR9uPq7Hrv/Vh0i6RBJh0g6RNIhkg6RdIjO5zqj5gqf+vmrVnsuLP9eqw6RdIikQyQdIukQSYdIOkTPnYd193njo9w9F7n7++3XYXXSIZIOkXSIpEMkHSLpEI2f61ydKyw7t/jm98/aV/QYqw6RdIikQyQdIukQSYdIOkTOw3q3+5zGc1isTjpE0iGSDpF0iKRDJB2i/n6d1dw9oNrlPlzlOSyeJh0i6RBJh0g6RNIhkg5Rfw5rl3OmVnvOa9a+nCP26/A06RBJh0g6RNIhkg6RdIjmv1/nyKi5xaj3Mh/9rtWenxr1/aesOkTSIZIOkXSIpEMkHSLpEI2f6+xi+lzkzd3vAbr6PaesOkTSIZIOkXSIpEMkHSLpEH3+XGfW/GbWPp7H5j1WHSLpEEmHSDpE0iGSDpF0iMbPdXY5YGv6+2n+8XtG/d3h53BZdYikQyQdIukQSYdIOkTSIepznd3Phxq1f+Xu/TGj5j3DWXWIpEMkHSLpEEmHSDpE0iE6P+cc/sqqQyQdIukQSYdIOkTSIZIOkXSIpEMkHaLfizAMgaJXdSkAAAAASUVORK5CYII=\" alt=\"QR Code\" width=\"180\" height=\"180\" style=\"display:block;\" />\n                </div>\n                <p style=\"font-size:13px; font-weight:bold; color:#6b21a8; margin-top:10px; font-family:monospace;\">EVT-1043-5819</p>\n              </div>\n\n              <div class=\"badge-attachment\">\n                📎 <span><strong>E-Ticket PDF Attached:</strong> Your official printable E-Ticket PDF pass is attached to this email. You can also view or download it anytime from your EventEase Account under \"My Bookings\".</span>\n              </div>\n            </div>\n            <div class=\"footer\">\n              EventEase Digital Ticketing System &bull; Keep ticket QR code confidential &bull; Support: support@eventease.com\n            </div>\n          </div>\n        </body>\n        </html>\n        ', 'failed', 'SMTP Error: Could not connect to SMTP host. Failed to connect to server SMTP server error: Failed to connect to server SMTP code: 10060 Additional SMTP info: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond', '2026-09-21 09:15:33'),
+(162, 106, 200, 'hashen12@gmail.com', '🎟️ Booking Confirmation & E-Ticket - prana [EVT-1043-6481]', '\n        <!DOCTYPE html>\n        <html>\n        <head>\n          <meta charset=\"utf-8\">\n          <style>\n            body { font-family: \'Segoe UI\', Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }\n            .ticket-card { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }\n            .header { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: #ffffff; padding: 28px 24px; text-align: center; }\n            .header h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: 0.5px; }\n            .header p { margin: 6px 0 0 0; opacity: 0.9; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }\n            .content { padding: 28px 24px; }\n            .detail-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin: 20px 0; }\n            .detail-row { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px; }\n            .detail-label { color: #64748b; font-size: 13px; font-weight: 600; }\n            .detail-val { color: #0f172a; font-size: 13px; font-weight: 700; }\n            .qr-section { text-align: center; margin: 24px 0; background: #faf5ff; padding: 20px; border-radius: 12px; border: 1px solid #e9d5ff; }\n            .qr-code-box { display: inline-block; padding: 10px; background: #ffffff; border-radius: 12px; border: 1px solid #d8b4fe; }\n            .badge-attachment { background: #ecfdf5; border: 1px solid #a7f3d0; color: #047857; padding: 12px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; margin-top: 20px; }\n            .footer { background: #f1f5f9; padding: 18px; text-align: center; font-size: 12px; color: #64748b; border-top: 1px solid #e2e8f0; }\n            </style>\n        </head>\n        <body>\n          <div class=\"ticket-card\">\n            <div class=\"header\">\n              <h1>🎉 Booking Confirmed!</h1>\n              <p>EventEase Ticket Reservation Platform</p>\n            </div>\n            <div class=\"content\">\n              <p style=\"font-size:15px; margin-top:0;\">Dear <strong>Hashen</strong>,</p>\n              <p style=\"font-size:14px; color:#475569; line-height:1.5;\">Thank you for your reservation! Your payment has been successfully processed and confirmed. Your official entry pass and QR ticket are ready below.</p>\n              \n              <div class=\"detail-box\">\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Event Name:</span>\n                  <span class=\"detail-val\" style=\"color:#4f46e5;\">prana</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Ticket Code:</span>\n                  <span class=\"detail-val\" style=\"font-family:monospace;\">EVT-1043-6481</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Date & Location:</span>\n                  <span class=\"detail-val\">2026-09-26 | uwa welassa university</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Reserved Seat(s):</span>\n                  <span class=\"detail-val\" style=\"color:#7c3aed;\">A3</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Ticket Quantity:</span>\n                  <span class=\"detail-val\">1 Ticket(s)</span>\n                </div>\n                <div class=\"detail-row\" style=\"border-bottom:none; margin-bottom:0; padding-bottom:0;\">\n                  <span class=\"detail-label\">Total Amount Paid:</span>\n                  <span class=\"detail-val\" style=\"color:#16a34a; font-size:15px;\">LKR 2,700.00</span>\n                </div>\n              </div>\n\n              <div class=\"qr-section\">\n                <h3 style=\"margin-top:0; color:#1e293b; font-size:16px;\">Gate Entrance QR Pass</h3>\n                <p style=\"font-size:12px; color:#64748b; margin-bottom:14px;\">Present this scannable QR code at the venue gate for entry validation.</p>\n                <div class=\"qr-code-box\">\n                  <img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAL4AAAC+CAIAAAAEFiLKAAAACXBIWXMAAA7EAAAOxAGVKw4bAAADIElEQVR4nO3dwW6cMBRA0VL1/3853WVRyWK4MWMzPWcdDQhdefFizPH19fULrvu9+gZ4KukQSYdIOkTSIZIOkXSIpEMkHSLpEP05/YvjON5wHz83+o/K1fu/+p+Z0e/Pup9VTp+DVYdIOkTSIZIOkXSIpEMkHaLzuc7Iqp2ps+Y0u81XnvI8v1l1iKRDJB0i6RBJh0g6RNIh6nOdkVnzkllzjln7aR43d/nH9Pu36hBJh0g6RNIhkg6RdIikQzR/rvN0T5n3LGfVIZIOkXSIpEMkHSLpEEmH6P+d69x97s7Hs+oQSYdIOkTSIZIOkXSIpEM0f66z2/xjt/u5atv7t+oQSYdIOkTSIZIOkXSIpEPU5zq7nTs8cvf5OrPez3rK8/xm1SGSDpF0iKRDJB0i6RBJh+jYdjvI3byH9UNWHSLpEEmHSDpE0iGSDpF0iM7369y9j2TWvpa7999ctds+nun7jaw6RNIhkg6RdIikQyQdIukQnc91dnuf6Cnzm1lWfe/9lFWHSDpE0iGSDpF0iKRDJB2i9efr3D0Xedy5NS9avq/IqkMkHSLpEEmHSDpE0iGSDtH883VmnVuzav/NyG7XHZm+L2fEqkMkHSLpEEmHSDpE0iGSDtH883XuPl/4bXOLN1939Purrmu/DneRDpF0iKRDJB0i6RBJh+jzv4d197nDV+12P5lVh0g6RNIhkg6RdIikQyQdovXfw5plNOdYNf/Y7XtY0/ddWXWIpEMkHSLpEEmHSDpE0iHq5ybvNi/Z7brTvyv+oredS2TVIZIOkXSIpEMkHSLpEEmHqM91Rp7yntGs+cqq97OWnytt1SGSDpF0iKRDJB0i6RBJh2j+XGc3d89LZv3Oqve28lzKqkMkHSLpEEmHSDpE0iGSDtHnz3WumjV3WbWP523vx1l1iKRDJB0i6RBJh0g6RNIhmj/XWf6dphc95TybbZ+nVYdIOkTSIZIOkXSIpEMkHaI+13nKd7JGnnJ+8ar3wk5ZdYikQyQdIukQSYdIOkTSITq23Q7C5qw6RNIhkg6RdIikQyQdIukQSYdIOkTSIfoLp3vrnMbhEaEAAAAASUVORK5CYII=\" alt=\"QR Code\" width=\"180\" height=\"180\" style=\"display:block;\" />\n                </div>\n                <p style=\"font-size:13px; font-weight:bold; color:#6b21a8; margin-top:10px; font-family:monospace;\">EVT-1043-6481</p>\n              </div>\n\n              <div class=\"badge-attachment\">\n                📎 <span><strong>E-Ticket PDF Attached:</strong> Your official printable E-Ticket PDF pass is attached to this email. You can also view or download it anytime from your EventEase Account under \"My Bookings\".</span>\n              </div>\n            </div>\n            <div class=\"footer\">\n              EventEase Digital Ticketing System &bull; Keep ticket QR code confidential &bull; Support: support@eventease.com\n            </div>\n          </div>\n        </body>\n        </html>\n        ', 'failed', 'SMTP Error: Could not authenticate.', '2026-09-21 16:12:22'),
+(163, 106, 200, 'hashen12@gmail.com', '🎟️ Booking Confirmation & E-Ticket - prana [EVT-1043-6481]', '\n        <!DOCTYPE html>\n        <html>\n        <head>\n          <meta charset=\"utf-8\">\n          <style>\n            body { font-family: \'Segoe UI\', Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }\n            .ticket-card { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }\n            .header { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: #ffffff; padding: 28px 24px; text-align: center; }\n            .header h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: 0.5px; }\n            .header p { margin: 6px 0 0 0; opacity: 0.9; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }\n            .content { padding: 28px 24px; }\n            .detail-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin: 20px 0; }\n            .detail-row { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px; }\n            .detail-label { color: #64748b; font-size: 13px; font-weight: 600; }\n            .detail-val { color: #0f172a; font-size: 13px; font-weight: 700; }\n            .qr-section { text-align: center; margin: 24px 0; background: #faf5ff; padding: 20px; border-radius: 12px; border: 1px solid #e9d5ff; }\n            .qr-code-box { display: inline-block; padding: 10px; background: #ffffff; border-radius: 12px; border: 1px solid #d8b4fe; }\n            .badge-attachment { background: #ecfdf5; border: 1px solid #a7f3d0; color: #047857; padding: 12px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; margin-top: 20px; }\n            .footer { background: #f1f5f9; padding: 18px; text-align: center; font-size: 12px; color: #64748b; border-top: 1px solid #e2e8f0; }\n            </style>\n        </head>\n        <body>\n          <div class=\"ticket-card\">\n            <div class=\"header\">\n              <h1>🎉 Booking Confirmed!</h1>\n              <p>EventEase Ticket Reservation Platform</p>\n            </div>\n            <div class=\"content\">\n              <p style=\"font-size:15px; margin-top:0;\">Dear <strong>Hashen</strong>,</p>\n              <p style=\"font-size:14px; color:#475569; line-height:1.5;\">Thank you for your reservation! Your payment has been successfully processed and confirmed. Your official entry pass and QR ticket are ready below.</p>\n              \n              <div class=\"detail-box\">\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Event Name:</span>\n                  <span class=\"detail-val\" style=\"color:#4f46e5;\">prana</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Ticket Code:</span>\n                  <span class=\"detail-val\" style=\"font-family:monospace;\">EVT-1043-6481</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Date & Location:</span>\n                  <span class=\"detail-val\">2026-09-26 | uwa welassa university</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Reserved Seat(s):</span>\n                  <span class=\"detail-val\" style=\"color:#7c3aed;\">A3</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Ticket Quantity:</span>\n                  <span class=\"detail-val\">1 Ticket(s)</span>\n                </div>\n                <div class=\"detail-row\" style=\"border-bottom:none; margin-bottom:0; padding-bottom:0;\">\n                  <span class=\"detail-label\">Total Amount Paid:</span>\n                  <span class=\"detail-val\" style=\"color:#16a34a; font-size:15px;\">LKR 2,700.00</span>\n                </div>\n              </div>\n\n              <div class=\"qr-section\">\n                <h3 style=\"margin-top:0; color:#1e293b; font-size:16px;\">Gate Entrance QR Pass</h3>\n                <p style=\"font-size:12px; color:#64748b; margin-bottom:14px;\">Present this scannable QR code at the venue gate for entry validation.</p>\n                <div class=\"qr-code-box\">\n                  <img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAL4AAAC+CAIAAAAEFiLKAAAACXBIWXMAAA7EAAAOxAGVKw4bAAADIElEQVR4nO3dwW6cMBRA0VL1/3853WVRyWK4MWMzPWcdDQhdefFizPH19fULrvu9+gZ4KukQSYdIOkTSIZIOkXSIpEMkHSLpEP05/YvjON5wHz83+o/K1fu/+p+Z0e/Pup9VTp+DVYdIOkTSIZIOkXSIpEMkHaLzuc7Iqp2ps+Y0u81XnvI8v1l1iKRDJB0i6RBJh0g6RNIh6nOdkVnzkllzjln7aR43d/nH9Pu36hBJh0g6RNIhkg6RdIikQzR/rvN0T5n3LGfVIZIOkXSIpEMkHSLpEEmH6P+d69x97s7Hs+oQSYdIOkTSIZIOkXSIpEM0f66z2/xjt/u5atv7t+oQSYdIOkTSIZIOkXSIpEPU5zq7nTs8cvf5OrPez3rK8/xm1SGSDpF0iKRDJB0i6RBJh+jYdjvI3byH9UNWHSLpEEmHSDpE0iGSDpF0iM7369y9j2TWvpa7999ctds+nun7jaw6RNIhkg6RdIikQyQdIukQnc91dnuf6Cnzm1lWfe/9lFWHSDpE0iGSDpF0iKRDJB2i9efr3D0Xedy5NS9avq/IqkMkHSLpEEmHSDpE0iGSDtH883VmnVuzav/NyG7XHZm+L2fEqkMkHSLpEEmHSDpE0iGSDtH883XuPl/4bXOLN1939Purrmu/DneRDpF0iKRDJB0i6RBJh+jzv4d197nDV+12P5lVh0g6RNIhkg6RdIikQyQdovXfw5plNOdYNf/Y7XtY0/ddWXWIpEMkHSLpEEmHSDpE0iHq5ybvNi/Z7brTvyv+oredS2TVIZIOkXSIpEMkHSLpEEmHqM91Rp7yntGs+cqq97OWnytt1SGSDpF0iKRDJB0i6RBJh2j+XGc3d89LZv3Oqve28lzKqkMkHSLpEEmHSDpE0iGSDtHnz3WumjV3WbWP523vx1l1iKRDJB0i6RBJh0g6RNIhmj/XWf6dphc95TybbZ+nVYdIOkTSIZIOkXSIpEMkHaI+13nKd7JGnnJ+8ar3wk5ZdYikQyQdIukQSYdIOkTSITq23Q7C5qw6RNIhkg6RdIikQyQdIukQSYdIOkTSIfoLp3vrnMbhEaEAAAAASUVORK5CYII=\" alt=\"QR Code\" width=\"180\" height=\"180\" style=\"display:block;\" />\n                </div>\n                <p style=\"font-size:13px; font-weight:bold; color:#6b21a8; margin-top:10px; font-family:monospace;\">EVT-1043-6481</p>\n              </div>\n\n              <div class=\"badge-attachment\">\n                📎 <span><strong>E-Ticket PDF Attached:</strong> Your official printable E-Ticket PDF pass is attached to this email. You can also view or download it anytime from your EventEase Account under \"My Bookings\".</span>\n              </div>\n            </div>\n            <div class=\"footer\">\n              EventEase Digital Ticketing System &bull; Keep ticket QR code confidential &bull; Support: support@eventease.com\n            </div>\n          </div>\n        </body>\n        </html>\n        ', 'failed', 'SMTP Error: Could not authenticate.', '2026-09-21 16:12:22'),
+(164, 106, 200, 'hashen12@gmail.com', '🎟️ Booking Confirmation & E-Ticket - prana [EVT-1043-6481]', '\n        <!DOCTYPE html>\n        <html>\n        <head>\n          <meta charset=\"utf-8\">\n          <style>\n            body { font-family: \'Segoe UI\', Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }\n            .ticket-card { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }\n            .header { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: #ffffff; padding: 28px 24px; text-align: center; }\n            .header h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: 0.5px; }\n            .header p { margin: 6px 0 0 0; opacity: 0.9; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }\n            .content { padding: 28px 24px; }\n            .detail-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin: 20px 0; }\n            .detail-row { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px; }\n            .detail-label { color: #64748b; font-size: 13px; font-weight: 600; }\n            .detail-val { color: #0f172a; font-size: 13px; font-weight: 700; }\n            .qr-section { text-align: center; margin: 24px 0; background: #faf5ff; padding: 20px; border-radius: 12px; border: 1px solid #e9d5ff; }\n            .qr-code-box { display: inline-block; padding: 10px; background: #ffffff; border-radius: 12px; border: 1px solid #d8b4fe; }\n            .badge-attachment { background: #ecfdf5; border: 1px solid #a7f3d0; color: #047857; padding: 12px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; margin-top: 20px; }\n            .footer { background: #f1f5f9; padding: 18px; text-align: center; font-size: 12px; color: #64748b; border-top: 1px solid #e2e8f0; }\n            </style>\n        </head>\n        <body>\n          <div class=\"ticket-card\">\n            <div class=\"header\">\n              <h1>🎉 Booking Confirmed!</h1>\n              <p>EventEase Ticket Reservation Platform</p>\n            </div>\n            <div class=\"content\">\n              <p style=\"font-size:15px; margin-top:0;\">Dear <strong>Hashen</strong>,</p>\n              <p style=\"font-size:14px; color:#475569; line-height:1.5;\">Thank you for your reservation! Your payment has been successfully processed and confirmed. Your official entry pass and QR ticket are ready below.</p>\n              \n              <div class=\"detail-box\">\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Event Name:</span>\n                  <span class=\"detail-val\" style=\"color:#4f46e5;\">prana</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Ticket Code:</span>\n                  <span class=\"detail-val\" style=\"font-family:monospace;\">EVT-1043-6481</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Date & Location:</span>\n                  <span class=\"detail-val\">2026-09-26 | uwa welassa university</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Reserved Seat(s):</span>\n                  <span class=\"detail-val\" style=\"color:#7c3aed;\">A3</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Ticket Quantity:</span>\n                  <span class=\"detail-val\">1 Ticket(s)</span>\n                </div>\n                <div class=\"detail-row\" style=\"border-bottom:none; margin-bottom:0; padding-bottom:0;\">\n                  <span class=\"detail-label\">Total Amount Paid:</span>\n                  <span class=\"detail-val\" style=\"color:#16a34a; font-size:15px;\">LKR 2,700.00</span>\n                </div>\n              </div>\n\n              <div class=\"qr-section\">\n                <h3 style=\"margin-top:0; color:#1e293b; font-size:16px;\">Gate Entrance QR Pass</h3>\n                <p style=\"font-size:12px; color:#64748b; margin-bottom:14px;\">Present this scannable QR code at the venue gate for entry validation.</p>\n                <div class=\"qr-code-box\">\n                  <img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAL4AAAC+CAIAAAAEFiLKAAAACXBIWXMAAA7EAAAOxAGVKw4bAAADIElEQVR4nO3dwW6cMBRA0VL1/3853WVRyWK4MWMzPWcdDQhdefFizPH19fULrvu9+gZ4KukQSYdIOkTSIZIOkXSIpEMkHSLpEP05/YvjON5wHz83+o/K1fu/+p+Z0e/Pup9VTp+DVYdIOkTSIZIOkXSIpEMkHaLzuc7Iqp2ps+Y0u81XnvI8v1l1iKRDJB0i6RBJh0g6RNIh6nOdkVnzkllzjln7aR43d/nH9Pu36hBJh0g6RNIhkg6RdIikQzR/rvN0T5n3LGfVIZIOkXSIpEMkHSLpEEmH6P+d69x97s7Hs+oQSYdIOkTSIZIOkXSIpEM0f66z2/xjt/u5atv7t+oQSYdIOkTSIZIOkXSIpEPU5zq7nTs8cvf5OrPez3rK8/xm1SGSDpF0iKRDJB0i6RBJh+jYdjvI3byH9UNWHSLpEEmHSDpE0iGSDpF0iM7369y9j2TWvpa7999ctds+nun7jaw6RNIhkg6RdIikQyQdIukQnc91dnuf6Cnzm1lWfe/9lFWHSDpE0iGSDpF0iKRDJB2i9efr3D0Xedy5NS9avq/IqkMkHSLpEEmHSDpE0iGSDtH883VmnVuzav/NyG7XHZm+L2fEqkMkHSLpEEmHSDpE0iGSDtH883XuPl/4bXOLN1939Purrmu/DneRDpF0iKRDJB0i6RBJh+jzv4d197nDV+12P5lVh0g6RNIhkg6RdIikQyQdovXfw5plNOdYNf/Y7XtY0/ddWXWIpEMkHSLpEEmHSDpE0iHq5ybvNi/Z7brTvyv+oredS2TVIZIOkXSIpEMkHSLpEEmHqM91Rp7yntGs+cqq97OWnytt1SGSDpF0iKRDJB0i6RBJh2j+XGc3d89LZv3Oqve28lzKqkMkHSLpEEmHSDpE0iGSDtHnz3WumjV3WbWP523vx1l1iKRDJB0i6RBJh0g6RNIhmj/XWf6dphc95TybbZ+nVYdIOkTSIZIOkXSIpEMkHaI+13nKd7JGnnJ+8ar3wk5ZdYikQyQdIukQSYdIOkTSITq23Q7C5qw6RNIhkg6RdIikQyQdIukQSYdIOkTSIfoLp3vrnMbhEaEAAAAASUVORK5CYII=\" alt=\"QR Code\" width=\"180\" height=\"180\" style=\"display:block;\" />\n                </div>\n                <p style=\"font-size:13px; font-weight:bold; color:#6b21a8; margin-top:10px; font-family:monospace;\">EVT-1043-6481</p>\n              </div>\n\n              <div class=\"badge-attachment\">\n                📎 <span><strong>E-Ticket PDF Attached:</strong> Your official printable E-Ticket PDF pass is attached to this email. You can also view or download it anytime from your EventEase Account under \"My Bookings\".</span>\n              </div>\n            </div>\n            <div class=\"footer\">\n              EventEase Digital Ticketing System &bull; Keep ticket QR code confidential &bull; Support: support@eventease.com\n            </div>\n          </div>\n        </body>\n        </html>\n        ', 'failed', 'SMTP Error: Could not authenticate.', '2026-09-21 16:12:38'),
+(165, 106, 200, 'hashen12@gmail.com', '🎟️ Booking Confirmation & E-Ticket - prana [EVT-1043-6481]', '\n        <!DOCTYPE html>\n        <html>\n        <head>\n          <meta charset=\"utf-8\">\n          <style>\n            body { font-family: \'Segoe UI\', Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }\n            .ticket-card { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }\n            .header { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: #ffffff; padding: 28px 24px; text-align: center; }\n            .header h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: 0.5px; }\n            .header p { margin: 6px 0 0 0; opacity: 0.9; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }\n            .content { padding: 28px 24px; }\n            .detail-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin: 20px 0; }\n            .detail-row { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px; }\n            .detail-label { color: #64748b; font-size: 13px; font-weight: 600; }\n            .detail-val { color: #0f172a; font-size: 13px; font-weight: 700; }\n            .qr-section { text-align: center; margin: 24px 0; background: #faf5ff; padding: 20px; border-radius: 12px; border: 1px solid #e9d5ff; }\n            .qr-code-box { display: inline-block; padding: 10px; background: #ffffff; border-radius: 12px; border: 1px solid #d8b4fe; }\n            .badge-attachment { background: #ecfdf5; border: 1px solid #a7f3d0; color: #047857; padding: 12px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; margin-top: 20px; }\n            .footer { background: #f1f5f9; padding: 18px; text-align: center; font-size: 12px; color: #64748b; border-top: 1px solid #e2e8f0; }\n            </style>\n        </head>\n        <body>\n          <div class=\"ticket-card\">\n            <div class=\"header\">\n              <h1>🎉 Booking Confirmed!</h1>\n              <p>EventEase Ticket Reservation Platform</p>\n            </div>\n            <div class=\"content\">\n              <p style=\"font-size:15px; margin-top:0;\">Dear <strong>Hashen</strong>,</p>\n              <p style=\"font-size:14px; color:#475569; line-height:1.5;\">Thank you for your reservation! Your payment has been successfully processed and confirmed. Your official entry pass and QR ticket are ready below.</p>\n              \n              <div class=\"detail-box\">\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Event Name:</span>\n                  <span class=\"detail-val\" style=\"color:#4f46e5;\">prana</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Ticket Code:</span>\n                  <span class=\"detail-val\" style=\"font-family:monospace;\">EVT-1043-6481</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Date & Location:</span>\n                  <span class=\"detail-val\">2026-09-26 | uwa welassa university</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Reserved Seat(s):</span>\n                  <span class=\"detail-val\" style=\"color:#7c3aed;\">A3</span>\n                </div>\n                <div class=\"detail-row\">\n                  <span class=\"detail-label\">Ticket Quantity:</span>\n                  <span class=\"detail-val\">1 Ticket(s)</span>\n                </div>\n                <div class=\"detail-row\" style=\"border-bottom:none; margin-bottom:0; padding-bottom:0;\">\n                  <span class=\"detail-label\">Total Amount Paid:</span>\n                  <span class=\"detail-val\" style=\"color:#16a34a; font-size:15px;\">LKR 2,700.00</span>\n                </div>\n              </div>\n\n              <div class=\"qr-section\">\n                <h3 style=\"margin-top:0; color:#1e293b; font-size:16px;\">Gate Entrance QR Pass</h3>\n                <p style=\"font-size:12px; color:#64748b; margin-bottom:14px;\">Present this scannable QR code at the venue gate for entry validation.</p>\n                <div class=\"qr-code-box\">\n                  <img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAL4AAAC+CAIAAAAEFiLKAAAACXBIWXMAAA7EAAAOxAGVKw4bAAADIElEQVR4nO3dwW6cMBRA0VL1/3853WVRyWK4MWMzPWcdDQhdefFizPH19fULrvu9+gZ4KukQSYdIOkTSIZIOkXSIpEMkHSLpEP05/YvjON5wHz83+o/K1fu/+p+Z0e/Pup9VTp+DVYdIOkTSIZIOkXSIpEMkHaLzuc7Iqp2ps+Y0u81XnvI8v1l1iKRDJB0i6RBJh0g6RNIh6nOdkVnzkllzjln7aR43d/nH9Pu36hBJh0g6RNIhkg6RdIikQzR/rvN0T5n3LGfVIZIOkXSIpEMkHSLpEEmH6P+d69x97s7Hs+oQSYdIOkTSIZIOkXSIpEM0f66z2/xjt/u5atv7t+oQSYdIOkTSIZIOkXSIpEPU5zq7nTs8cvf5OrPez3rK8/xm1SGSDpF0iKRDJB0i6RBJh+jYdjvI3byH9UNWHSLpEEmHSDpE0iGSDpF0iM7369y9j2TWvpa7999ctds+nun7jaw6RNIhkg6RdIikQyQdIukQnc91dnuf6Cnzm1lWfe/9lFWHSDpE0iGSDpF0iKRDJB2i9efr3D0Xedy5NS9avq/IqkMkHSLpEEmHSDpE0iGSDtH883VmnVuzav/NyG7XHZm+L2fEqkMkHSLpEEmHSDpE0iGSDtH883XuPl/4bXOLN1939Purrmu/DneRDpF0iKRDJB0i6RBJh+jzv4d197nDV+12P5lVh0g6RNIhkg6RdIikQyQdovXfw5plNOdYNf/Y7XtY0/ddWXWIpEMkHSLpEEmHSDpE0iHq5ybvNi/Z7brTvyv+oredS2TVIZIOkXSIpEMkHSLpEEmHqM91Rp7yntGs+cqq97OWnytt1SGSDpF0iKRDJB0i6RBJh2j+XGc3d89LZv3Oqve28lzKqkMkHSLpEEmHSDpE0iGSDtHnz3WumjV3WbWP523vx1l1iKRDJB0i6RBJh0g6RNIhmj/XWf6dphc95TybbZ+nVYdIOkTSIZIOkXSIpEMkHaI+13nKd7JGnnJ+8ar3wk5ZdYikQyQdIukQSYdIOkTSITq23Q7C5qw6RNIhkg6RdIikQyQdIukQSYdIOkTSIfoLp3vrnMbhEaEAAAAASUVORK5CYII=\" alt=\"QR Code\" width=\"180\" height=\"180\" style=\"display:block;\" />\n                </div>\n                <p style=\"font-size:13px; font-weight:bold; color:#6b21a8; margin-top:10px; font-family:monospace;\">EVT-1043-6481</p>\n              </div>\n\n              <div class=\"badge-attachment\">\n                📎 <span><strong>E-Ticket PDF Attached:</strong> Your official printable E-Ticket PDF pass is attached to this email. You can also view or download it anytime from your EventEase Account under \"My Bookings\".</span>\n              </div>\n            </div>\n            <div class=\"footer\">\n              EventEase Digital Ticketing System &bull; Keep ticket QR code confidential &bull; Support: support@eventease.com\n            </div>\n          </div>\n        </body>\n        </html>\n        ', 'failed', 'SMTP Error: Could not authenticate.', '2026-09-21 16:12:38');
 
 -- --------------------------------------------------------
 
@@ -443,7 +455,9 @@ INSERT INTO `events` (`id`, `organizer_id`, `title`, `description`, `event_date`
 (998, 98, 'Organizer B Exclusive Expo 2026', 'Exclusive event created by Organizer B', '2026-11-20', '2026-11-01 00:00:00', '2026-11-02 00:00:00', 'Kandy Main Arena', 300, '2026-08-10 14:54:42', 2500.00, NULL, 'General', 'approved', 24, 0),
 (1029, 99, 'newwwww', 'newwwwww', '2026-10-10', '2026-10-03 00:00:00', '2026-10-04 00:00:00', 'kohehari', 500, '2026-08-10 17:56:57', 1995.00, '', 'Music', 'pending', 24, 0),
 (1040, 99, 'rrrrrrr', 'rrrrrrrrr', '2026-09-10', '2026-08-11 16:25:00', '2026-08-12 16:25:00', 'rrrrrr', 200, '2026-08-11 09:56:20', 200.00, '', 'Music', 'approved', 24, 0),
-(1041, 99, 'test 6969', '6969', '2026-10-10', '2026-08-10 16:31:00', '2026-08-12 16:31:00', 'ffffff', 500, '2026-08-11 10:03:16', 2000.00, '1786442596_Design No - 2026-07-27T223537.607.png', 'Music', 'approved', 24, 0);
+(1041, 99, 'test 6969', '6969', '2026-10-10', '2026-08-10 16:31:00', '2026-08-12 16:31:00', 'ffffff', 500, '2026-08-11 10:03:16', 2000.00, '1786442596_Design No - 2026-07-27T223537.607.png', 'Music', 'approved', 24, 0),
+(1042, 100, 'Mandakini', 'Mandakini live in concert', '2026-09-26', '2026-09-21 14:59:00', '2026-09-22 14:59:00', 'opean air theater ', 500, '2026-09-21 08:30:54', 1500.00, '1789979454_images (4).jpg', 'General', 'approved', 24, 0),
+(1043, 100, 'prana', 'prana live concert', '2026-09-26', '2026-09-20 14:42:00', '2026-09-21 14:42:00', 'uwa welassa university', 500, '2026-09-21 09:12:09', 1500.00, '1789981929_images (5).jpg', 'Music', 'approved', 24, 0);
 
 -- --------------------------------------------------------
 
@@ -471,7 +485,10 @@ INSERT INTO `event_announcements` (`id`, `event_id`, `organizer_id`, `title`, `m
 (1, 16, 2, 'Gate Opening Time & Parking Advisory', 'Gates will open at 5:30 PM sharp. Parking is available at Gate 2 and Gate 4. Please present your digital QR ticket for fast entry.', 'normal', 'all_attendees', 198, '2026-08-09 13:46:46'),
 (2, 16, 2, 'URGENT: Hall Stage Floor Adjustment', 'Due to high turnout, the main stage floor seating has been upgraded to climate-controlled indoor hall A.', 'urgent', 'all_attendees', 198, '2026-08-09 13:46:46'),
 (3, 17, 2, 'VIP Meet & Greet Session Notice', 'All VIP Platinum pass holders are invited to the pre-event reception at 4:00 PM in Lounge 1.', 'normal', 'vip_only', 45, '2026-08-09 13:46:46'),
-(4, 16, 2, 'Gate Entry Advisory 937', 'Gates will open strictly at 5:00 PM. Please have your digital QR pass ready on your smartphone for fast check-in.', 'urgent', 'all_attendees', 1, '2026-08-09 13:47:56');
+(4, 16, 2, 'Gate Entry Advisory 937', 'Gates will open strictly at 5:00 PM. Please have your digital QR pass ready on your smartphone for fast check-in.', 'urgent', 'all_attendees', 1, '2026-08-09 13:47:56'),
+(5, 1042, 104, 'URGENT: Gate Opening & Entry Advisory', 'Gates will open strictly at 5:00 PM. Please have your digital QR pass ready on your smartphone for fast check-in.', 'urgent', 'all_attendees', 6, '2026-09-21 08:41:48'),
+(6, 1042, 104, 'URGENT: Gate Opening & Entry Advisory', 'Gates will open strictly at 5:00 PM. Please have your digital QR pass ready on your smartphone for fast check-in.', 'urgent', 'all_attendees', 6, '2026-09-21 08:42:15'),
+(7, 1042, 104, 'SCHEDULE ADJUSTMENT: Main Stage Delay', 'The main performance will start 15 minutes later than scheduled. Thank you for your patience!', 'normal', 'all_attendees', 6, '2026-09-21 08:43:28');
 
 -- --------------------------------------------------------
 
@@ -498,7 +515,13 @@ INSERT INTO `event_booked_seats` (`id`, `event_id`, `booking_id`, `seat_code`, `
 (1, 16, 159, 'C10', 'Platinum Tier', 7500.00, 9, '2026-07-30 17:05:20'),
 (2, 17, 160, 'G1', 'Standard Tier', 5000.00, 14, '2026-08-09 17:03:12'),
 (3, 24, 161, 'A1', 'VIP Front Row', 4000.00, 14, '2026-08-09 17:44:17'),
-(4, 24, 162, 'C1', 'Platinum Tier', 3000.00, 14, '2026-08-10 04:48:45');
+(4, 24, 162, 'C1', 'Platinum Tier', 3000.00, 14, '2026-08-10 04:48:45'),
+(5, 1040, 198, 'G1', 'Standard Tier', 200.00, 9, '2026-08-26 17:16:38'),
+(6, 1043, 199, 'A1', 'VIP Front Row', 3000.00, 106, '2026-09-21 09:13:45'),
+(7, 1043, 199, 'C1', 'Platinum Tier', 2250.00, 106, '2026-09-21 09:13:45'),
+(8, 1043, 199, 'E1', 'Gold Tier', 1800.00, 106, '2026-09-21 09:13:45'),
+(9, 1043, 199, 'G1', 'Standard Tier', 1500.00, 106, '2026-09-21 09:13:45'),
+(10, 1043, 200, 'A3', 'VIP Front Row', 3000.00, 106, '2026-09-21 16:11:10');
 
 -- --------------------------------------------------------
 
@@ -596,12 +619,12 @@ INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`
 (1, 7, 'booking', '🎟️ Ticket Booking Confirmed!', 'Your ticket reservation for \'Summer Music Festival 2026\' has been confirmed. Seat: VIP-A1.', '/my-bookings', 0, '2026-07-30 17:30:54'),
 (2, 7, 'waiting_list', '🎉 Waiting List Priority Alert!', 'A ticket slot opened up for \'Tech Innovators Summit\'. Click to claim your priority ticket.', '/waiting-list', 0, '2026-07-30 17:30:54'),
 (3, 7, 'verification', '🛡️ Organizer Account Status Update', 'Your organizer business registration document has been reviewed and verified.', '/organizer/verify', 0, '2026-07-30 17:30:54'),
-(4, 9, 'booking', '🎟️ Ticket Booking Confirmed!', 'Your ticket reservation for \'Summer Music Festival 2026\' has been confirmed. Seat: VIP-A1.', '/my-bookings', 0, '2026-08-09 08:06:54'),
-(5, 9, 'waiting_list', '🎉 Waiting List Priority Alert!', 'A ticket slot opened up for \'Tech Innovators Summit\'. Click to claim your priority ticket.', '/waiting-list', 0, '2026-08-09 08:06:54'),
-(6, 9, 'verification', '🛡️ Organizer Account Status Update', 'Your organizer business registration document has been reviewed and verified.', '/organizer/verify', 0, '2026-08-09 08:06:54'),
-(7, 9, 'support', '🎧 Support Ticket Update: resolved', 'Your support ticket \'Ticket Refund Inquiry 1786283046467\' has been updated to: RESOLVED. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', 0, '2026-08-09 13:44:08'),
-(8, 9, 'support', '🎧 Support Ticket Update: resolved', 'Your support ticket \'Ticket Refund Inquiry 1786283255681\' has been updated to: RESOLVED. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', 0, '2026-08-09 13:47:40'),
-(9, 9, 'warning', '', '📢 [URGENT] Gate Entry Advisory 937: Gates will open strictly at 5:00 PM. Please have your digital QR pass ready on your smartphone for fast check-in.', NULL, 0, '2026-08-09 13:47:56'),
+(4, 9, 'booking', '🎟️ Ticket Booking Confirmed!', 'Your ticket reservation for \'Summer Music Festival 2026\' has been confirmed. Seat: VIP-A1.', '/my-bookings', 1, '2026-08-09 08:06:54'),
+(5, 9, 'waiting_list', '🎉 Waiting List Priority Alert!', 'A ticket slot opened up for \'Tech Innovators Summit\'. Click to claim your priority ticket.', '/waiting-list', 1, '2026-08-09 08:06:54'),
+(6, 9, 'verification', '🛡️ Organizer Account Status Update', 'Your organizer business registration document has been reviewed and verified.', '/organizer/verify', 1, '2026-08-09 08:06:54'),
+(7, 9, 'support', '🎧 Support Ticket Update: resolved', 'Your support ticket \'Ticket Refund Inquiry 1786283046467\' has been updated to: RESOLVED. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', 1, '2026-08-09 13:44:08'),
+(8, 9, 'support', '🎧 Support Ticket Update: resolved', 'Your support ticket \'Ticket Refund Inquiry 1786283255681\' has been updated to: RESOLVED. Admin note: Support Team verified transaction and synced ticket status.', '/customer/support', 1, '2026-08-09 13:47:40'),
+(9, 9, 'warning', '', '📢 [URGENT] Gate Entry Advisory 937: Gates will open strictly at 5:00 PM. Please have your digital QR pass ready on your smartphone for fast check-in.', NULL, 1, '2026-08-09 13:47:56'),
 (10, 14, 'booking', '🎟️ Ticket Booking Confirmed!', 'Your ticket reservation for \'Summer Music Festival 2026\' has been confirmed. Seat: VIP-A1.', '/my-bookings', 1, '2026-08-09 17:02:05'),
 (11, 14, 'waiting_list', '🎉 Waiting List Priority Alert!', 'A ticket slot opened up for \'Tech Innovators Summit\'. Click to claim your priority ticket.', '/waiting-list', 1, '2026-08-09 17:02:05'),
 (12, 14, 'verification', '🛡️ Organizer Account Status Update', 'Your organizer business registration document has been reviewed and verified.', '/organizer/verify', 1, '2026-08-09 17:02:05'),
@@ -620,7 +643,35 @@ INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`
 (25, 102, 'verification', '🛡️ Organizer Verification Approved!', 'Your business verification has been approved! You now have an official Verified Badge.', '/organizer/verify', 0, '2026-08-10 17:54:30'),
 (26, 103, 'booking', '🎟️ Ticket Booking Confirmed!', 'Your ticket reservation for \'Summer Music Festival 2026\' has been confirmed. Seat: VIP-A1.', '/my-bookings', 0, '2026-08-11 10:07:25'),
 (27, 103, 'waiting_list', '🎉 Waiting List Priority Alert!', 'A ticket slot opened up for \'Tech Innovators Summit\'. Click to claim your priority ticket.', '/waiting-list', 0, '2026-08-11 10:07:25'),
-(28, 103, 'verification', '🛡️ Organizer Account Status Update', 'Your organizer business registration document has been reviewed and verified.', '/organizer/verify', 0, '2026-08-11 10:07:25');
+(28, 103, 'verification', '🛡️ Organizer Account Status Update', 'Your organizer business registration document has been reviewed and verified.', '/organizer/verify', 0, '2026-08-11 10:07:25'),
+(29, 105, 'booking', '🎟️ Ticket Booking Confirmed!', 'Your ticket reservation for \'Summer Music Festival 2026\' has been confirmed. Seat: VIP-A1.', '/my-bookings', 0, '2026-09-21 08:22:04'),
+(30, 105, 'waiting_list', '🎉 Waiting List Priority Alert!', 'A ticket slot opened up for \'Tech Innovators Summit\'. Click to claim your priority ticket.', '/waiting-list', 0, '2026-09-21 08:22:04'),
+(31, 105, 'verification', '🛡️ Organizer Account Status Update', 'Your organizer business registration document has been reviewed and verified.', '/organizer/verify', 0, '2026-09-21 08:22:04'),
+(32, 104, 'verification', '🛡️ Organizer Verification Approved!', 'Your business verification has been approved! You now have an official Verified Badge.', '/organizer/verify', 0, '2026-09-21 08:22:31'),
+(33, 9, 'warning', '', '📢 [URGENT] URGENT: Gate Opening & Entry Advisory: Gates will open strictly at 5:00 PM. Please have your digital QR pass ready on your smartphone for fast check-in.', NULL, 0, '2026-09-21 08:41:48'),
+(34, 14, 'warning', '', '📢 [URGENT] URGENT: Gate Opening & Entry Advisory: Gates will open strictly at 5:00 PM. Please have your digital QR pass ready on your smartphone for fast check-in.', NULL, 0, '2026-09-21 08:41:48'),
+(35, 17, 'warning', '', '📢 [URGENT] URGENT: Gate Opening & Entry Advisory: Gates will open strictly at 5:00 PM. Please have your digital QR pass ready on your smartphone for fast check-in.', NULL, 0, '2026-09-21 08:41:48'),
+(36, 99, 'warning', '', '📢 [URGENT] URGENT: Gate Opening & Entry Advisory: Gates will open strictly at 5:00 PM. Please have your digital QR pass ready on your smartphone for fast check-in.', NULL, 0, '2026-09-21 08:41:48'),
+(37, 100, 'warning', '', '📢 [URGENT] URGENT: Gate Opening & Entry Advisory: Gates will open strictly at 5:00 PM. Please have your digital QR pass ready on your smartphone for fast check-in.', NULL, 0, '2026-09-21 08:41:48'),
+(38, 101, 'warning', '', '📢 [URGENT] URGENT: Gate Opening & Entry Advisory: Gates will open strictly at 5:00 PM. Please have your digital QR pass ready on your smartphone for fast check-in.', NULL, 0, '2026-09-21 08:41:48'),
+(39, 9, 'warning', '', '📢 [URGENT] URGENT: Gate Opening & Entry Advisory: Gates will open strictly at 5:00 PM. Please have your digital QR pass ready on your smartphone for fast check-in.', NULL, 0, '2026-09-21 08:42:15'),
+(40, 14, 'warning', '', '📢 [URGENT] URGENT: Gate Opening & Entry Advisory: Gates will open strictly at 5:00 PM. Please have your digital QR pass ready on your smartphone for fast check-in.', NULL, 0, '2026-09-21 08:42:15'),
+(41, 17, 'warning', '', '📢 [URGENT] URGENT: Gate Opening & Entry Advisory: Gates will open strictly at 5:00 PM. Please have your digital QR pass ready on your smartphone for fast check-in.', NULL, 0, '2026-09-21 08:42:15'),
+(42, 99, 'warning', '', '📢 [URGENT] URGENT: Gate Opening & Entry Advisory: Gates will open strictly at 5:00 PM. Please have your digital QR pass ready on your smartphone for fast check-in.', NULL, 0, '2026-09-21 08:42:15'),
+(43, 100, 'warning', '', '📢 [URGENT] URGENT: Gate Opening & Entry Advisory: Gates will open strictly at 5:00 PM. Please have your digital QR pass ready on your smartphone for fast check-in.', NULL, 0, '2026-09-21 08:42:15'),
+(44, 101, 'warning', '', '📢 [URGENT] URGENT: Gate Opening & Entry Advisory: Gates will open strictly at 5:00 PM. Please have your digital QR pass ready on your smartphone for fast check-in.', NULL, 0, '2026-09-21 08:42:15'),
+(45, 9, 'info', '', '📢 [NORMAL] SCHEDULE ADJUSTMENT: Main Stage Delay: The main performance will start 15 minutes later than scheduled. Thank you for your patience!', NULL, 0, '2026-09-21 08:43:28'),
+(46, 14, 'info', '', '📢 [NORMAL] SCHEDULE ADJUSTMENT: Main Stage Delay: The main performance will start 15 minutes later than scheduled. Thank you for your patience!', NULL, 0, '2026-09-21 08:43:28'),
+(47, 17, 'info', '', '📢 [NORMAL] SCHEDULE ADJUSTMENT: Main Stage Delay: The main performance will start 15 minutes later than scheduled. Thank you for your patience!', NULL, 0, '2026-09-21 08:43:28'),
+(48, 99, 'info', '', '📢 [NORMAL] SCHEDULE ADJUSTMENT: Main Stage Delay: The main performance will start 15 minutes later than scheduled. Thank you for your patience!', NULL, 0, '2026-09-21 08:43:28'),
+(49, 100, 'info', '', '📢 [NORMAL] SCHEDULE ADJUSTMENT: Main Stage Delay: The main performance will start 15 minutes later than scheduled. Thank you for your patience!', NULL, 0, '2026-09-21 08:43:28'),
+(50, 101, 'info', '', '📢 [NORMAL] SCHEDULE ADJUSTMENT: Main Stage Delay: The main performance will start 15 minutes later than scheduled. Thank you for your patience!', NULL, 0, '2026-09-21 08:43:28'),
+(51, 104, 'verification', '🛡️ Organizer Verification Approved!', 'Your business verification has been approved! You now have an official Verified Badge.', '/organizer/verify', 0, '2026-09-21 08:50:15'),
+(52, 106, 'booking', '🎟️ Ticket Booking Confirmed!', 'Your ticket reservation for \'Summer Music Festival 2026\' has been confirmed. Seat: VIP-A1.', '/my-bookings', 0, '2026-09-21 08:54:22'),
+(53, 106, 'waiting_list', '🎉 Waiting List Priority Alert!', 'A ticket slot opened up for \'Tech Innovators Summit\'. Click to claim your priority ticket.', '/waiting-list', 0, '2026-09-21 08:54:22'),
+(54, 106, 'verification', '🛡️ Organizer Account Status Update', 'Your organizer business registration document has been reviewed and verified.', '/organizer/verify', 0, '2026-09-21 08:54:22'),
+(55, 104, 'verification', '🛡️ Organizer Verification Approved!', 'Your business verification has been approved! You now have an official Verified Badge.', '/organizer/verify', 0, '2026-09-21 09:24:50'),
+(56, 102, 'verification', '🛡️ Organizer Verification Approved!', 'Your business verification has been approved! You now have an official Verified Badge.', '/organizer/verify', 0, '2026-09-21 09:24:54');
 
 -- --------------------------------------------------------
 
@@ -650,7 +701,8 @@ CREATE TABLE `organizers` (
 INSERT INTO `organizers` (`id`, `user_id`, `organization_name`, `verification_status`, `phone`, `website`, `address`, `business_registration_number`, `nic_passport`, `document_path`, `rejection_reason`, `submitted_at`) VALUES
 (2, 5, 'Yumeth Events', 'approved', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (98, 98, 'Org B Events Ltd', 'pending', '0771234567', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(99, 102, '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+(99, 102, '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(100, 104, 'chalani events', '', '078546535', 'chalani.lk', 'poloannaruwa,sri lanaka', 'PV-123456', '20034567892', 'verif_104_1789980573.png', NULL, '2026-09-21 08:49:33');
 
 -- --------------------------------------------------------
 
@@ -681,8 +733,8 @@ CREATE TABLE `organizer_payouts` (
 
 INSERT INTO `organizer_payouts` (`id`, `organizer_id`, `event_id`, `gross_revenue`, `commission_rate`, `commission_fee`, `net_payout`, `bank_name`, `account_number`, `status`, `admin_notes`, `processed_by`, `requested_at`, `processed_at`) VALUES
 (1, 2, 16, 250000.00, 10.00, 25000.00, 225000.00, 'Bank of Ceylon', '8849201948', 'pending', NULL, NULL, '2026-08-09 13:46:46', NULL),
-(2, 2, 17, 180000.00, 10.00, 18000.00, 162000.00, 'Commercial Bank', '1092837482', 'pending', NULL, NULL, '2026-08-09 13:46:46', NULL),
-(3, 2, 6, 450000.00, 10.00, 45000.00, 405000.00, 'Hatton National Bank', '7728192847', 'transferred', 'Automated Playwright E2E Settlement Verification #99812', 7, '2026-08-09 13:46:46', '2026-08-09 15:47:45');
+(2, 2, 17, 180000.00, 10.00, 18000.00, 162000.00, 'Commercial Bank', '1092837482', 'pending', '', 7, '2026-08-09 13:46:46', '2026-09-21 10:28:22'),
+(3, 2, 6, 450000.00, 10.00, 45000.00, 405000.00, 'Hatton National Bank', '7728192847', 'transferred', 'Automated Playwright E2E Settlement Verification #99812', 7, '2026-08-09 13:46:46', '2026-09-21 10:27:17');
 
 -- --------------------------------------------------------
 
@@ -795,7 +847,10 @@ INSERT INTO `payments` (`id`, `booking_id`, `amount`, `transaction_id`, `payment
 (156, 194, 2250.00, NULL, '', '2026-08-10 19:03:46'),
 (157, 195, 2250.00, NULL, '', '2026-08-10 19:06:37'),
 (158, 196, 2250.00, NULL, '', '2026-08-10 19:12:02'),
-(159, 197, 2250.00, NULL, '', '2026-08-11 09:52:19');
+(159, 197, 2250.00, NULL, '', '2026-08-11 09:52:19'),
+(160, 198, 200.00, NULL, '', '2026-08-26 17:16:38'),
+(161, 199, 7695.00, NULL, '', '2026-09-21 09:13:45'),
+(162, 200, 2700.00, NULL, '', '2026-09-21 16:11:10');
 
 -- --------------------------------------------------------
 
@@ -872,7 +927,10 @@ INSERT INTO `premium_subscriptions` (`id`, `user_id`, `subscription_id`, `paymen
 (48, 14, 'SUB-PREM-14-1786389123', 'PAY-SUB-45260', 1500.00, '2026-08-11 00:42:03', '2026-09-11 00:42:03', 'active', 'Paid', '2026-08-10 19:12:03', '2026-08-10 19:12:03'),
 (49, 99, 'SUB-PREM-99-1786389123', 'PAY-SUB-55119', 1500.00, '2026-08-11 00:42:03', '2026-09-11 00:42:03', 'cancelled', 'Paid', '2026-08-10 19:12:03', '2026-08-11 09:52:19'),
 (50, 14, 'SUB-PREM-14-1786441939', 'PAY-SUB-17603', 1500.00, '2026-08-11 15:22:19', '2026-09-11 15:22:19', 'active', 'Paid', '2026-08-11 09:52:19', '2026-08-11 09:52:19'),
-(51, 99, 'SUB-PREM-99-1786441940', 'PAY-SUB-34561', 1500.00, '2026-08-11 15:22:20', '2026-09-11 15:22:20', 'active', 'Paid', '2026-08-11 09:52:20', '2026-08-11 09:52:20');
+(51, 99, 'SUB-PREM-99-1786441940', 'PAY-SUB-34561', 1500.00, '2026-08-11 15:22:20', '2026-09-11 15:22:20', 'active', 'Paid', '2026-08-11 09:52:20', '2026-08-11 09:52:20'),
+(52, 9, 'SUB-PREM-9-1787764357', NULL, 1500.00, '2026-08-26 22:42:37', '2026-09-26 22:42:37', 'pending', 'Pending', '2026-08-26 17:12:37', '2026-08-26 17:12:37'),
+(53, 9, 'SUB-PREM-9-1788082754', NULL, 1500.00, '2026-08-30 15:09:14', '2026-09-30 15:09:14', 'pending', 'Pending', '2026-08-30 09:39:14', '2026-08-30 09:39:14'),
+(54, 106, 'SUB-PREM-106-1789980953', 'PAY-SUB-77081', 1500.00, '2026-09-21 14:27:30', '2026-10-21 14:27:30', 'active', 'Paid', '2026-09-21 08:55:53', '2026-09-21 08:57:30');
 
 -- --------------------------------------------------------
 
@@ -904,7 +962,9 @@ INSERT INTO `promo_codes` (`id`, `event_id`, `organizer_id`, `code`, `discount_t
 (1, NULL, NULL, 'EVENT20', 'percentage', 20.00, 500.00, 100, 14, '2026-01-01 00:00:00', '2026-12-31 23:59:59', 'active', '2026-08-09 13:46:46'),
 (2, 6, 2, 'COLOMBO500', 'fixed', 500.00, 1000.00, 50, 8, '2026-01-01 00:00:00', '2026-12-31 23:59:59', 'active', '2026-08-09 13:46:46'),
 (3, NULL, NULL, 'VIPPERK10', 'percentage', 10.00, 0.00, 500, 42, '2026-01-01 00:00:00', '2026-12-31 23:59:59', 'active', '2026-08-09 13:46:46'),
-(4, NULL, 2, 'PLAY20TEST663', 'percentage', 20.00, 0.00, 100, 0, '2026-08-09 15:47:44', '2027-08-09 15:47:44', 'active', '2026-08-09 13:47:44');
+(4, NULL, 2, 'PLAY20TEST663', 'percentage', 20.00, 0.00, 100, 0, '2026-08-09 15:47:44', '2027-08-09 15:47:44', 'active', '2026-08-09 13:47:44'),
+(5, 1042, 104, 'UWU', 'fixed', 200.00, 1.00, 100, 0, '2026-09-21 10:38:01', '2026-09-25 23:59:59', 'active', '2026-09-21 08:38:01'),
+(6, 1042, 104, 'NEW', 'fixed', 200.00, 1.00, 100, 0, '2026-09-21 10:39:41', '2026-09-25 23:59:59', 'active', '2026-09-21 08:39:41');
 
 -- --------------------------------------------------------
 
@@ -1037,7 +1097,7 @@ INSERT INTO `tickets` (`id`, `booking_id`, `ticket_code`, `qr_code`, `created_at
 (65, 159, 'EVT-159-2149', 'uploads/qr/ticket_159.png', '2026-07-30 17:06:50', 'unused', NULL),
 (66, 160, 'EVT-17-9566', NULL, '2026-08-09 17:03:12', 'unused', 'G1'),
 (67, 161, 'EVT-24-9115', NULL, '2026-08-09 17:44:17', 'unused', 'A1'),
-(68, 158, 'EVT-158-4654', NULL, '2026-08-10 04:39:55', '', NULL),
+(68, 158, 'EVT-158-4654', NULL, '2026-08-10 04:39:55', 'used', NULL),
 (69, 162, 'EVT-24-9206', NULL, '2026-08-10 04:48:45', 'unused', 'C1'),
 (70, 163, 'EVT-1-5670', NULL, '2026-08-10 07:54:09', 'unused', 'GEN-ADMISSION'),
 (71, 164, 'EVT-1-8734', NULL, '2026-08-10 07:54:09', 'unused', 'GEN-ADMISSION'),
@@ -1073,7 +1133,10 @@ INSERT INTO `tickets` (`id`, `booking_id`, `ticket_code`, `qr_code`, `created_at
 (101, 194, 'EVT-1-9750', NULL, '2026-08-10 19:03:46', 'unused', 'GEN-ADMISSION'),
 (102, 195, 'EVT-1-2168', NULL, '2026-08-10 19:06:37', 'unused', 'GEN-ADMISSION'),
 (103, 196, 'EVT-1-4101', NULL, '2026-08-10 19:12:02', 'unused', 'GEN-ADMISSION'),
-(104, 197, 'EVT-1-5857', NULL, '2026-08-11 09:52:19', 'unused', 'GEN-ADMISSION');
+(104, 197, 'EVT-1-5857', NULL, '2026-08-11 09:52:19', 'unused', 'GEN-ADMISSION'),
+(105, 198, 'EVT-1040-8214', NULL, '2026-08-26 17:16:38', 'unused', 'G1'),
+(106, 199, 'EVT-1043-5819', NULL, '2026-09-21 09:13:45', 'used', 'A1, C1, E1, G1'),
+(107, 200, 'EVT-1043-6481', NULL, '2026-09-21 16:11:10', 'unused', 'A3');
 
 -- --------------------------------------------------------
 
@@ -1099,13 +1162,10 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `created_at`, `user_tier`, `admin_role`) VALUES
 (2, 'Dasun Shanaka', 'dasun@gmail.com', '0740461033', '$2y$10$WZvwgw4Nubb96X88DfUCsOBPYc04l.CdQCzfEZ6qBpL3NFD4Ujx2m', 'organizer', '2026-06-17 18:00:12', 'verified', 'super_admin'),
-(3, 'kamal Shanaka', 'test@gmail.com', '0740461034', '$2y$10$Y.8flr95U40QukoYYBiQpee4.Mbj04y2z9o9E2ZJUmS4ZG2YezKnu', 'customer', '2026-06-17 18:11:57', 'verified', 'super_admin'),
 (5, 'Yumeth Pahasara', 'yumethpahasara12@gmail.com', '0740709421', '$2y$10$PebIoRxMdvY3HtdmpAULVOLgkq9CaCJGpZks4953q6ZU1TC1zjX5W', 'organizer', '2026-06-20 06:07:02', 'verified', 'super_admin'),
-(7, 'Thimira', 'thimira12@gmail.com', '0713423445', '$2y$10$6J6hpn8p4ZpDRFtiaYarueKDWQqpGwFRJems.vbmuSPbf/kBxGikS', 'admin', '2026-07-10 18:25:53', 'verified', 'super_admin'),
-(9, 'Hiran Anajana', 'hirananjana12@gmail.com', '0719876543', '$2y$10$3yJP/UXffrUO9pErPOkxp.pWboYL7fLhqP/E/F4cWH/4fq1FVuaV6', 'customer', '2026-07-12 20:38:00', 'premium', 'super_admin'),
-(10, 'Navod Teshan', 'navod12@gmail.com', '0702564785', '$2y$10$o6F4UGj3V6HRBMBmbgbdoeNkEcF3rjg2BWKEjKbJ2BKOgT9zdR6za', 'organizer', '2026-07-30 13:20:43', 'verified', 'super_admin'),
+(7, 'Thimira', 'thimira12@gmail.com', '0713423445', '$2y$10$6J6hpn8p4ZpDRFtiaYarueKDWQqpGwFRJems.vbmuSPbf/kBxGikS', 'admin', '2026-07-10 18:25:53', 'verified', 'financial_admin'),
+(9, 'Hiran Anajana', 'hirananjana12@gmail.com', '0719876543', '$2y$10$3yJP/UXffrUO9pErPOkxp.pWboYL7fLhqP/E/F4cWH/4fq1FVuaV6', 'customer', '2026-07-12 20:38:00', 'verified', 'super_admin'),
 (12, 'Kasun Junior Admin', 'subadmin_82359@eventease.com', '0771234567', '$2y$10$QDuZdEcbTy/pDh05P5nlgORYcO6XSdkrnzcaYjLcyIn.ODkDTsjca', 'admin', '2026-08-09 10:17:47', 'verified', 'junior_admin'),
-(13, 'Test User Verification', 'testuser_1786283269031@example.com', '0771234567', '$2y$10$7842pP9IOnAvRUA4t6WqpuNYrMERezo3vSCBLx4nGmlmC4LznYxgK', 'customer', '2026-08-09 13:47:50', 'verified', 'super_admin'),
 (14, 'Thimira Theekshana', 'thimiratheekshana54@gmail.com', '076991152', '$2y$10$rXDR4eObC2zRjrzClaimEOf8tk4buSdKGzpyuWzb0ARLb0V8vT0YW', 'customer', '2026-08-09 17:01:36', 'premium', 'super_admin'),
 (17, 'VIP Premium Customer', 'vip@example.com', '', 'dummy_hash', 'customer', '2026-08-10 07:52:52', 'premium', 'super_admin'),
 (98, 'Organizer B User', 'organizerb@example.com', '', 'hashed_pass', 'organizer', '2026-08-10 14:54:25', 'verified', 'super_admin'),
@@ -1113,7 +1173,9 @@ INSERT INTO `users` (`id`, `full_name`, `email`, `phone`, `password`, `role`, `c
 (100, 'chamathka', 'chamathka123@gmail.com', '0778888888', '$2y$10$ZwZe.V.mi2aDc.Os9L2F1uZwm3ZcAaM06GkyS5R6SIQt/PTDn20g6', 'customer', '2026-08-10 15:58:44', 'premium', 'super_admin'),
 (101, 'sanduni', 'sanduni123@gmail.com', '0779999999', '$2y$10$bdwyg9z058TVkaaF7Lgn3.Pwb4..RFGgq0GQK9a3halZcHiFFxi6K', 'customer', '2026-08-10 16:34:20', 'premium', 'super_admin'),
 (102, 'Harindu', 'harindu123@gmail.com', '0774444444', '$2y$10$uZelE1.m9W5lt5.BPlYmIOm38bB6NodauTcDN//Fvp7su4i2ty1yS', 'organizer', '2026-08-10 17:49:59', 'verified', 'super_admin'),
-(103, 'isuru', 'isuru123@gmail.com', '0775555555', '$2y$10$KcNncVuFvcQYDg13H/iOYOQYcrWAKuGjMjC2lshmdYra.81VWpF26', 'customer', '2026-08-11 10:07:11', 'verified', 'super_admin');
+(104, 'chalani', 'chalani12@gmail.com', '0714084035', '$2y$10$pk9865QwB/r1oCmyYN4szON8lygNkiBwFz9Q4ACoIK3VDLN6Ekv5G', 'organizer', '2026-09-21 08:10:06', 'verified', 'super_admin'),
+(105, 'hiran', 'hiran123@gmail.com', '076543213', '$2y$10$aYqE2r.scH5q87CD5vF6Y.qOXfJ7uIIaE3aQGwiR9M0ZxrsGjbwQa', 'admin', '2026-09-21 08:20:50', 'verified', 'super_admin'),
+(106, 'Hashen', 'hashen12@gmail.com', '0752593623', '$2y$10$KTdl4hSrZ0SuOcY7jnd5xee9cmNT./0Jm2uwAze.WHywb7QEXlydW', 'customer', '2026-09-21 08:54:03', 'premium', 'super_admin');
 
 -- --------------------------------------------------------
 
@@ -1310,7 +1372,7 @@ ALTER TABLE `waiting_list`
 -- AUTO_INCREMENT for table `bookings`
 --
 ALTER TABLE `bookings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=198;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=201;
 
 --
 -- AUTO_INCREMENT for table `complaints`
@@ -1328,25 +1390,25 @@ ALTER TABLE `database_backups`
 -- AUTO_INCREMENT for table `email_logs`
 --
 ALTER TABLE `email_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=156;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=166;
 
 --
 -- AUTO_INCREMENT for table `events`
 --
 ALTER TABLE `events`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1042;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1044;
 
 --
 -- AUTO_INCREMENT for table `event_announcements`
 --
 ALTER TABLE `event_announcements`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `event_booked_seats`
 --
 ALTER TABLE `event_booked_seats`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `event_schedules`
@@ -1370,13 +1432,13 @@ ALTER TABLE `favorites`
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- AUTO_INCREMENT for table `organizers`
 --
 ALTER TABLE `organizers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=100;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
 
 --
 -- AUTO_INCREMENT for table `organizer_payouts`
@@ -1388,19 +1450,19 @@ ALTER TABLE `organizer_payouts`
 -- AUTO_INCREMENT for table `payments`
 --
 ALTER TABLE `payments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=160;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=163;
 
 --
 -- AUTO_INCREMENT for table `premium_subscriptions`
 --
 ALTER TABLE `premium_subscriptions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
 
 --
 -- AUTO_INCREMENT for table `promo_codes`
 --
 ALTER TABLE `promo_codes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `seats`
@@ -1424,13 +1486,13 @@ ALTER TABLE `system_settings`
 -- AUTO_INCREMENT for table `tickets`
 --
 ALTER TABLE `tickets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=105;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=108;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=104;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=107;
 
 --
 -- AUTO_INCREMENT for table `waiting_list`
@@ -1492,448 +1554,6 @@ ALTER TABLE `tickets`
 ALTER TABLE `waiting_list`
   ADD CONSTRAINT `waiting_list_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `waiting_list_ibfk_2` FOREIGN KEY (`event_id`) REFERENCES `events` (`id`) ON DELETE CASCADE;
---
--- Database: `phpmyadmin`
---
-CREATE DATABASE IF NOT EXISTS `phpmyadmin` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
-USE `phpmyadmin`;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `pma__bookmark`
---
-
-CREATE TABLE `pma__bookmark` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `dbase` varchar(255) NOT NULL DEFAULT '',
-  `user` varchar(255) NOT NULL DEFAULT '',
-  `label` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
-  `query` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Bookmarks';
-
--- --------------------------------------------------------
-
---
--- Table structure for table `pma__central_columns`
---
-
-CREATE TABLE `pma__central_columns` (
-  `db_name` varchar(64) NOT NULL,
-  `col_name` varchar(64) NOT NULL,
-  `col_type` varchar(64) NOT NULL,
-  `col_length` text DEFAULT NULL,
-  `col_collation` varchar(64) NOT NULL,
-  `col_isNull` tinyint(1) NOT NULL,
-  `col_extra` varchar(255) DEFAULT '',
-  `col_default` text DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Central list of columns';
-
--- --------------------------------------------------------
-
---
--- Table structure for table `pma__column_info`
---
-
-CREATE TABLE `pma__column_info` (
-  `id` int(5) UNSIGNED NOT NULL,
-  `db_name` varchar(64) NOT NULL DEFAULT '',
-  `table_name` varchar(64) NOT NULL DEFAULT '',
-  `column_name` varchar(64) NOT NULL DEFAULT '',
-  `comment` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
-  `mimetype` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
-  `transformation` varchar(255) NOT NULL DEFAULT '',
-  `transformation_options` varchar(255) NOT NULL DEFAULT '',
-  `input_transformation` varchar(255) NOT NULL DEFAULT '',
-  `input_transformation_options` varchar(255) NOT NULL DEFAULT ''
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Column information for phpMyAdmin';
-
--- --------------------------------------------------------
-
---
--- Table structure for table `pma__designer_settings`
---
-
-CREATE TABLE `pma__designer_settings` (
-  `username` varchar(64) NOT NULL,
-  `settings_data` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Settings related to Designer';
-
--- --------------------------------------------------------
-
---
--- Table structure for table `pma__export_templates`
---
-
-CREATE TABLE `pma__export_templates` (
-  `id` int(5) UNSIGNED NOT NULL,
-  `username` varchar(64) NOT NULL,
-  `export_type` varchar(10) NOT NULL,
-  `template_name` varchar(64) NOT NULL,
-  `template_data` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Saved export templates';
-
--- --------------------------------------------------------
-
---
--- Table structure for table `pma__favorite`
---
-
-CREATE TABLE `pma__favorite` (
-  `username` varchar(64) NOT NULL,
-  `tables` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Favorite tables';
-
--- --------------------------------------------------------
-
---
--- Table structure for table `pma__history`
---
-
-CREATE TABLE `pma__history` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `username` varchar(64) NOT NULL DEFAULT '',
-  `db` varchar(64) NOT NULL DEFAULT '',
-  `table` varchar(64) NOT NULL DEFAULT '',
-  `timevalue` timestamp NOT NULL DEFAULT current_timestamp(),
-  `sqlquery` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='SQL history for phpMyAdmin';
-
--- --------------------------------------------------------
-
---
--- Table structure for table `pma__navigationhiding`
---
-
-CREATE TABLE `pma__navigationhiding` (
-  `username` varchar(64) NOT NULL,
-  `item_name` varchar(64) NOT NULL,
-  `item_type` varchar(64) NOT NULL,
-  `db_name` varchar(64) NOT NULL,
-  `table_name` varchar(64) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Hidden items of navigation tree';
-
--- --------------------------------------------------------
-
---
--- Table structure for table `pma__pdf_pages`
---
-
-CREATE TABLE `pma__pdf_pages` (
-  `db_name` varchar(64) NOT NULL DEFAULT '',
-  `page_nr` int(10) UNSIGNED NOT NULL,
-  `page_descr` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT ''
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='PDF relation pages for phpMyAdmin';
-
--- --------------------------------------------------------
-
---
--- Table structure for table `pma__recent`
---
-
-CREATE TABLE `pma__recent` (
-  `username` varchar(64) NOT NULL,
-  `tables` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Recently accessed tables';
-
--- --------------------------------------------------------
-
---
--- Table structure for table `pma__relation`
---
-
-CREATE TABLE `pma__relation` (
-  `master_db` varchar(64) NOT NULL DEFAULT '',
-  `master_table` varchar(64) NOT NULL DEFAULT '',
-  `master_field` varchar(64) NOT NULL DEFAULT '',
-  `foreign_db` varchar(64) NOT NULL DEFAULT '',
-  `foreign_table` varchar(64) NOT NULL DEFAULT '',
-  `foreign_field` varchar(64) NOT NULL DEFAULT ''
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Relation table';
-
--- --------------------------------------------------------
-
---
--- Table structure for table `pma__savedsearches`
---
-
-CREATE TABLE `pma__savedsearches` (
-  `id` int(5) UNSIGNED NOT NULL,
-  `username` varchar(64) NOT NULL DEFAULT '',
-  `db_name` varchar(64) NOT NULL DEFAULT '',
-  `search_name` varchar(64) NOT NULL DEFAULT '',
-  `search_data` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Saved searches';
-
--- --------------------------------------------------------
-
---
--- Table structure for table `pma__table_coords`
---
-
-CREATE TABLE `pma__table_coords` (
-  `db_name` varchar(64) NOT NULL DEFAULT '',
-  `table_name` varchar(64) NOT NULL DEFAULT '',
-  `pdf_page_number` int(11) NOT NULL DEFAULT 0,
-  `x` float UNSIGNED NOT NULL DEFAULT 0,
-  `y` float UNSIGNED NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Table coordinates for phpMyAdmin PDF output';
-
--- --------------------------------------------------------
-
---
--- Table structure for table `pma__table_info`
---
-
-CREATE TABLE `pma__table_info` (
-  `db_name` varchar(64) NOT NULL DEFAULT '',
-  `table_name` varchar(64) NOT NULL DEFAULT '',
-  `display_field` varchar(64) NOT NULL DEFAULT ''
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Table information for phpMyAdmin';
-
--- --------------------------------------------------------
-
---
--- Table structure for table `pma__table_uiprefs`
---
-
-CREATE TABLE `pma__table_uiprefs` (
-  `username` varchar(64) NOT NULL,
-  `db_name` varchar(64) NOT NULL,
-  `table_name` varchar(64) NOT NULL,
-  `prefs` text NOT NULL,
-  `last_update` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Tables'' UI preferences';
-
--- --------------------------------------------------------
-
---
--- Table structure for table `pma__tracking`
---
-
-CREATE TABLE `pma__tracking` (
-  `db_name` varchar(64) NOT NULL,
-  `table_name` varchar(64) NOT NULL,
-  `version` int(10) UNSIGNED NOT NULL,
-  `date_created` datetime NOT NULL,
-  `date_updated` datetime NOT NULL,
-  `schema_snapshot` text NOT NULL,
-  `schema_sql` text DEFAULT NULL,
-  `data_sql` longtext DEFAULT NULL,
-  `tracking` set('UPDATE','REPLACE','INSERT','DELETE','TRUNCATE','CREATE DATABASE','ALTER DATABASE','DROP DATABASE','CREATE TABLE','ALTER TABLE','RENAME TABLE','DROP TABLE','CREATE INDEX','DROP INDEX','CREATE VIEW','ALTER VIEW','DROP VIEW') DEFAULT NULL,
-  `tracking_active` int(1) UNSIGNED NOT NULL DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Database changes tracking for phpMyAdmin';
-
--- --------------------------------------------------------
-
---
--- Table structure for table `pma__userconfig`
---
-
-CREATE TABLE `pma__userconfig` (
-  `username` varchar(64) NOT NULL,
-  `timevalue` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `config_data` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='User preferences storage for phpMyAdmin';
-
---
--- Dumping data for table `pma__userconfig`
---
-
-INSERT INTO `pma__userconfig` (`username`, `timevalue`, `config_data`) VALUES
-('root', '2019-10-21 13:37:09', '{\"Console\\/Mode\":\"collapse\"}');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `pma__usergroups`
---
-
-CREATE TABLE `pma__usergroups` (
-  `usergroup` varchar(64) NOT NULL,
-  `tab` varchar(64) NOT NULL,
-  `allowed` enum('Y','N') NOT NULL DEFAULT 'N'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='User groups with configured menu items';
-
--- --------------------------------------------------------
-
---
--- Table structure for table `pma__users`
---
-
-CREATE TABLE `pma__users` (
-  `username` varchar(64) NOT NULL,
-  `usergroup` varchar(64) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Users and their assignments to user groups';
-
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `pma__bookmark`
---
-ALTER TABLE `pma__bookmark`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `pma__central_columns`
---
-ALTER TABLE `pma__central_columns`
-  ADD PRIMARY KEY (`db_name`,`col_name`);
-
---
--- Indexes for table `pma__column_info`
---
-ALTER TABLE `pma__column_info`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `db_name` (`db_name`,`table_name`,`column_name`);
-
---
--- Indexes for table `pma__designer_settings`
---
-ALTER TABLE `pma__designer_settings`
-  ADD PRIMARY KEY (`username`);
-
---
--- Indexes for table `pma__export_templates`
---
-ALTER TABLE `pma__export_templates`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `u_user_type_template` (`username`,`export_type`,`template_name`);
-
---
--- Indexes for table `pma__favorite`
---
-ALTER TABLE `pma__favorite`
-  ADD PRIMARY KEY (`username`);
-
---
--- Indexes for table `pma__history`
---
-ALTER TABLE `pma__history`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `username` (`username`,`db`,`table`,`timevalue`);
-
---
--- Indexes for table `pma__navigationhiding`
---
-ALTER TABLE `pma__navigationhiding`
-  ADD PRIMARY KEY (`username`,`item_name`,`item_type`,`db_name`,`table_name`);
-
---
--- Indexes for table `pma__pdf_pages`
---
-ALTER TABLE `pma__pdf_pages`
-  ADD PRIMARY KEY (`page_nr`),
-  ADD KEY `db_name` (`db_name`);
-
---
--- Indexes for table `pma__recent`
---
-ALTER TABLE `pma__recent`
-  ADD PRIMARY KEY (`username`);
-
---
--- Indexes for table `pma__relation`
---
-ALTER TABLE `pma__relation`
-  ADD PRIMARY KEY (`master_db`,`master_table`,`master_field`),
-  ADD KEY `foreign_field` (`foreign_db`,`foreign_table`);
-
---
--- Indexes for table `pma__savedsearches`
---
-ALTER TABLE `pma__savedsearches`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `u_savedsearches_username_dbname` (`username`,`db_name`,`search_name`);
-
---
--- Indexes for table `pma__table_coords`
---
-ALTER TABLE `pma__table_coords`
-  ADD PRIMARY KEY (`db_name`,`table_name`,`pdf_page_number`);
-
---
--- Indexes for table `pma__table_info`
---
-ALTER TABLE `pma__table_info`
-  ADD PRIMARY KEY (`db_name`,`table_name`);
-
---
--- Indexes for table `pma__table_uiprefs`
---
-ALTER TABLE `pma__table_uiprefs`
-  ADD PRIMARY KEY (`username`,`db_name`,`table_name`);
-
---
--- Indexes for table `pma__tracking`
---
-ALTER TABLE `pma__tracking`
-  ADD PRIMARY KEY (`db_name`,`table_name`,`version`);
-
---
--- Indexes for table `pma__userconfig`
---
-ALTER TABLE `pma__userconfig`
-  ADD PRIMARY KEY (`username`);
-
---
--- Indexes for table `pma__usergroups`
---
-ALTER TABLE `pma__usergroups`
-  ADD PRIMARY KEY (`usergroup`,`tab`,`allowed`);
-
---
--- Indexes for table `pma__users`
---
-ALTER TABLE `pma__users`
-  ADD PRIMARY KEY (`username`,`usergroup`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `pma__bookmark`
---
-ALTER TABLE `pma__bookmark`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `pma__column_info`
---
-ALTER TABLE `pma__column_info`
-  MODIFY `id` int(5) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `pma__export_templates`
---
-ALTER TABLE `pma__export_templates`
-  MODIFY `id` int(5) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `pma__history`
---
-ALTER TABLE `pma__history`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `pma__pdf_pages`
---
-ALTER TABLE `pma__pdf_pages`
-  MODIFY `page_nr` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `pma__savedsearches`
---
-ALTER TABLE `pma__savedsearches`
-  MODIFY `id` int(5) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- Database: `test`
---
-CREATE DATABASE IF NOT EXISTS `test` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-USE `test`;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

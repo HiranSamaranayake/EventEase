@@ -84,6 +84,11 @@ if ($normTimestamp - $premTimestamp < 86400) {
     exit;
 }
 
+$audienceRestrictionType = mysqli_real_escape_string($conn, $_POST["audience_restriction_type"] ?? "public");
+$allowedEmailDomain = mysqli_real_escape_string($conn, $_POST["allowed_email_domain"] ?? "");
+$audiencePasscode = mysqli_real_escape_string($conn, $_POST["audience_passcode"] ?? "");
+$restrictionLabel = mysqli_real_escape_string($conn, $_POST["restriction_label"] ?? "");
+
 $query = "
 INSERT INTO events
 (
@@ -98,6 +103,10 @@ INSERT INTO events
     capacity,
     price,
     organizer_id,
+    audience_restriction_type,
+    allowed_email_domain,
+    audience_passcode,
+    restriction_label,
     `status`
 )
 VALUES
@@ -113,6 +122,10 @@ VALUES
     '$capacity',
     '$price',
     '$organizerId',
+    '$audienceRestrictionType',
+    '$allowedEmailDomain',
+    '$audiencePasscode',
+    '$restrictionLabel',
     'pending'
 )
 ";

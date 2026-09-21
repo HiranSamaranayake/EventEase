@@ -23,6 +23,10 @@ $location = trim($data["location"] ?? $_POST["location"] ?? "");
 $price = floatval($data["price"] ?? $_POST["price"] ?? 0);
 $capacity = intval($data["capacity"] ?? $_POST["capacity"] ?? 0);
 $category = trim($data["category"] ?? $_POST["category"] ?? "General");
+$audienceRestrictionType = trim($data["audience_restriction_type"] ?? $_POST["audience_restriction_type"] ?? "public");
+$allowedEmailDomain = trim($data["allowed_email_domain"] ?? $_POST["allowed_email_domain"] ?? "");
+$audiencePasscode = trim($data["audience_passcode"] ?? $_POST["audience_passcode"] ?? "");
+$restrictionLabel = trim($data["restriction_label"] ?? $_POST["restriction_label"] ?? "");
 
 if (!$eventId || empty($title) || empty($description) || empty($eventDate) || empty($location)) {
     echo json_encode([
@@ -86,7 +90,11 @@ SET
     location = '" . mysqli_real_escape_string($conn, $location) . "',
     price = '$price',
     capacity = '$capacity',
-    category = '" . mysqli_real_escape_string($conn, $category) . "'
+    category = '" . mysqli_real_escape_string($conn, $category) . "',
+    audience_restriction_type = '" . mysqli_real_escape_string($conn, $audienceRestrictionType) . "',
+    allowed_email_domain = '" . mysqli_real_escape_string($conn, $allowedEmailDomain) . "',
+    audience_passcode = '" . mysqli_real_escape_string($conn, $audiencePasscode) . "',
+    restriction_label = '" . mysqli_real_escape_string($conn, $restrictionLabel) . "'
 WHERE id = '$eventId'
 ";
 

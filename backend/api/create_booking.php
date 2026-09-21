@@ -34,8 +34,8 @@ require_once __DIR__ . "/../utils/user_subscription_helper.php";
 $isPremiumActive = isUserPremiumActive($conn, $user_id);
 $userTier = $isPremiumActive ? 'premium' : 'verified';
 
-// Get Event details including booking opening dates
-$eventQuery = mysqli_query($conn, "SELECT price, title, event_date, is_exclusive, early_access_hours, premium_booking_open_date, normal_booking_open_date, created_at FROM events WHERE id='$event_id' LIMIT 1");
+// Get Event details including booking opening dates & audience restriction fields
+$eventQuery = mysqli_query($conn, "SELECT price, title, event_date, is_exclusive, early_access_hours, premium_booking_open_date, normal_booking_open_date, created_at, audience_restriction_type, allowed_email_domain, audience_passcode, restriction_label FROM events WHERE id='$event_id' LIMIT 1");
 if (!$eventQuery || mysqli_num_rows($eventQuery) == 0) {
     echo json_encode([
         "success" => false,
@@ -48,6 +48,66 @@ $event = mysqli_fetch_assoc($eventQuery);
 $basePrice = floatval($event["price"]);
 $isExclusive = intval($event["is_exclusive"] ?? 0);
 $eventDateStr = $event["event_date"] ?? date('Y-m-d H:i:s');
+
+$student_passcode = trim($data["student_passcode"] ?? $_POST['student_passcode'] ?? "");
+$user_email = trim($data["user_email"] ?? $_POST['user_email'] ?? "");
+$input_email = trim($data["input_email"] ?? $_POST['input_email'] ?? "");
+
+if (empty($user_email) && $user_id > 0) {
+    $uEmailRes = mysqli_query($conn, "SELECT email FROM users WHERE id='$user_id' LIMIT 1");
+    if ($uEmailRes && $uRow = mysqli_fetch_assoc($uEmailRes)) {
+        $user_email = trim($uRow['email'] ?? "");
+    }
+}
+
+// AUDIENCE RESTRICTION VALIDATION (e.g. University Students Only, Corporate Employees)
+$restrictionType = $event["audience_restriction_type"] ?? "public";
+$allowedDomainsStr = $event["allowed_email_domain"] ?? "";
+$audiencePasscode = $event["audience_passcode"] ?? "";
+$restrictionLabel = $event["restriction_label"] ?? "Restricted Target Audience";
+
+if (!empty($restrictionType) && strtolower($restrictionType) !== 'public') {
+    $isAuthorized = false;
+
+    // Helper for domain matching
+    $matchDomain = function($email, $allowedStr) {
+        if (empty($email) || empty($allowedStr) || strpos($email, '@') === false) return false;
+        $userDomain = strtolower(trim(substr(strrchr($email, "@"), 1)));
+        $allowedDomains = array_map('trim', explode(',', strtolower($allowedStr)));
+        foreach ($allowedDomains as $dom) {
+            $dom = ltrim($dom, '@.');
+            if (empty($dom)) continue;
+            if ($userDomain === $dom || (strlen($userDomain) > strlen($dom) && substr($userDomain, -strlen('.' . $dom)) === '.' . $dom)) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    // Check 1: User account email domain match
+    if ($matchDomain($user_email, $allowedDomainsStr)) {
+        $isAuthorized = true;
+    }
+
+    // Check 2: Passcode match
+    $inputVal = !empty($student_passcode) ? $student_passcode : $input_email;
+    if (!$isAuthorized && !empty($audiencePasscode) && strcasecmp(trim($inputVal), trim($audiencePasscode)) === 0) {
+        $isAuthorized = true;
+    }
+
+    // Check 3: Provided input email domain match
+    if (!$isAuthorized && $matchDomain($inputVal, $allowedDomainsStr)) {
+        $isAuthorized = true;
+    }
+
+    if (!$isAuthorized) {
+        echo json_encode([
+            "success" => false,
+            "message" => "🔒 Access Denied: This event is restricted to " . ($restrictionLabel ?: "a target audience") . ". Please enter a valid student email (e.g. @ac.lk, @edu.lk) or valid student passcode."
+        ]);
+        exit();
+    }
+}
 
 $premOpenDate = !empty($event["premium_booking_open_date"]) 
     ? $event["premium_booking_open_date"] 

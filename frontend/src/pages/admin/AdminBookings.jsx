@@ -9,6 +9,7 @@ import {
   FaUsers,
   FaUndo,
   FaCheckCircle,
+  FaTimesCircle,
 } from "react-icons/fa";
 
 import { motion } from "framer-motion";
@@ -314,13 +315,22 @@ gap-2
 "
                   >
                     {item.payment_status === "Refund Requested" && (
-                      <button
-                        onClick={() => processRefund(item.id, "approve")}
-                        className="bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs px-3 py-2 rounded-lg flex items-center gap-1 shadow transition"
-                        title="Approve Refund"
-                      >
-                        <FaUndo /> Approve Refund
-                      </button>
+                      <div className="flex gap-1">
+                        <button
+                          onClick={() => processRefund(item.id, "approve")}
+                          className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-2.5 py-1.5 rounded-lg flex items-center gap-1 shadow transition"
+                          title="Approve Refund"
+                        >
+                          <FaCheckCircle /> Approve
+                        </button>
+                        <button
+                          onClick={() => processRefund(item.id, "reject")}
+                          className="bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs px-2.5 py-1.5 rounded-lg flex items-center gap-1 shadow transition"
+                          title="Reject Refund"
+                        >
+                          <FaTimesCircle /> Reject
+                        </button>
+                      </div>
                     )}
 
                     <button

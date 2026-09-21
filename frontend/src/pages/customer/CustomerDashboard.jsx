@@ -22,7 +22,9 @@ import {
   FaBell,
   FaCheckCircle,
   FaHeart,
-  FaBookmark
+  FaBookmark,
+  FaUndo,
+  FaTimes,
 } from "react-icons/fa";
 
 import {
@@ -70,6 +72,80 @@ const CustomerDashboard = () => {
   const [recommendations, setRecommendations] = useState([]);
 
   const [loading, setLoading] = useState(true);
+
+  /*
+ ===========================
+ REFUND STATES & HANDLERS
+ ===========================
+*/
+  const [selectedBookingForRefund, setSelectedBookingForRefund] = useState(null);
+  const [refundReason, setRefundReason] = useState("");
+  const [refundLoading, setRefundLoading] = useState(false);
+  const [refundMessage, setRefundMessage] = useState(null);
+
+  const handleRequestRefund = async () => {
+    if (!selectedBookingForRefund) return;
+
+    setRefundLoading(true);
+    try {
+      const res = await fetch(
+        "http://localhost/EventEase/backend/api/cancel_booking.php",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            booking_id: selectedBookingForRefund.id,
+            user_id: user?.id,
+            reason: refundReason,
+          }),
+        }
+      );
+
+      const data = await res.json();
+      if (data.success) {
+        setBookings((prevBookings) =>
+          prevBookings.map((b) =>
+            b.id === selectedBookingForRefund.id
+              ? {
+                  ...b,
+                  booking_status: "Cancelled",
+                  payment_status: data.payment_status || "Refund Requested",
+                }
+              : b
+          )
+        );
+
+        setRefundMessage({ type: "success", text: data.message });
+        setTimeout(() => setRefundMessage(null), 5000);
+        setSelectedBookingForRefund(null);
+        setRefundReason("");
+        if (selectedBooking && selectedBooking.id === selectedBookingForRefund.id) {
+          setSelectedBooking((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  booking_status: "Cancelled",
+                  payment_status: data.payment_status || "Refund Requested",
+                }
+              : null
+          );
+        }
+      } else {
+        setRefundMessage({
+          type: "error",
+          text: data.message || "Failed to process refund request.",
+        });
+      }
+    } catch (err) {
+      console.error("Refund Request Error:", err);
+      setRefundMessage({
+        type: "error",
+        text: "An error occurred while submitting refund request.",
+      });
+    } finally {
+      setRefundLoading(false);
+    }
+  };
 
   /*
  ===========================
@@ -1099,6 +1175,19 @@ focus:ring-purple-500
             />
           </div>
 
+          {refundMessage && (
+            <div
+              className={`p-4 rounded-2xl mb-6 flex items-center justify-between font-semibold text-sm shadow-sm ${
+                refundMessage.type === "success"
+                  ? "bg-green-100 text-green-800 border border-green-200"
+                  : "bg-red-100 text-red-800 border border-red-200"
+              }`}
+            >
+              <span>{refundMessage.text}</span>
+              <button onClick={() => setRefundMessage(null)} className="text-xs underline ml-4">Dismiss</button>
+            </div>
+          )}
+
           <div
             className="
 overflow-x-auto
@@ -1124,36 +1213,45 @@ text-gray-500
 
                   <th className="p-4 text-left">Status</th>
 
+                  <th className="p-4 text-left">Payment</th>
+
                   <th className="p-4 text-center">Actions</th>
                 </tr>
               </thead>
 
               <tbody>
                 {currentBookings.length > 0 ? (
-                  currentBookings.map((booking) => (
-                    <tr
-                      key={booking.id}
-                      className="
+                  currentBookings.map((booking) => {
+                    const isRefundRequested = booking.payment_status === "Refund Requested";
+                    const isRefunded = booking.payment_status === "Refunded";
+                    const isCancelled = booking.booking_status === "Cancelled";
+                    const canRefund = !isCancelled && !isRefundRequested && !isRefunded && booking.booking_status !== "Completed";
+
+                    return (
+                      <tr
+                        key={booking.id}
+                        className="
 border-b
 hover:bg-purple-50
 transition
 "
-                    >
-                      <td className="p-4">#{booking.id}</td>
+                      >
+                        <td className="p-4 font-mono font-medium">#{booking.id}</td>
 
-                      <td className="p-4 font-semibold">{booking.title}</td>
+                        <td className="p-4 font-semibold text-gray-800">{booking.title}</td>
 
-                      <td className="p-4">
-                        {new Date(booking.booking_date).toLocaleDateString()}
-                      </td>
+                        <td className="p-4 text-sm text-gray-600">
+                          {booking.booking_date ? new Date(booking.booking_date).toLocaleDateString() : 'N/A'}
+                        </td>
 
-                      <td className="p-4">
-                        <span
-                          className={`
-px-4
+                        <td className="p-4">
+                          <span
+                            className={`
+px-3
 py-1
 rounded-full
-font-semibold
+text-xs
+font-bold
 
 ${
   booking.booking_status === "Confirmed"
@@ -1163,56 +1261,128 @@ ${
       : "bg-red-100 text-red-700"
 }
 `}
-                        >
-                          {booking.booking_status}
-                        </span>
-                      </td>
+                          >
+                            {booking.booking_status}
+                          </span>
+                        </td>
 
-                      <td
-                        className="
+                        <td className="p-4">
+                          <span
+                            className={`
+px-3
+py-1
+rounded-full
+text-xs
+font-bold
+
+${
+  isRefunded
+    ? "bg-purple-100 text-purple-700"
+    : isRefundRequested
+      ? "bg-amber-100 text-amber-700 border border-amber-300"
+      : booking.payment_status === "Paid"
+        ? "bg-emerald-100 text-emerald-700"
+        : "bg-gray-100 text-gray-600"
+}
+`}
+                          >
+                            {booking.payment_status || "Paid"}
+                          </span>
+                        </td>
+
+                        <td
+                          className="
 p-4
 "
-                      >
-                        <div
-                          className="
+                        >
+                          <div
+                            className="
 flex
 justify-center
+items-center
 gap-2
 "
-                        >
-                          <button
-                            onClick={() => setSelectedBooking(booking)}
-                            className="
+                          >
+                            <button
+                              onClick={() => setSelectedBooking(booking)}
+                              className="
 bg-purple-600
+hover:bg-purple-700
 text-white
-px-4
-py-2
+px-3
+py-1.5
 rounded-xl
+text-sm
+font-semibold
+transition
 "
-                          >
-                            View
-                          </button>
+                            >
+                              View
+                            </button>
 
-                          <button
-                            onClick={() => deleteBooking(booking.id)}
-                            className="
-bg-red-500
+                            {canRefund ? (
+                              <button
+                                onClick={() => {
+                                  setSelectedBookingForRefund(booking);
+                                  setRefundReason("");
+                                }}
+                                className="
+bg-gradient-to-r
+from-amber-500
+to-orange-600
+hover:from-amber-600
+hover:to-orange-700
 text-white
-px-4
-py-2
+px-3
+py-1.5
 rounded-xl
+text-sm
+font-semibold
+transition
+flex
+items-center
+gap-1
+shadow-sm
 "
-                          >
-                            <FaTrash />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
+                                title="Request Refund / Cancel Booking"
+                              >
+                                <FaUndo className="text-xs" /> Refund
+                              </button>
+                            ) : isRefundRequested ? (
+                              <span className="text-xs font-bold text-amber-600 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-xl">
+                                Refund Pending
+                              </span>
+                            ) : isRefunded ? (
+                              <span className="text-xs font-bold text-purple-600 bg-purple-50 border border-purple-200 px-2.5 py-1 rounded-xl">
+                                Refunded
+                              </span>
+                            ) : null}
+
+                            <button
+                              onClick={() => deleteBooking(booking.id)}
+                              className="
+bg-red-500
+hover:bg-red-600
+text-white
+px-3
+py-1.5
+rounded-xl
+text-sm
+transition
+"
+                              title="Remove"
+                            >
+                              <FaTrash />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
                 ) : (
                   <tr>
                     <td
-                      colSpan="5"
+                      colSpan="6"
                       className="
 text-center
 p-8
@@ -1468,20 +1638,45 @@ text-purple-700
 
                 <p>
                   <strong>Date:</strong>{" "}
-                  {new Date(selectedBooking.booking_date).toLocaleString()}
+                  {selectedBooking.booking_date ? new Date(selectedBooking.booking_date).toLocaleString() : 'N/A'}
+                </p>
+
+                {selectedBooking.total_amount && (
+                  <p>
+                    <strong>Amount Paid:</strong> LKR {Number(selectedBooking.total_amount).toLocaleString()}
+                  </p>
+                )}
+
+                <p>
+                  <strong>Booking Status:</strong> <span className="font-semibold">{selectedBooking.booking_status || selectedBooking.status}</span>
                 </p>
 
                 <p>
-                  <strong>Status:</strong> {selectedBooking.status}
+                  <strong>Payment Status:</strong> <span className="font-semibold text-purple-700">{selectedBooking.payment_status || "Paid"}</span>
                 </p>
               </div>
+
+              {selectedBooking.booking_status !== "Cancelled" &&
+                selectedBooking.payment_status !== "Refund Requested" &&
+                selectedBooking.payment_status !== "Refunded" && (
+                  <button
+                    onClick={() => {
+                      setSelectedBookingForRefund(selectedBooking);
+                      setSelectedBooking(null);
+                    }}
+                    className="mt-6 w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white py-3 rounded-xl font-bold shadow-md transition flex items-center justify-center gap-2"
+                  >
+                    <FaUndo /> Request Ticket Refund
+                  </button>
+              )}
 
               <button
                 onClick={() => setSelectedBooking(null)}
                 className="
-mt-8
+mt-4
 w-full
 bg-purple-600
+hover:bg-purple-700
 text-white
 py-3
 rounded-xl
@@ -1490,6 +1685,69 @@ font-bold
               >
                 Close
               </button>
+            </div>
+          </div>
+        )}
+
+        {/* ================= REFUND REQUEST MODAL ================= */}
+        {selectedBookingForRefund && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+            <div className="bg-white rounded-3xl p-8 max-w-lg w-full shadow-2xl relative border border-amber-100">
+              <button
+                onClick={() => setSelectedBookingForRefund(null)}
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 bg-gray-100 p-2 rounded-full transition"
+                title="Close"
+              >
+                <FaTimes />
+              </button>
+
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-3 bg-amber-100 text-amber-600 rounded-2xl">
+                  <FaUndo className="text-2xl" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-black text-gray-800">Request Ticket Refund</h2>
+                  <p className="text-xs text-gray-500">Submit cancellation & refund claim</p>
+                </div>
+              </div>
+
+              <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-6 space-y-2 text-sm text-amber-900">
+                <p><strong>Booking:</strong> #{selectedBookingForRefund.id} - {selectedBookingForRefund.title}</p>
+                {selectedBookingForRefund.total_amount && (
+                  <p><strong>Refund Amount:</strong> LKR {Number(selectedBookingForRefund.total_amount).toLocaleString()}</p>
+                )}
+                <p className="text-xs text-amber-700 mt-2">
+                  ⚠️ Note: Submitting this request will cancel your ticket pass and submit a refund claim for Financial Admin review.
+                </p>
+              </div>
+
+              <div className="mb-6 space-y-2">
+                <label className="block text-sm font-bold text-gray-700">Reason for Refund (Optional):</label>
+                <textarea
+                  rows="3"
+                  value={refundReason}
+                  onChange={(e) => setRefundReason(e.target.value)}
+                  placeholder="Please specify why you are requesting a refund (e.g. Schedule conflict, medical emergency...)"
+                  className="w-full border border-gray-300 rounded-2xl p-3 outline-none focus:ring-2 focus:ring-amber-500 text-sm"
+                />
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={handleRequestRefund}
+                  disabled={refundLoading}
+                  className="flex-1 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white py-3 rounded-xl font-bold shadow-md transition flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  {refundLoading ? "Submitting..." : "Confirm & Submit Refund"}
+                </button>
+                <button
+                  onClick={() => setSelectedBookingForRefund(null)}
+                  disabled={refundLoading}
+                  className="px-5 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-3 rounded-xl transition"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </div>
         )}

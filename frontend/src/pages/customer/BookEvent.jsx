@@ -40,6 +40,13 @@ const BookEvent = () => {
     return isNaN(num) ? 0 : num;
   }
 
+  const checkUserDomain = (email, allowedDomainsStr) => {
+    if (!email || !allowedDomainsStr || !email.includes("@")) return false;
+    const userDomain = email.split("@").pop().toLowerCase().trim();
+    const allowed = allowedDomainsStr.split(",").map((d) => d.trim().toLowerCase().replace(/^[@.]/, ""));
+    return allowed.some((dom) => dom && (userDomain === dom || userDomain.endsWith("." + dom)));
+  };
+
   const handleBooking = () => {
     if (!user) {
       setShowGuestModal(true);
@@ -55,6 +62,18 @@ const BookEvent = () => {
     if (!isNaN(eventDateTime) && eventDateTime < new Date().getTime()) {
       alert("Booking Closed: This event date has already passed. Ticket reservation is no longer available.");
       return;
+    }
+
+    // User-side Audience Restriction Validation
+    if (event.audience_restriction_type && event.audience_restriction_type !== 'public') {
+      const isUserEmailValid = checkUserDomain(user.email, event.allowed_email_domain);
+      const isPasscodeValid = event.audience_passcode && studentPasscode.trim().toLowerCase() === event.audience_passcode.trim().toLowerCase();
+      const isInputEmailValid = checkUserDomain(studentPasscode, event.allowed_email_domain);
+
+      if (!isUserEmailValid && !isPasscodeValid && !isInputEmailValid) {
+        alert(`🔒 Access Denied: This event is restricted to ${event.restriction_label || 'University Students Only'}. Please enter a valid student email (e.g. @ac.lk, @edu.lk) or student passcode.`);
+        return;
+      }
     }
 
     setBookingLoading(true);

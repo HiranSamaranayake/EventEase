@@ -47,8 +47,6 @@ ON bookings.event_id = events.id
 
 
 WHERE bookings.user_id='$user_id'
-AND bookings.payment_status='Paid'
-AND bookings.booking_status='Confirmed'
 
 ORDER BY bookings.id DESC
 
