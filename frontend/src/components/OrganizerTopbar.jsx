@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { FaBell, FaSearch, FaUserCircle, FaBars } from "react-icons/fa";
 import ThemeToggle from "./ThemeToggle";
 import { useTheme } from "../context/ThemeContext";
@@ -6,6 +7,19 @@ const OrganizerTopbar = ({ onToggleSidebar }) => {
   const user = JSON.parse(localStorage.getItem("user"));
   const { theme } = useTheme();
   const isDark = theme === "dark";
+  const [verifStatus, setVerifStatus] = useState("pending");
+
+  useEffect(() => {
+    if (!user?.id) return;
+    fetch(`http://localhost/EventEase/backend/api/get_organizer_verification.php?user_id=${user.id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.organizer) {
+          setVerifStatus(data.organizer.verification_status || "pending");
+        }
+      })
+      .catch((err) => console.error(err));
+  }, []);
 
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "short",
@@ -13,6 +27,8 @@ const OrganizerTopbar = ({ onToggleSidebar }) => {
     day: "numeric",
     year: "numeric",
   });
+
+  const isVerified = verifStatus === "approved" || verifStatus === "verified";
 
   return (
     <header
@@ -85,8 +101,8 @@ const OrganizerTopbar = ({ onToggleSidebar }) => {
             <p className={`font-bold text-xs ${isDark ? "text-white" : "text-gray-800"}`}>
               {user?.full_name || "Organizer"}
             </p>
-            <p className="text-purple-600 text-[10px] font-extrabold uppercase">
-              Verified Organizer
+            <p className={`text-[10px] font-extrabold uppercase ${isVerified ? "text-emerald-600" : "text-amber-600"}`}>
+              {isVerified ? "🛡️ Verified Organizer" : "⏳ Pending Verification"}
             </p>
           </div>
         </div>

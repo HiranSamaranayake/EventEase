@@ -16,6 +16,95 @@ function Login() {
         role: "customer"
     });
 
+    // Forgot Password State
+    const [showForgotModal, setShowForgotModal] = useState(false);
+    const [forgotStep, setForgotStep] = useState(1);
+    const [forgotEmail, setForgotEmail] = useState("");
+    const [forgotOtp, setForgotOtp] = useState("");
+    const [generatedOtp, setGeneratedOtp] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [forgotLoading, setForgotLoading] = useState(false);
+
+    const handleRequestOtp = async (e) => {
+        e.preventDefault();
+        if (!forgotEmail) {
+            toast.error("Please enter your registered email address.");
+            return;
+        }
+
+        setForgotLoading(true);
+        try {
+            const res = await fetch("http://localhost/EventEase/backend/api/forgot_password.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ action: "request_otp", email: forgotEmail })
+            });
+            const data = await res.json();
+            if (data.success) {
+                toast.success(data.message);
+                if (data.otp) {
+                    setGeneratedOtp(data.otp);
+                    setForgotOtp(data.otp);
+                }
+                setForgotStep(2);
+            } else {
+                toast.error(data.message || "Failed to find account.");
+            }
+        } catch (err) {
+            toast.error("Server error. Could not request OTP.");
+        } finally {
+            setForgotLoading(false);
+        }
+    };
+
+    const handleResetPassword = async (e) => {
+        e.preventDefault();
+        if (!forgotOtp) {
+            toast.error("Please enter the verification OTP code.");
+            return;
+        }
+        if (!newPassword || newPassword.length < 6) {
+            toast.error("New password must be at least 6 characters.");
+            return;
+        }
+        if (newPassword !== confirmPassword) {
+            toast.error("Passwords do not match.");
+            return;
+        }
+
+        setForgotLoading(true);
+        try {
+            const res = await fetch("http://localhost/EventEase/backend/api/forgot_password.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    action: "verify_and_reset",
+                    email: forgotEmail,
+                    otp: forgotOtp,
+                    new_password: newPassword
+                })
+            });
+            const data = await res.json();
+            if (data.success) {
+                toast.success("Password reset successful! Enter your new password to log in.");
+                setFormData((prev) => ({ ...prev, email: forgotEmail, password: newPassword }));
+                setShowForgotModal(false);
+                setForgotStep(1);
+                setForgotEmail("");
+                setForgotOtp("");
+                setNewPassword("");
+                setConfirmPassword("");
+            } else {
+                toast.error(data.message || "Reset failed.");
+            }
+        } catch (err) {
+            toast.error("Server error during password reset.");
+        } finally {
+            setForgotLoading(false);
+        }
+    };
+
     const handleChange = (e) => {
         setFormData({
             ...formData,
@@ -211,7 +300,15 @@ function Login() {
                                             Remember Me
                                         </label>
 
-                                        <button type="button" className="text-purple-600 text-xs font-bold hover:underline">
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setShowForgotModal(true);
+                                                setForgotStep(1);
+                                                setForgotEmail(formData.email || "");
+                                            }}
+                                            className="text-purple-600 text-xs font-bold hover:underline cursor-pointer"
+                                        >
                                             Forgot Password?
                                         </button>
                                     </div>
@@ -246,6 +343,130 @@ function Login() {
                     </div>
                 </div>
             </motion.div>
+
+            {/* FORGOT PASSWORD MODAL */}
+            {showForgotModal && (
+                <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+                    <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-gray-100 relative animate-fade-in">
+                        <button
+                            onClick={() => {
+                                setShowForgotModal(false);
+                                setForgotStep(1);
+                            }}
+                            className="absolute top-5 right-5 text-gray-400 hover:text-gray-600 text-lg font-bold p-1"
+                        >
+                            ✕
+                        </button>
+
+                        <div className="text-center mb-6">
+                            <h2 className="text-2xl font-black text-gray-900">Forgot Password? 🔐</h2>
+                            <p className="text-xs text-gray-500 mt-1">
+                                {forgotStep === 1
+                                    ? "Enter your registered email address to receive a password reset verification code."
+                                    : "Enter the OTP verification code and set your new account password."}
+                            </p>
+                        </div>
+
+                        {forgotStep === 1 ? (
+                            <form onSubmit={handleRequestOtp} className="space-y-4">
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-700 uppercase mb-2">
+                                        Registered Email Address
+                                    </label>
+                                    <input
+                                        type="email"
+                                        required
+                                        placeholder="e.g. user@example.com"
+                                        value={forgotEmail}
+                                        onChange={(e) => setForgotEmail(e.target.value)}
+                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-sm font-semibold text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-600"
+                                    />
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    disabled={forgotLoading}
+                                    className="w-full py-3.5 bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white font-extrabold text-sm rounded-2xl shadow-lg transition cursor-pointer"
+                                >
+                                    {forgotLoading ? "Requesting OTP Code..." : "Send Verification Code →"}
+                                </button>
+                            </form>
+                        ) : (
+                            <form onSubmit={handleResetPassword} className="space-y-4">
+                                <div className="bg-purple-50 p-3 rounded-2xl border border-purple-200 text-xs text-purple-900 font-semibold flex items-center justify-between">
+                                    <span>OTP Sent to: <strong>{forgotEmail}</strong></span>
+                                    <button
+                                        type="button"
+                                        onClick={() => setForgotStep(1)}
+                                        className="text-purple-700 underline font-bold cursor-pointer"
+                                    >
+                                        Change
+                                    </button>
+                                </div>
+
+                                {generatedOtp && (
+                                    <div className="bg-amber-50 border border-amber-200 p-3 rounded-2xl text-xs text-amber-900 font-bold text-center">
+                                        Verification Code: <span className="font-mono text-base text-amber-900 tracking-widest">{generatedOtp}</span>
+                                    </div>
+                                )}
+
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-700 uppercase mb-1">
+                                        6-Digit Verification OTP Code *
+                                    </label>
+                                    <input
+                                        type="text"
+                                        required
+                                        maxLength={6}
+                                        placeholder="123456"
+                                        value={forgotOtp}
+                                        onChange={(e) => setForgotOtp(e.target.value)}
+                                        className="w-full px-4 py-2.5 font-mono text-center tracking-widest text-lg font-bold bg-gray-50 border border-gray-200 rounded-2xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-600"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-700 uppercase mb-1">
+                                        New Password *
+                                    </label>
+                                    <input
+                                        type="password"
+                                        required
+                                        minLength={6}
+                                        placeholder="At least 6 characters"
+                                        value={newPassword}
+                                        onChange={(e) => setNewPassword(e.target.value)}
+                                        className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-2xl text-sm font-semibold text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-600"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-700 uppercase mb-1">
+                                        Confirm New Password *
+                                    </label>
+                                    <input
+                                        type="password"
+                                        required
+                                        minLength={6}
+                                        placeholder="Re-enter new password"
+                                        value={confirmPassword}
+                                        onChange={(e) => setConfirmPassword(e.target.value)}
+                                        className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-2xl text-sm font-semibold text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-600"
+                                    />
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    disabled={forgotLoading}
+                                    className="w-full py-3.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-extrabold text-sm rounded-2xl shadow-lg transition cursor-pointer"
+                                >
+                                    {forgotLoading ? "Resetting Password..." : "Reset Password Now ✓"}
+                                </button>
+                            </form>
+                        )}
+                    </div>
+                </div>
+            )}
             <ToastContainer
                 position="top-right"
                 autoClose={3000}

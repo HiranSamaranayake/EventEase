@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { FaBell } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { FaShieldAlt, FaCheckCircle, FaClock, FaExclamationTriangle } from "react-icons/fa";
 
 import DashboardCards from "../../components/DashboardCards";
 import RevenueChart from "../../components/RevenueChart";
@@ -11,19 +12,28 @@ import NotificationPanel from "../../components/NotificationPanel";
 
 const OrganizerDashboard = () => {
   const [dashboard, setDashboard] = useState(null);
+  const [verificationStatus, setVerificationStatus] = useState("pending");
   const [loading, setLoading] = useState(true);
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   useEffect(() => {
-    fetch(
-      `http://localhost/EventEase/backend/api/organizer_dashboard.php?user_id=${user.id || 2}`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        setDashboard(data);
+    if (!user.id) return;
+
+    Promise.all([
+      fetch(`http://localhost/EventEase/backend/api/organizer_dashboard.php?user_id=${user.id}`).then((res) => res.json()),
+      fetch(`http://localhost/EventEase/backend/api/get_organizer_verification.php?user_id=${user.id}`).then((res) => res.json())
+    ])
+      .then(([dashData, verifData]) => {
+        if (dashData) setDashboard(dashData);
+        if (verifData && verifData.success && verifData.organizer) {
+          setVerificationStatus(verifData.organizer.verification_status || "pending");
+        }
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch((err) => {
+        console.error(err);
+        setLoading(false);
+      });
   }, []);
 
   if (loading) {
@@ -33,6 +43,9 @@ const OrganizerDashboard = () => {
       </div>
     );
   }
+
+  const isVerified = verificationStatus === "approved" || verificationStatus === "verified";
+  const isRejected = verificationStatus === "rejected";
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
@@ -48,9 +61,25 @@ const OrganizerDashboard = () => {
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
-          <span className="px-3 py-1.5 rounded-full text-xs font-black bg-purple-100 text-purple-800 border border-purple-200 uppercase">
-            Verified Organizer Portal
-          </span>
+          {isVerified ? (
+            <span className="px-4 py-2 rounded-2xl text-xs font-black bg-emerald-100 text-emerald-800 border border-emerald-300 uppercase flex items-center gap-1.5 shadow-sm">
+              <FaCheckCircle className="text-emerald-600 text-sm" /> Verified Organizer
+            </span>
+          ) : isRejected ? (
+            <Link
+              to="/organizer/verify"
+              className="px-4 py-2 rounded-2xl text-xs font-black bg-rose-100 text-rose-800 border border-rose-300 uppercase flex items-center gap-1.5 shadow-sm hover:bg-rose-200 transition"
+            >
+              <FaExclamationTriangle className="text-rose-600 text-sm" /> Verification Rejected
+            </Link>
+          ) : (
+            <Link
+              to="/organizer/verify"
+              className="px-4 py-2 rounded-2xl text-xs font-black bg-amber-100 text-amber-900 border border-amber-300 uppercase flex items-center gap-1.5 shadow-sm hover:bg-amber-200 transition animate-pulse"
+            >
+              <FaClock className="text-amber-600 text-sm" /> Verification Pending
+            </Link>
+          )}
         </div>
       </div>
 

@@ -28,7 +28,8 @@ $query = "
 SELECT 
     organizers.*,
     users.full_name,
-    users.email
+    users.email,
+    users.user_tier
 FROM users
 LEFT JOIN organizers ON users.id = organizers.user_id
 WHERE users.id = $userId
@@ -40,9 +41,13 @@ $result = mysqli_query($conn, $query);
 if ($result && mysqli_num_rows($result) > 0) {
     $data = mysqli_fetch_assoc($result);
 
-    // Default status if empty
-    if (empty($data['verification_status'])) {
-        $data['verification_status'] = 'pending';
+    // Sync verification_status if user_tier is verified
+    if (empty($data['verification_status']) || $data['verification_status'] == '') {
+        if (isset($data['user_tier']) && strtolower($data['user_tier']) === 'verified') {
+            $data['verification_status'] = 'approved';
+        } else {
+            $data['verification_status'] = 'pending';
+        }
     }
 
     echo json_encode([
