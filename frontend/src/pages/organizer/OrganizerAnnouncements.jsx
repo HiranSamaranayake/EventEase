@@ -478,9 +478,10 @@ export default function OrganizerAnnouncements() {
                     onChange={(e) => setFormData({ ...formData, broadcast_type: e.target.value })}
                     className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-xs font-black text-gray-900 focus:outline-none focus:border-purple-600"
                   >
-                    <option value="all_attendees">All Ticket Holders</option>
-                    <option value="vip_only">VIP Ticket Holders Only</option>
-                    <option value="all_users">All System Customers</option>
+                    <option value="all_attendees">All Ticket Holders (This Event)</option>
+                    <option value="vip_only">VIP Ticket Holders Only (This Event)</option>
+                    <option value="waiting_list">Waiting List Members Only (This Event)</option>
+                    <option value="all_users">All System Customers (Platform-Wide)</option>
                   </select>
                 </div>
               </div>
