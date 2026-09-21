@@ -70,6 +70,7 @@ const CustomerDashboard = () => {
   const [ticketChart, setTicketChart] = useState([]);
 
   const [recommendations, setRecommendations] = useState([]);
+  const [notifications, setNotifications] = useState([]);
 
   const [loading, setLoading] = useState(true);
 
@@ -266,10 +267,12 @@ const CustomerDashboard = () => {
 
           ticketChartRes,
           
-          recommendRes
+          recommendRes,
+
+          notifRes
         ] = await Promise.all([
           fetch(
-            "http://localhost/EventEase/backend/api/customer_dashboard.php",
+            `http://localhost/EventEase/backend/api/customer_dashboard.php?user_id=${user.id}`,
           ),
 
           fetch(
@@ -291,6 +294,10 @@ const CustomerDashboard = () => {
           fetch(
             `http://localhost/EventEase/backend/api/event_recommendations.php?user_id=${user.id}`,
           ),
+
+          fetch(
+            `http://localhost/EventEase/backend/api/get_notifications.php?user_id=${user.id}`,
+          ),
         ]);
 
         const statsData = await statsRes.json();
@@ -304,6 +311,8 @@ const CustomerDashboard = () => {
         const ticketChartData = await ticketChartRes.json();
         
         const recommendData = await recommendRes.json();
+
+        const notifData = await notifRes.json();
 
         if (statsData.success) {
           setStats({
@@ -329,6 +338,9 @@ const CustomerDashboard = () => {
           
         if (recommendData.success)
           setRecommendations(recommendData.recommendations || []);
+
+        if (notifData.success)
+          setNotifications(notifData.notifications || []);
       } catch (error) {
         console.log(error);
       } finally {
@@ -454,50 +466,43 @@ const CustomerDashboard = () => {
   const statCards = [
     {
       title: "Total Bookings",
-
       value: stats.totalBookings,
-
       icon: <FaCalendarCheck />,
-
       gradient: "from-purple-600 to-indigo-700",
-
-      change: "+12%",
+      change: "Bookings",
+      action: () => {
+        const el = document.getElementById("my-bookings-table");
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+        else navigate("/my-bookings");
+      }
     },
-
     {
       title: "Upcoming Events",
-
       value: stats.upcomingEvents,
-
       icon: <FaClock />,
-
       gradient: "from-blue-500 to-cyan-600",
-
-      change: "Live",
+      change: "Events",
+      action: () => navigate("/events")
     },
-
     {
       title: "Active Tickets",
-
       value: stats.totalTickets,
-
       icon: <FaTicketAlt />,
-
       gradient: "from-green-500 to-emerald-600",
-
-      change: "Ready",
+      change: "Tickets",
+      action: () => navigate("/my-bookings")
     },
-
     {
       title: "Total Spent",
-
-      value: `$${stats.totalSpent}`,
-
+      value: `LKR ${parseFloat(stats.totalSpent || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
       icon: <FaWallet />,
-
       gradient: "from-orange-500 to-red-600",
-
-      change: "+8%",
+      change: "Total",
+      action: () => {
+        const el = document.getElementById("my-bookings-table");
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+        else navigate("/my-bookings");
+      }
     },
   ];
   return (
@@ -777,70 +782,52 @@ gap-2
 
           {/* NOTIFICATION */}
 
-          <div
-            className="
-bg-white
-rounded-3xl
-shadow-xl
-p-7
-"
-          >
-            <div
-              className="
-flex
-items-center
-gap-3
-"
-            >
-              <FaBell
-                className="
-text-purple-600
-text-3xl
-"
-              />
-
-              <h2
-                className="
-text-xl
-font-black
-"
-              >
-                Notifications
-              </h2>
-            </div>
-
-            <div
-              className="
-mt-6
-space-y-4
-"
-            >
-              <div
-                className="
-bg-green-50
-p-4
-rounded-xl
-flex
-gap-3
-"
-              >
-                <FaCheckCircle
-                  className="
-text-green-600
-"
-                />
-
-                <p>Your ticket is ready</p>
+          <div className="bg-white rounded-3xl shadow-xl p-7 flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <FaBell className="text-purple-600 text-3xl" />
+                  <h2 className="text-xl font-black">Notifications</h2>
+                </div>
+                {notifications.length > 0 && (
+                  <span className="bg-purple-100 text-purple-700 text-xs font-bold px-2.5 py-1 rounded-full">
+                    {notifications.length} New
+                  </span>
+                )}
               </div>
 
-              <div
-                className="
-bg-purple-50
-p-4
-rounded-xl
-"
-              >
-                Upcoming event reminder
+              <div className="mt-5 space-y-3 max-h-52 overflow-y-auto pr-1">
+                {notifications.length > 0 ? (
+                  notifications.slice(0, 4).map((n) => (
+                    <div
+                      key={n.id}
+                      onClick={() => n.link && navigate(n.link)}
+                      className={`p-3.5 rounded-2xl text-xs flex gap-3 items-start transition ${
+                        n.link ? "cursor-pointer hover:bg-purple-100" : ""
+                      } ${
+                        n.type === "urgent" || n.type === "warning"
+                          ? "bg-amber-50 text-amber-900 border border-amber-200"
+                          : "bg-purple-50 text-purple-900 border border-purple-100"
+                      }`}
+                    >
+                      <FaCheckCircle className="text-purple-600 mt-0.5 shrink-0" />
+                      <div>
+                        <p className="font-bold text-sm leading-tight">{n.title || n.message}</p>
+                        {n.title && n.message && <p className="text-gray-600 mt-1">{n.message}</p>}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <>
+                    <div className="bg-green-50 p-4 rounded-2xl flex gap-3 text-sm text-green-900 border border-green-100">
+                      <FaCheckCircle className="text-green-600 mt-0.5 shrink-0" />
+                      <p className="font-semibold">Your ticket confirmations are active and up to date.</p>
+                    </div>
+                    <div className="bg-purple-50 p-4 rounded-2xl text-sm text-purple-900 border border-purple-100 font-semibold">
+                      📢 Event announcements from organizers will appear here live.
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -893,23 +880,25 @@ gap-6
               key={index}
               whileHover={{
                 y: -8,
+                scale: 1.02,
               }}
+              onClick={card.action}
               className={`
-
 rounded-3xl
 p-7
 text-white
 shadow-xl
 bg-gradient-to-br
-
+cursor-pointer
+transition-all
 ${card.gradient}
-
 `}
             >
               <div
                 className="
 flex
 justify-between
+items-center
 "
               >
                 <div
@@ -926,6 +915,8 @@ bg-white/20
 px-3
 py-1
 rounded-full
+text-xs
+font-bold
 "
                 >
                   {card.change}
@@ -934,8 +925,10 @@ rounded-full
 
               <p
                 className="
-mt-8
+mt-6
 opacity-80
+text-sm
+font-semibold
 "
               >
                 {card.title}
@@ -943,9 +936,11 @@ opacity-80
 
               <h2
                 className="
-text-5xl
+text-3xl
+lg:text-4xl
 font-black
-mt-2
+mt-1
+truncate
 "
               >
                 {card.value}
@@ -954,13 +949,16 @@ mt-2
               <div
                 className="
 flex
+items-center
 gap-2
 mt-4
-text-sm
+text-xs
+font-bold
+opacity-90
 "
               >
                 <FaArrowUp />
-                Growing
+                View Details →
               </div>
             </motion.div>
           ))}
@@ -1131,6 +1129,7 @@ mb-6
         {/* ================= BOOKING TABLE ================= */}
 
         <div
+          id="my-bookings-table"
           className="
 bg-white
 rounded-3xl

@@ -36,6 +36,7 @@ import OrganizerTickets from "./pages/organizer/OrganizerTickets";
 import OrganizerPromoCodes from "./pages/organizer/OrganizerPromoCodes";
 import OrganizerSeatingConfig from "./pages/organizer/OrganizerSeatingConfig";
 import OrganizerAnnouncements from "./pages/organizer/OrganizerAnnouncements";
+import OrganizerComplaints from "./pages/organizer/OrganizerComplaints";
 import ScanTicket from "./pages/organizer/ScanTicket";
 import OrganizerVerification from "./pages/organizer/OrganizerVerification";
 
@@ -214,6 +215,11 @@ function App() {
 <Route
   path="announcements"
   element={<OrganizerAnnouncements />}
+/>
+
+<Route
+  path="complaints"
+  element={<OrganizerComplaints />}
 />
 
   <Route

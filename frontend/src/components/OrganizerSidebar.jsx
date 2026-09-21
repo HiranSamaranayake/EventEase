@@ -51,6 +51,11 @@ const OrganizerSidebar = ({ isOpen, onClose }) => {
       path: "/organizer/announcements",
     },
     {
+      title: "Customer Complaints",
+      icon: <FaShieldAlt />,
+      path: "/organizer/complaints",
+    },
+    {
       title: "Analytics",
       icon: <FaChartLine />,
       path: "/organizer/analytics",
