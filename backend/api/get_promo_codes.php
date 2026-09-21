@@ -10,13 +10,30 @@ $params = [];
 $types = "";
 
 if ($organizer_id > 0) {
-    $where[] = "(organizer_id = ? OR organizer_id IS NULL)";
-    $params[] = $organizer_id;
-    $types .= "i";
+    // Check if there is an associated organizer record ID in `organizers` table for this user_id
+    $orgIdLookup = 0;
+    $lookupQuery = mysqli_query($conn, "SELECT id FROM organizers WHERE user_id = '$organizer_id'");
+    if ($lookupQuery && $row = mysqli_fetch_assoc($lookupQuery)) {
+        $orgIdLookup = intval($row['id']);
+    }
+
+    if ($orgIdLookup > 0) {
+        $where[] = "(p.organizer_id = ? OR p.organizer_id = ? OR p.organizer_id IS NULL OR e.organizer_id = ? OR e.organizer_id = ?)";
+        $params[] = $organizer_id;
+        $params[] = $orgIdLookup;
+        $params[] = $organizer_id;
+        $params[] = $orgIdLookup;
+        $types .= "iiii";
+    } else {
+        $where[] = "(p.organizer_id = ? OR p.organizer_id IS NULL OR e.organizer_id = ?)";
+        $params[] = $organizer_id;
+        $params[] = $organizer_id;
+        $types .= "ii";
+    }
 }
 
 if ($event_id > 0) {
-    $where[] = "(event_id = ? OR event_id IS NULL)";
+    $where[] = "(p.event_id = ? OR p.event_id IS NULL)";
     $params[] = $event_id;
     $types .= "i";
 }

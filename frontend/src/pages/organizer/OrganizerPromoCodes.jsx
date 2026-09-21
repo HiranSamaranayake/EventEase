@@ -47,7 +47,11 @@ export default function OrganizerPromoCodes() {
   const fetchPromos = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost/EventEase/backend/api/get_promo_codes.php?organizer_id=${user.id || 2}`);
+      const orgId = user.id || user.organizer_id || '';
+      const url = orgId 
+        ? `http://localhost/EventEase/backend/api/get_promo_codes.php?organizer_id=${orgId}`
+        : 'http://localhost/EventEase/backend/api/get_promo_codes.php';
+      const res = await fetch(url);
       const data = await res.json();
       if (data.status === 'success') {
         setPromos(data.data || []);
@@ -61,7 +65,8 @@ export default function OrganizerPromoCodes() {
 
   const fetchEvents = async () => {
     try {
-      const res = await fetch(`http://localhost/EventEase/backend/api/my_events.php?user_id=${user.id || 2}`);
+      const orgId = user.id || user.organizer_id || '';
+      const res = await fetch(`http://localhost/EventEase/backend/api/my_events.php?user_id=${orgId}`);
       const data = await res.json();
       if (data && data.events && Array.isArray(data.events)) {
         setEvents(data.events);
@@ -98,7 +103,7 @@ export default function OrganizerPromoCodes() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
-          organizer_id: user.id || 2
+          organizer_id: user.id || user.organizer_id || null
         })
       });
       const data = await res.json();

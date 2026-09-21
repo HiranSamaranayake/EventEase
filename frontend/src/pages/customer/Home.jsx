@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import { motion } from "framer-motion";
 import Hero from "../../components/Hero";
-import { Zap, ShieldCheck, Ticket, MapPinned } from "lucide-react";
+import { Zap, ShieldCheck, Ticket, MapPinned, Star, MessageSquarePlus, X, CheckCircle, User } from "lucide-react";
 import ctaBg from "../../assets/images/cta-bg.jpg";
 import Footer from "../../components/Footer";
 
@@ -22,6 +22,27 @@ function Home() {
   const [locationFilter, setLocationFilter] = useState("All");
   const [categories, setCategories] = useState([]);
 
+  // Reviews states
+  const [reviews, setReviews] = useState([]);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [newRating, setNewRating] = useState(5);
+  const [reviewerName, setReviewerName] = useState("");
+  const [reviewerRole, setReviewerRole] = useState("Customer");
+  const [reviewComment, setReviewComment] = useState("");
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+  const [reviewFeedback, setReviewFeedback] = useState({ type: "", msg: "" });
+
+  const fetchReviews = () => {
+    fetch("http://localhost/EventEase/backend/api/get_website_reviews.php")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          setReviews(data.reviews);
+        }
+      })
+      .catch((err) => console.error("Error fetching reviews:", err));
+  };
+
   useEffect(() => {
     fetch("http://localhost/EventEase/backend/api/events.php")
       .then((res) => res.json())
@@ -37,7 +58,71 @@ function Home() {
           setCategories(data.categories);
         }
       });
+    fetchReviews();
+
+    try {
+      const userStr = localStorage.getItem("user");
+      if (userStr) {
+        const u = JSON.parse(userStr);
+        if (u && u.full_name) {
+          setReviewerName(u.full_name);
+        }
+        if (u && u.role) {
+          setReviewerRole(u.role === "organizer" ? "Event Organizer" : "Customer");
+        }
+      }
+    } catch (e) {}
   }, []);
+
+  const handleSubmitReview = (e) => {
+    e.preventDefault();
+    if (!reviewerName.trim() || !reviewComment.trim()) {
+      setReviewFeedback({ type: "error", msg: "Please fill in your name and review message." });
+      return;
+    }
+    setIsSubmittingReview(true);
+    setReviewFeedback({ type: "", msg: "" });
+
+    let userId = null;
+    try {
+      const userStr = localStorage.getItem("user");
+      if (userStr) {
+        const u = JSON.parse(userStr);
+        userId = u.id || null;
+      }
+    } catch (e) {}
+
+    fetch("http://localhost/EventEase/backend/api/submit_website_review.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        user_id: userId,
+        reviewer_name: reviewerName,
+        role: reviewerRole,
+        rating: newRating,
+        comment: reviewComment,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setIsSubmittingReview(false);
+        if (data.success) {
+          setReviewFeedback({ type: "success", msg: data.message || "Review submitted successfully!" });
+          setReviewComment("");
+          fetchReviews();
+          setTimeout(() => {
+            setIsReviewModalOpen(false);
+            setReviewFeedback({ type: "", msg: "" });
+          }, 1500);
+        } else {
+          setReviewFeedback({ type: "error", msg: data.message || "Failed to submit review." });
+        }
+      })
+      .catch((err) => {
+        setIsSubmittingReview(false);
+        setReviewFeedback({ type: "error", msg: "Server error submitting review." });
+      });
+  };
 
   const filteredEvents = featuredEvents.filter((event) => {
     const matchesSearch = event.title
@@ -916,6 +1001,73 @@ text-center
         "
               >
               <div
+                className="
+                  w-20
+                  h-20
+                  mx-auto
+        w-20
+        h-20
+        mx-auto
+        mb-6
+        rounded-2xl
+        bg-gradient-to-br
+        from-purple-500
+        via-fuchsia-500
+        to-pink-500
+        flex
+        items-center
+        justify-center
+        text-white
+        shadow-xl
+        transition-all
+        duration-500
+        group-hover:rotate-6
+        group-hover:scale-110
+    "
+>
+                  <Zap size={38} />
+                </div>
+
+                <h3
+                  className="text-2xl
+font-black
+mb-4
+text-gray-900"
+                >
+                  Fast Booking
+                </h3>
+
+                <p
+                  className="text-gray-600
+leading-7
+text-[15px]"
+                >
+                  Book tickets within seconds with a smooth and simple booking
+                  experience.
+                </p>
+              </div>
+
+              {/* Card 2 */}
+
+              <div
+                className="
+                group
+            bg-white/80
+backdrop-blur-xl
+border
+border-white/60
+rounded-3xl
+p-8
+shadow-xl
+hover:-translate-y-3
+hover:scale-105
+hover:shadow-[0_20px_60px_rgba(168,85,247,0.25)]
+transition-all
+duration-500
+text-center
+        "
+              >
+               <div
     className="
         w-20
         h-20
@@ -937,7 +1089,7 @@ text-center
         group-hover:scale-110
     "
 >
-                  <MapPinned size={38} />
+                  <ShieldCheck size={38} />
                 </div>
 
                 <h3
@@ -946,7 +1098,7 @@ font-black
 mb-4
 text-gray-900"
                 >
-                  Discover Events
+                  Secure Platform
                 </h3>
 
                 <p
@@ -954,300 +1106,367 @@ text-gray-900"
 leading-7
 text-[15px]"
                 >
-                  Find exciting events happening near you and explore new
-                  experiences.
+                  Safe registrations, protected user accounts and reliable event
+                  management.
                 </p>
               </div>
+
+              {/* Card 3 */}
+
+              <div
+                className="
+                group
+            bg-white/80
+backdrop-blur-xl
+border
+border-white/60
+rounded-3xl
+p-8
+shadow-xl
+hover:-translate-y-3
+hover:scale-105
+hover:shadow-[0_20px_60px_rgba(168,85,247,0.25)]
+transition-all
+duration-500
+text-center
+        "
+              >
+               <div
+    className="
+        w-20
+        h-20
+        mx-auto
+        mb-6
+        rounded-2xl
+        bg-gradient-to-br
+        from-purple-500
+        via-fuchsia-500
+        to-pink-500
+        flex
+        items-center
+        justify-center
+        text-white
+        shadow-xl
+        transition-all
+        duration-500
+        group-hover:rotate-6
+        group-hover:scale-110
+    "
+>
+                 <Ticket size={38} />
+                </div>
+
+                <h3
+                  className="text-2xl
+font-black
+mb-4
+text-gray-900"
+                >
+                  Instant Tickets
+                </h3>
+
+                <p
+                  className="text-gray-600
+leading-7
+text-[15px]"
+                >
+                  Receive your booking confirmation immediately after reserving
+                  your seat.
+                </p>
+              </div>
+
+              {/* Card 4 */}
+
+              <div
+                className="
+                group
+            bg-white/80
+backdrop-blur-xl
+border
+border-white/60
+rounded-3xl
+p-8
+shadow-xl
+hover:-translate-y-3
+hover:scale-105
+hover:shadow-[0_20px_60px_rgba(168,85,247,0.25)]
+transition-all
+duration-500
+text-center
+        "
+              >
+              <div
+                className="
+                  w-20
+                  h-20
+                  mx-auto
+                  mb-6
+                  rounded-2xl
+                  bg-gradient-to-br
+                  from-purple-500
+                  via-fuchsia-500
+                  to-pink-500
+                  flex
+                  items-center
+                  justify-center
+                  text-white
+                  shadow-xl
+                  transition-all
+                  duration-500
+                  group-hover:rotate-6
+                  group-hover:scale-110
+                "
+              >
+                <MapPinned size={38} />
+              </div>
+
+              <h3 className="text-2xl font-black mb-4 text-gray-900">
+                Discover Events
+              </h3>
+
+              <p className="text-gray-600 leading-7 text-[15px]">
+                Find exciting events happening near you and explore new experiences.
+              </p>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* ================= TESTIMONIALS ================= */}
-
-<section className="py-24 relative z-10">
-
-    <div className="max-w-7xl mx-auto px-6">
-
-        <div className="text-center mb-16">
-
-            <span
-                className="
-                    bg-purple-100
-                    text-purple-700
-                    px-4
-                    py-2
-                    rounded-full
-                    font-semibold
-                    text-sm
-                "
-            >
-                TESTIMONIALS
+      {/* ================= TESTIMONIALS & REVIEWS ================= */}
+      <section className="py-24 relative z-10">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <span className="bg-purple-100 text-purple-700 px-4 py-2 rounded-full font-semibold text-sm">
+              TESTIMONIALS & REVIEWS
             </span>
 
-            <h2
-                className="
-                    mt-6
-                    text-4xl
-                    lg:text-5xl
-                    font-black
-                "
-            >
-                Loved by Event Organizers
+            <h2 className="mt-6 text-4xl lg:text-5xl font-black">
+              Loved by Event Organizers & Attendees
             </h2>
 
-            <p
-                className="
-                    mt-4
-                    text-gray-600
-                    max-w-2xl
-                    mx-auto
-                "
-            >
-                Here's what people are saying about EventEase.
+            <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
+              Here's what our community is saying about EventEase. Share your own experience with us!
             </p>
 
+            <div className="mt-8 flex justify-center">
+              <button
+                onClick={() => {
+                  setReviewFeedback({ type: "", msg: "" });
+                  setIsReviewModalOpen(true);
+                }}
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-600 text-white px-7 py-3.5 rounded-2xl font-extrabold text-base shadow-lg shadow-purple-500/25 hover:scale-105 hover:shadow-purple-500/40 transition-all duration-300"
+              >
+                <MessageSquarePlus className="w-5 h-5" />
+                Write a Review
+              </button>
+            </div>
+          </div>
+
+          {/* Dynamic Reviews Grid */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
+            {reviews.length > 0 ? (
+              reviews.map((rev, index) => {
+                const initials = rev.reviewer_name
+                  ? rev.reviewer_name.charAt(0).toUpperCase()
+                  : "U";
+                const avatarGradients = [
+                  "from-purple-500 to-pink-500",
+                  "from-blue-500 to-cyan-500",
+                  "from-emerald-500 to-teal-500",
+                  "from-amber-500 to-orange-500",
+                  "from-rose-500 to-red-500",
+                ];
+                const gradient = avatarGradients[index % avatarGradients.length];
+
+                return (
+                  <div
+                    key={rev.id || index}
+                    className="group bg-white/80 backdrop-blur-xl border border-white/60 rounded-3xl p-8 shadow-xl hover:-translate-y-2 hover:shadow-purple-300/30 transition-all duration-300 flex flex-col justify-between"
+                  >
+                    <div>
+                      {/* Rating Stars */}
+                      <div className="flex items-center gap-1 mb-5 text-amber-400">
+                        {[1, 2, 3, 4, 5].map((s) => (
+                          <Star
+                            key={s}
+                            className={`w-5 h-5 ${
+                              s <= rev.rating
+                                ? "fill-amber-400 text-amber-400"
+                                : "text-gray-300"
+                            }`}
+                          />
+                        ))}
+                      </div>
+
+                      {/* Review Comment */}
+                      <p className="text-gray-700 leading-relaxed mb-8 italic">
+                        "{rev.comment}"
+                      </p>
+                    </div>
+
+                    {/* Reviewer Details */}
+                    <div className="flex items-center gap-4 pt-4 border-t border-gray-100">
+                      <div
+                        className={`w-12 h-12 rounded-full bg-gradient-to-br ${gradient} flex items-center justify-center text-white font-bold text-lg shadow-md`}
+                      >
+                        {initials}
+                      </div>
+
+                      <div>
+                        <h4 className="font-bold text-gray-900">{rev.reviewer_name}</h4>
+                        <p className="text-gray-500 text-xs font-medium">
+                          {rev.role || "Community Member"}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="col-span-full text-center py-12 bg-white/50 backdrop-blur-md rounded-3xl border border-gray-100">
+                <p className="text-gray-500">No reviews yet. Be the first to share your experience!</p>
+              </div>
+            )}
+          </div>
         </div>
-        <div
-    className="
-        grid
-        md:grid-cols-2
-        lg:grid-cols-3
-        gap-8
-        mt-16
-    "
->
+      </section>
 
-    {/* Review 1 */}
-
-    <div
-        className="
-            group
-            bg-white/80
-            backdrop-blur-xl
-            border
-            border-white/60
-            rounded-3xl
-            p-8
-            shadow-xl
-            hover:-translate-y-3
-            hover:shadow-purple-300/30
-            transition-all
-            duration-500
-        "
-    >
-
-        <div className="flex mb-5 text-yellow-400 text-xl">
-            ⭐⭐⭐⭐⭐
-        </div>
-
-        <p
-            className="
-                text-gray-600
-                leading-8
-                mb-8
-            "
-        >
-            "EventEase made organizing our annual tech conference incredibly simple. Ticket sales and attendee management were effortless."
-        </p>
-
-        <div className="flex items-center gap-4">
-
-            <div
-                className="
-                    w-14
-                    h-14
-                    rounded-full
-                    bg-gradient-to-br
-                    from-purple-500
-                    to-pink-500
-                    flex
-                    items-center
-                    justify-center
-                    text-white
-                    font-bold
-                    text-xl
-                "
+      {/* ================= WRITE REVIEW MODAL ================= */}
+      {isReviewModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fadeIn">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full p-6 md:p-8 relative border border-gray-100">
+            {/* Close Button */}
+            <button
+              onClick={() => setIsReviewModalOpen(false)}
+              className="absolute top-5 right-5 text-gray-400 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100 transition-colors"
             >
-                A
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="text-center mb-6">
+              <div className="w-12 h-12 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                <MessageSquarePlus className="w-6 h-6" />
+              </div>
+              <h3 className="text-2xl font-black text-gray-900">
+                Write a Website Review
+              </h3>
+              <p className="text-gray-500 text-sm mt-1">
+                Tell us what you think about EventEase!
+              </p>
             </div>
 
-            <div>
+            {reviewFeedback.msg && (
+              <div
+                className={`mb-5 p-4 rounded-2xl text-sm font-semibold flex items-center gap-2 ${
+                  reviewFeedback.type === "success"
+                    ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                    : "bg-rose-50 text-rose-700 border border-rose-200"
+                }`}
+              >
+                {reviewFeedback.type === "success" && <CheckCircle className="w-5 h-5 flex-shrink-0" />}
+                <span>{reviewFeedback.msg}</span>
+              </div>
+            )}
 
-                <h4 className="font-bold">
-                    Amanda Silva
-                </h4>
+            <form onSubmit={handleSubmitReview} className="space-y-4">
+              {/* Rating Selector */}
+              <div>
+                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
+                  Your Rating
+                </label>
+                <div className="flex items-center gap-2 justify-center py-2 bg-gray-50 rounded-2xl border border-gray-200">
+                  {[1, 2, 3, 4, 5].map((starVal) => (
+                    <button
+                      type="button"
+                      key={starVal}
+                      onClick={() => setNewRating(starVal)}
+                      className="p-1.5 transition-transform hover:scale-125 focus:outline-none"
+                    >
+                      <Star
+                        className={`w-8 h-8 ${
+                          starVal <= newRating
+                            ? "fill-amber-400 text-amber-400"
+                            : "text-gray-300"
+                        }`}
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-                <p className="text-gray-500 text-sm">
-                    Event Organizer
-                </p>
+              {/* Name */}
+              <div>
+                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                  Your Name
+                </label>
+                <div className="relative">
+                  <User className="w-4 h-4 text-gray-400 absolute left-3.5 top-3.5" />
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Alex Morgan"
+                    value={reviewerName}
+                    onChange={(e) => setReviewerName(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  />
+                </div>
+              </div>
 
-            </div>
+              {/* Role / Title */}
+              <div>
+                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                  Your Role / Description
+                </label>
+                <select
+                  value={reviewerRole}
+                  onChange={(e) => setReviewerRole(e.target.value)}
+                  className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                >
+                  <option value="Customer">Customer</option>
+                  <option value="Event Organizer">Event Organizer</option>
+                  <option value="Festival Manager">Festival Manager</option>
+                  <option value="Attendee">Event Attendee</option>
+                  <option value="VIP Member">VIP Member</option>
+                </select>
+              </div>
 
+              {/* Review Text */}
+              <div>
+                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                  Your Review
+                </label>
+                <textarea
+                  rows={4}
+                  required
+                  placeholder="Describe your experience using EventEase..."
+                  value={reviewComment}
+                  onChange={(e) => setReviewComment(e.target.value)}
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
+                ></textarea>
+              </div>
+
+              {/* Submit button */}
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  disabled={isSubmittingReview}
+                  className="w-full py-3.5 px-6 bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-600 text-white font-bold rounded-2xl shadow-lg hover:opacity-95 disabled:opacity-50 transition-all"
+                >
+                  {isSubmittingReview ? "Submitting Review..." : "Publish Review"}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
+      )}
 
-    </div>
-
-    {/* Review 2 */}
-
-    <div
-        className="
-            group
-            bg-white/80
-            backdrop-blur-xl
-            border
-            border-white/60
-            rounded-3xl
-            p-8
-            shadow-xl
-            hover:-translate-y-3
-            hover:shadow-purple-300/30
-            transition-all
-            duration-500
-        "
-    >
-
-        <div className="flex mb-5 text-yellow-400 text-xl">
-            ⭐⭐⭐⭐⭐
-        </div>
-
-        <p
-            className="
-                text-gray-600
-                leading-8
-                mb-8
-            "
-        >
-            "Booking tickets has never been easier. The platform is fast, modern and extremely user friendly."
-        </p>
-
-        <div className="flex items-center gap-4">
-
-            <div
-                className="
-                    w-14
-                    h-14
-                    rounded-full
-                    bg-gradient-to-br
-                    from-blue-500
-                    to-cyan-500
-                    flex
-                    items-center
-                    justify-center
-                    text-white
-                    font-bold
-                    text-xl
-                "
-            >
-                D
-            </div>
-
-            <div>
-
-                <h4 className="font-bold">
-                    Daniel Fernando
-                </h4>
-
-                <p className="text-gray-500 text-sm">
-                    Customer
-                </p>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    {/* Review 3 */}
-
-    <div
-        className="
-            group
-            bg-white/80
-            backdrop-blur-xl
-            border
-            border-white/60
-            rounded-3xl
-            p-8
-            shadow-xl
-            hover:-translate-y-3
-            hover:shadow-purple-300/30
-            transition-all
-            duration-500
-        "
-    >
-
-        <div className="flex mb-5 text-yellow-400 text-xl">
-            ⭐⭐⭐⭐⭐
-        </div>
-
-        <p
-            className="
-                text-gray-600
-                leading-8
-                mb-8
-            "
-        >
-            "Our music festival sold out within days. Managing registrations and bookings became completely stress-free."
-        </p>
-
-        <div className="flex items-center gap-4">
-
-            <div
-                className="
-                    w-14
-                    h-14
-                    rounded-full
-                    bg-gradient-to-br
-                    from-green-500
-                    to-emerald-500
-                    flex
-                    items-center
-                    justify-center
-                    text-white
-                    font-bold
-                    text-xl
-                "
-            >
-                M
-            </div>
-
-            <div>
-
-                <h4 className="font-bold">
-                    Michael Perera
-                </h4>
-
-                <p className="text-gray-500 text-sm">
-                    Festival Manager
-                </p>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-    </div>
-
-</section>
-{/* ================= FINAL CTA ================= */}
-
-<section
-    className="
-        relative
-        overflow-hidden
-        py-40
-        mt-16
-    "
->
-  {/* Background Image */}
-
-<img
-    src={ctaBg}
-    alt="CTA Background"
-    className="
+      {/* ================= FINAL CTA ================= */}
+      <section className="relative overflow-hidden py-40 mt-16">
+        {/* Background Image */}
+        <img
+          src={ctaBg}
+          alt="CTA Background"
+          className="
         absolute
         inset-0
         w-full

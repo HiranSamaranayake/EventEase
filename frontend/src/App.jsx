@@ -33,7 +33,6 @@ import OrganizerLayout from "./components/OrganizerLayout";
 import OrganizerAnalytics from "./pages/organizer/OrganizerAnalytics";
 import OrganizerBookings from "./pages/organizer/OrganizerBookings";
 import OrganizerTickets from "./pages/organizer/OrganizerTickets";
-import OrganizerSchedules from "./pages/organizer/OrganizerSchedules";
 import OrganizerPromoCodes from "./pages/organizer/OrganizerPromoCodes";
 import OrganizerSeatingConfig from "./pages/organizer/OrganizerSeatingConfig";
 import OrganizerAnnouncements from "./pages/organizer/OrganizerAnnouncements";
@@ -201,10 +200,6 @@ function App() {
 <Route
   path="tickets"
   element={<OrganizerTickets />}
-/>
-<Route
-  path="schedules"
-  element={<OrganizerSchedules />}
 />
 <Route
   path="promos"
