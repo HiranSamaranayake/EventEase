@@ -37,12 +37,16 @@ WHERE id = $bookingId
 ";
 
 if (mysqli_query($conn, $updateSql)) {
-    // If refunded, also update payments table if present
-    mysqli_query($conn, "UPDATE payments SET payment_status = 'failed' WHERE booking_id = $bookingId");
+    if ($action !== 'reject') {
+        // If refunded, update payments table, cancel tickets, and release seat reservations
+        mysqli_query($conn, "UPDATE payments SET payment_status = 'Refunded' WHERE booking_id = $bookingId");
+        mysqli_query($conn, "UPDATE tickets SET status = 'cancelled' WHERE booking_id = $bookingId");
+        mysqli_query($conn, "DELETE FROM event_booked_seats WHERE booking_id = $bookingId");
+    }
 
     echo json_encode([
         "success" => true,
-        "message" => ($action === 'reject') ? "Refund request rejected." : "Refund processed and approved successfully!",
+        "message" => ($action === 'reject') ? "Refund request rejected." : "Refund processed, approved, and ticket seats released successfully!",
         "payment_status" => $newStatus
     ]);
 } else {

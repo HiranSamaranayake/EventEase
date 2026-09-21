@@ -270,13 +270,19 @@ const MyBookings = () => {
                                 <FaFilePdf /> PDF
                               </button>
 
-                              <button
-                                onClick={() => setSelectedBookingForCancel(booking)}
-                                className="px-3.5 py-1.5 bg-rose-100 hover:bg-rose-600 text-rose-700 hover:text-white font-bold text-xs rounded-xl border border-rose-200 transition flex items-center gap-1"
-                                title="Cancel Booking"
-                              >
-                                <FaBan /> Cancel
-                              </button>
+                              {booking.event_date && new Date(booking.event_date + 'T23:59:59').getTime() < Date.now() ? (
+                                <span className="px-3 py-1.5 bg-gray-100 text-gray-400 font-bold text-xs rounded-xl border border-gray-200 inline-flex items-center gap-1 cursor-not-allowed" title="Refunds are only permitted before the event date">
+                                  <FaBan /> Refund Closed
+                                </span>
+                              ) : (
+                                <button
+                                  onClick={() => setSelectedBookingForCancel(booking)}
+                                  className="px-3.5 py-1.5 bg-rose-100 hover:bg-rose-600 text-rose-700 hover:text-white font-bold text-xs rounded-xl border border-rose-200 transition flex items-center gap-1 cursor-pointer"
+                                  title="Request Ticket Refund & Release Seats"
+                                >
+                                  <FaUndo /> Request Refund
+                                </button>
+                              )}
                             </>
                           )}
 
@@ -369,30 +375,30 @@ const MyBookings = () => {
         </div>
       )}
 
-      {/* Cancellation Confirmation Modal */}
+      {/* Cancellation & Refund Confirmation Modal */}
       {selectedBookingForCancel && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl space-y-6 animate-scaleUp">
             <div className="flex items-center gap-3 text-rose-600">
               <div className="w-12 h-12 rounded-full bg-rose-100 flex items-center justify-center text-2xl shrink-0">
-                <FaExclamationTriangle />
+                <FaUndo />
               </div>
               <div>
-                <h3 className="text-xl font-black text-gray-900">Cancel Booking</h3>
+                <h3 className="text-xl font-black text-gray-900">Request Ticket Refund</h3>
                 <p className="text-xs text-gray-500">{selectedBookingForCancel.title}</p>
               </div>
             </div>
 
             <p className="text-xs text-gray-600 leading-relaxed">
-              Are you sure you want to cancel this booking? If you have paid online, a refund request will be submitted to the Financial Admin for processing.
+              Are you sure you want to request a ticket refund? Upon confirmation, your ticket will be cancelled, your payment refunded, and your reserved seat(s) released so others can purchase them. <span className="font-bold text-rose-600">(Refund is only available before the event date).</span>
             </p>
 
             <div>
-              <label className="block text-xs font-bold text-gray-700 mb-2 uppercase">Reason for Cancellation (Optional)</label>
+              <label className="block text-xs font-bold text-gray-700 mb-2 uppercase">Reason for Refund (Optional)</label>
               <textarea
                 value={cancelReason}
                 onChange={(e) => setCancelReason(e.target.value)}
-                placeholder="Why are you cancelling?"
+                placeholder="Why are you requesting a refund?"
                 className="w-full p-3 border rounded-xl text-xs outline-none focus:ring-2 focus:ring-rose-500"
                 rows="3"
               ></textarea>
@@ -401,16 +407,16 @@ const MyBookings = () => {
             <div className="flex items-center gap-3 pt-2">
               <button
                 onClick={() => setSelectedBookingForCancel(null)}
-                className="flex-1 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs rounded-xl transition"
+                className="flex-1 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs rounded-xl transition cursor-pointer"
               >
-                Keep Booking
+                Keep Ticket
               </button>
               <button
                 onClick={handleCancelBooking}
                 disabled={cancelLoading}
-                className="flex-1 py-3 bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white font-bold text-xs rounded-xl shadow transition"
+                className="flex-1 py-3 bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white font-bold text-xs rounded-xl shadow transition cursor-pointer"
               >
-                {cancelLoading ? "Cancelling..." : "Confirm Cancellation"}
+                {cancelLoading ? "Processing Refund..." : "Confirm Ticket Refund"}
               </button>
             </div>
           </div>

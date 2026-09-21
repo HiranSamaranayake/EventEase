@@ -29,8 +29,13 @@ if ($bookingId <= 0) {
     exit;
 }
 
-// Fetch booking details
-$checkQuery = "SELECT id, user_id, payment_status, booking_status FROM bookings WHERE id = $bookingId";
+// Fetch booking details & event date
+$checkQuery = "
+SELECT b.id, b.user_id, b.event_id, b.payment_status, b.booking_status, e.event_date
+FROM bookings b
+LEFT JOIN events e ON b.event_id = e.id
+WHERE b.id = $bookingId
+";
 $checkRes = mysqli_query($conn, $checkQuery);
 
 if (!$checkRes || mysqli_num_rows($checkRes) == 0) {
@@ -60,8 +65,20 @@ if ($booking['booking_status'] === 'Cancelled') {
     exit;
 }
 
-// Determine new payment status
-$newPaymentStatus = ($booking['payment_status'] === 'Paid') ? 'Refund Requested' : 'Cancelled';
+// RESTRICTION: Ticket refund and cancellation is ONLY allowed BEFORE the event date
+$eventDateStr = $booking['event_date'] ?? '';
+if (!empty($eventDateStr)) {
+    $eventTimestamp = strtotime($eventDateStr . ' 23:59:59');
+    if ($eventTimestamp < time()) {
+        echo json_encode([
+            "success" => false,
+            "message" => "🚫 Refund Closed: Ticket refund and cancellation is only permitted BEFORE the event date."
+        ]);
+        exit;
+    }
+}
+
+$newPaymentStatus = 'Refunded';
 
 // Update booking status
 $updateBookingSql = "
@@ -73,14 +90,18 @@ WHERE id = $bookingId
 $updateRes = mysqli_query($conn, $updateBookingSql);
 
 if ($updateRes) {
-    // Also cancel tickets associated with this booking
-    mysqli_query($conn, "UPDATE tickets SET status = 'used' WHERE booking_id = $bookingId");
+    // 1. Mark payments table as Refunded
+    mysqli_query($conn, "UPDATE payments SET payment_status = 'Refunded' WHERE booking_id = $bookingId");
+
+    // 2. Cancel tickets associated with this booking
+    mysqli_query($conn, "UPDATE tickets SET status = 'cancelled' WHERE booking_id = $bookingId");
+
+    // 3. RELEASE SEAT RESERVATIONS: Delete booked seats from event_booked_seats table so seats become available for other buyers!
+    mysqli_query($conn, "DELETE FROM event_booked_seats WHERE booking_id = $bookingId");
 
     echo json_encode([
         "success" => true,
-        "message" => ($newPaymentStatus === 'Refund Requested') 
-            ? "Booking cancelled. Refund request submitted to Financial Admin!" 
-            : "Booking cancelled successfully.",
+        "message" => "Ticket successfully cancelled and refunded! Your reserved seats have been released and made available for other buyers.",
         "booking_status" => "Cancelled",
         "payment_status" => $newPaymentStatus
     ]);

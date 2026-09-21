@@ -6,8 +6,13 @@ test.describe('Student & Restricted Event Booking Validation', () => {
 
   test.beforeAll(async ({ request }) => {
     const res = await request.get('http://localhost/EventEase/backend/setup_student_validation_test.php');
-    const body = await res.json();
-    if (body.user_id) testUserId = body.user_id;
+    const text = await res.text();
+    try {
+      const body = JSON.parse(text);
+      if (body.user_id) testUserId = body.user_id;
+    } catch (e) {
+      console.log('setup_student_validation_test text output:', text);
+    }
   });
 
   test('1. Backend API rejects booking for restricted event when no student email or passcode is provided', async ({ request }) => {
